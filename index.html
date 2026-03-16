@@ -1,212 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interactive CS Activities</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Computer Science Activities</title>
 
 <style>
-    :root {
-        --bg: #f1f5f9;
-        --card: rgba(255, 255, 255, 0.7);
-        --border: #cbd5e1;
-        --fg: #0f172a;
-        --accent: #2563eb;
-        --shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
+/* --- THEME --- */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f1f5f9;
+    color: #0f172a;
+}
 
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Arial, sans-serif;
-        background: var(--bg);
-        color: var(--fg);
-        backdrop-filter: blur(4px);
-    }
+header {
+    background: #0f172a;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
 
-    header {
-        background: #0f172a;
-        color: white;
-        padding: 30px 20px;
-        text-align: center;
-    }
+/* --- TREE NAVIGATION --- */
+.tree {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 10px 20px;
+}
 
-    h1 {
-        margin: 0 0 10px;
-        font-size: 32px;
-    }
+.folder {
+    margin: 4px 0;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
 
-    #content {
-        max-width: 960px;
-        padding: 30px 20px;
-        margin: 0 auto;
-    }
+.folder .arrow {
+    transition: transform 0.2s ease;
+    margin-right: 6px;
+    color: #2563eb;
+    font-size: 14px;
+}
 
-    .folder {
-        margin-top: 40px;
-    }
+.folder.collapsed .arrow {
+    transform: rotate(-90deg);
+}
 
-    .folder h2 {
-        margin-bottom: 14px;
-        font-size: 24px;
-        border-left: 5px solid var(--accent);
-        padding-left: 10px;
-    }
+.children {
+    margin-left: 20px;
+    border-left: 2px solid #e2e8f0;
+    padding-left: 12px;
+    display: none;
+}
 
-    .card-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-    }
+.children.open {
+    display: block;
+}
 
-    .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(6px);
-        transition: 0.2s;
-    }
+/* --- FILE CARDS --- */
+.file-link {
+    display: block;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 5px 0;
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+    transition: 0.2s;
+}
 
-    .card:hover {
-        transform: translateY(-3px);
-        border-color: var(--accent);
-        box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-    }
-
-    .card a {
-        text-decoration: none;
-        color: var(--accent);
-        font-weight: 600;
-        font-size: 18px;
-        display: block;
-        margin-bottom: 6px;
-    }
-
-    .desc {
-        font-size: 14px;
-        color: #475569;
-        line-height: 1.4;
-    }
-
-    footer {
-        margin-top: 60px;
-        padding: 25px;
-        text-align: center;
-        color: #475569;
-    }
+.file-link:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
 </style>
-</head>
 
+</head>
 <body>
+
 <header>
     <h1>Interactive Computer Science Activities</h1>
-    <p>KS3 • KS4 • Networks • Systems • Hardware</p>
+    <p>KS3 • KS4 • KS5 – Auto‑Generated Learning Explorer</p>
 </header>
 
-<main id="content">
-    <p>Loading activities…</p>
-</main>
-
-<footer>
-    Generated automatically from folder structure • GitHub Pages
-</footer>
+<div id="tree" class="tree">Loading activities…</div>
 
 <script>
-// -----------------------
-// CONFIG
-// -----------------------
-const USER = "MrWesleyKES";     // ← CHANGE THIS
-const REPO = "interactive-cs-activities"; // ← CHANGE IF NEEDED
+// -------------------------------
+// CONFIG – EDIT THESE TWO LINES
+// -------------------------------
+const USER = "MrWesleyKES";
+const REPO = "interactive-cs-activities";
 const BRANCH = "main";
 
-// -----------------------
-// UTILITIES
-// -----------------------
-async function fetchJSON(url) {
+// -------------------------------
+// FETCH REPO FILE TREE
+// -------------------------------
+async function fetchTree() {
+    const url = `https://api.github.com/repos/${USER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
     const res = await fetch(url);
     return res.json();
 }
 
-/*
-We will:
-1. Read folders recursively
-2. Look for index.html
-3. Group by path depth (e.g. KS3 > Year 8 > ComputerBasics)
-4. Render cards
-*/
+// -------------------------------
+// BUILD HIERARCHY
+// -------------------------------
+function buildHierarchy(paths) {
+    const root = {};
 
-async function getRepoTree() {
-    const url = `https://api.github.com/repos/${USER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
-    return fetchJSON(url);
-}
-
-function groupByFolder(files) {
-    const groups = {};
-
-    files.forEach(path => {
+    paths.forEach(path => {
         if (!path.endsWith("index.html")) return;
 
         const parts = path.split("/");
-        parts.pop(); // remove index.html
-        const folderName = parts.pop(); // NameThatHardware, ClientServer etc.
-        const parentPath = parts.join("/");
+        let current = root;
 
-        if (!groups[parentPath]) groups[parentPath] = [];
-        groups[parentPath].push({
-            name: folderName,
-            url: `/${REPO}/${path}`
+        // Walk through each folder level
+        parts.forEach((p, i) => {
+            if (p === "index.html") return;
+
+            if (!current[p]) {
+                current[p] = { _children: {} };
+            }
+            if (i === parts.length - 2) {
+                // This folder directly contains index.html → treat as a file
+                current[p]._index = path;
+            }
+            current = current[p]._children;
         });
     });
 
-    return groups;
+    return root;
 }
 
-function render(groups) {
-    const container = document.getElementById("content");
-    container.innerHTML = "";
+// -------------------------------
+// RENDER COLLAPSIBLE TREE
+// -------------------------------
+function renderTree(node, container) {
+    Object.keys(node).forEach(key => {
+        const entry = node[key];
 
-    for (const parent in groups) {
+        // Create folder element
+        const folderEl = document.createElement("div");
+        folderEl.className = "folder collapsed";
+        folderEl.innerHTML = `<span class="arrow">▼</span> ${key}`;
+        container.appendChild(folderEl);
 
-        // Make parent heading readable
-        const heading = parent
-            .replace(/-/g, " ")
-            .replace(/\b\w/g, c => c.toUpperCase());
+        // Create children container
+        const childrenEl = document.createElement("div");
+        childrenEl.className = "children";
+        container.appendChild(childrenEl);
 
-        const section = document.createElement("section");
-        section.className = "folder";
-
-        section.innerHTML = `<h2>${parent === "" ? "Top Level Activities" : heading}</h2>`;
-
-        const grid = document.createElement("div");
-        grid.className = "card-grid";
-
-        groups[parent].forEach(item => {
-            const card = document.createElement("div");
-            card.className = "card";
-
-            card.innerHTML = `
-                <a href="${item.url}">${item.name.replace(/-/g," ")}</a>
-                <div class="desc">Interactive activity: ${item.name}</div>
-            `;
-            grid.appendChild(card);
+        // Toggle open/close
+        folderEl.addEventListener("click", () => {
+            childrenEl.classList.toggle("open");
+            folderEl.classList.toggle("collapsed");
         });
 
-        section.appendChild(grid);
-        container.appendChild(section);
-    }
+        // If folder contains index.html, add link
+        if (entry._index) {
+            const fileLink = document.createElement("a");
+            fileLink.className = "file-link";
+            fileLink.href = `/${REPO}/${entry._index}`;
+            fileLink.textContent = key + " (Open Activity)";
+            childrenEl.appendChild(fileLink);
+        }
+
+        // Recurse into child folders
+        renderTree(entry._children, childrenEl);
+    });
 }
 
+// -------------------------------
+// INITIALISE
+// -------------------------------
 async function init() {
-    const tree = await getRepoTree();
-    const files = tree.tree.map(t => t.path);
-    const groups = groupByFolder(files);
-    render(groups);
+    const data = await fetchTree();
+    const paths = data.tree.map(x => x.path);
+
+    const hierarchy = buildHierarchy(paths);
+
+    const tree = document.getElementById("tree");
+    tree.innerHTML = "";
+    renderTree(hierarchy, tree);
 }
 
 init();
 </script>
+
 </body>
 </html>
-``
