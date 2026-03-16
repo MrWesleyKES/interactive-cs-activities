@@ -112,3 +112,32 @@ document.getElementById("sendQ").onclick = () => {
 
 // Listen for answers
 function watchAnswers() {
+    onValue(`rooms/${room}/answers`, data => {
+        const box = document.getElementById("answers");
+        box.innerHTML = "";
+        if (!data) return;
+
+        for (const [student, answer] of Object.entries(data)) {
+            const d = document.createElement("div");
+            d.textContent = `${student}: ${answer}`;
+            box.appendChild(d);
+        }
+
+        debug("Answers updated");
+    });
+}
+
+// React to room creation
+const observer = new MutationObserver(() => {
+    if (room) {
+        watchStudents();
+        watchAnswers();
+        debug("Listeners attached");
+    }
+});
+observer.observe(document.getElementById("roomCode"), { childList: true });
+
+</script>
+
+</body>
+</html>
