@@ -1,56 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Live Quiz - Student</title>
-<style>
-body { font-family: Segoe UI, sans-serif; padding: 20px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Live Quiz - Student</title>
+    <style>
+        body { font-family: Segoe UI, sans-serif; padding: 20px; }
+        input, button { font-size: 16px; padding: 6px; margin: 5px 0; }
+        #__debug {
+            margin-top: 16px;
+            font-family: ui-monospace, Consolas, monospace;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 8px;
+            border-radius: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
 <body>
 
 <h1>Join Live Quiz</h1>
 
-<label>Room code:</label>
-<input id="room">
-<br><br>
+<label>Room code:</label><br>
+<input id="room" autocomplete="off"><br><br>
 
-<label>Your name:</label>
-<input id="name">
-<br><br>
+<label>Your name:</label><br>
+<input id="name" autocomplete="off"><br><br>
 
 <button id="join">Join Room</button>
 
 <h2 id="currentQ"></h2>
 
-<input id="answer" placeholder="Your answer..." size="40">
-<button id="sendA">Send Answer</button>
+<input id="answer" placeholder="Your answer..." size="40" disabled>
+<button id="sendA" disabled>Send Answer</button>
 
-<script src="shared.js"></script>
+<h3>Debug</h3>
+<div id="__debug"></div>
 
-<script>
+<!-- Firebase compat SDKs MUST load first -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- Now import shared.js as module -->
+<script type="module">
+import { write, update, onValue } from './shared.js';
+
+function debug(msg) {
+    console.log(msg);
+    const box = document.getElementById("__debug");
+    const line = document.createElement("div");
+    line.textContent = msg;
+    box.appendChild(line);
+}
+
 let room = null;
 let studentName = null;
+let studentId = null;
 
-document.getElementById("join").onclick = () => {
-    room = document.getElementById("room").value;
-    studentName = document.getElementById("name").value;
+// JOIN ROOM
+document.getElementById("join").onclick = async () => {
+    room = document.getElementById("room").value.trim();
+    studentName = document.getElementById("name").value.trim();
 
-    // Register student
-    const id = Date.now();
-    update(`rooms/${room}/students/${id}`, studentName);
+    if (!room || !studentName) {
+        alert("Enter room code and your name");
+        return;
+    }
 
-    // Listen for questions
+    studentId = String(Date.now());
+    debug(`Joining room ${room} as ${studentName}`);
+
+    // Add student to roster
+    await update(`rooms/${room}/students/${studentId}`, studentName);
+
+    // Enable answer box
+    document.getElementById("answer").disabled = false;
+    document.getElementById("sendA").disabled = false;
+
+    // Listen for question
     onValue(`rooms/${room}/question`, q => {
+        debug("Question changed: " + q);
         document.getElementById("currentQ").textContent = q || "";
     });
 };
 
-// Answer question
-document.getElementById("sendA").onclick = () => {
-    const a = document.getElementById("answer").value;
-    update(`rooms/${room}/answers/${studentName}`, a);
-};
-</script>
-</body>
-</html>
+// SEND ANSWER
+document.getElementById("sendA").onclick = async () => {
+    if (!room || !studentName) return;
+    const a = document.getElementById("answer").value.trim();
+    if (!a) return;
+
+    debug(`Sending answer: ${a}`);
