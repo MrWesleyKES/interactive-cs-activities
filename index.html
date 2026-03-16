@@ -3,91 +3,210 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interactive Computer Science Lessons</title>
+<title>Interactive CS Activities</title>
+
 <style>
+    :root {
+        --bg: #f1f5f9;
+        --card: rgba(255, 255, 255, 0.7);
+        --border: #cbd5e1;
+        --fg: #0f172a;
+        --accent: #2563eb;
+        --shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
     body {
-        font-family: Segoe UI, Arial, sans-serif;
-        background: #f8fafc;
         margin: 0;
         padding: 0;
-        color: #1e293b;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        backdrop-filter: blur(4px);
     }
+
     header {
         background: #0f172a;
         color: white;
-        padding: 24px 20px;
+        padding: 30px 20px;
         text-align: center;
     }
+
     h1 {
-        margin: 0 0 8px;
+        margin: 0 0 10px;
+        font-size: 32px;
     }
-    main {
-        max-width: 900px;
-        margin: 0 auto;
+
+    #content {
+        max-width: 960px;
         padding: 30px 20px;
+        margin: 0 auto;
     }
-    .lesson-list {
-        list-style: none;
-        padding: 0;
-        margin: 30px 0;
+
+    .folder {
+        margin-top: 40px;
     }
-    .lesson-list li {
-        background: white;
-        margin-bottom: 15px;
-        padding: 18px 20px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
+
+    .folder h2 {
+        margin-bottom: 14px;
+        font-size: 24px;
+        border-left: 5px solid var(--accent);
+        padding-left: 10px;
+    }
+
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(6px);
         transition: 0.2s;
     }
-    .lesson-list li:hover {
-        border-color: #2563eb;
-        box-shadow: 0 0 6px rgba(0,0,0,0.08);
+
+    .card:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.12);
     }
-    a {
+
+    .card a {
         text-decoration: none;
-        color: #2563eb;
-        font-size: 18px;
+        color: var(--accent);
         font-weight: 600;
+        font-size: 18px;
+        display: block;
+        margin-bottom: 6px;
     }
+
     .desc {
-        margin-top: 6px;
-        color: #475569;
         font-size: 14px;
+        color: #475569;
+        line-height: 1.4;
+    }
+
+    footer {
+        margin-top: 60px;
+        padding: 25px;
+        text-align: center;
+        color: #475569;
     }
 </style>
 </head>
-<body>
 
+<body>
 <header>
-    <h1>Interactive Computer Science Lessons</h1>
-    <p>KS3 / KS4 Activities • Client–Server • Networking • Systems</p>
+    <h1>Interactive Computer Science Activities</h1>
+    <p>KS3 • KS4 • Networks • Systems • Hardware</p>
 </header>
 
-<main>
-    <p>Choose an activity below:</p>
-
-    <ul class="lesson-list">
-
-        <!-- Example lesson (your working page) -->
-        <li>
-            <a href="client-server-activity-external.html">Client–Server Network Interactive Activity</a>
-            <div class="desc">Simulates requests, server responses, drag‑and‑drop message passing, and scenario questions.</div>
-        </li>
-
-        <!-- Add more lessons here as your repo grows -->
-        <li>
-            <a href="lesson2-peer-to-peer/index.html">Peer‑to‑Peer vs Client‑Server Activity</a>
-            <div class="desc">Compare architectures using real-world scenarios and decision‑making tasks.</div>
-        </li>
-
-        <li>
-            <a href="lesson3-hardware/index.html">Network Hardware Explorer</a>
-            <div class="desc">Interactive cards showing switches, routers, hubs, WAPs, NICs, and more.</div>
-        </li>
-
-        <!-- Keep adding as many as you need -->
-    </ul>
+<main id="content">
+    <p>Loading activities…</p>
 </main>
 
+<footer>
+    Generated automatically from folder structure • GitHub Pages
+</footer>
+
+<script>
+// -----------------------
+// CONFIG
+// -----------------------
+const USER = "MrWesleyKES";     // ← CHANGE THIS
+const REPO = "interactive-cs-activities"; // ← CHANGE IF NEEDED
+const BRANCH = "main";
+
+// -----------------------
+// UTILITIES
+// -----------------------
+async function fetchJSON(url) {
+    const res = await fetch(url);
+    return res.json();
+}
+
+/*
+We will:
+1. Read folders recursively
+2. Look for index.html
+3. Group by path depth (e.g. KS3 > Year 8 > ComputerBasics)
+4. Render cards
+*/
+
+async function getRepoTree() {
+    const url = `https://api.github.com/repos/${USER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
+    return fetchJSON(url);
+}
+
+function groupByFolder(files) {
+    const groups = {};
+
+    files.forEach(path => {
+        if (!path.endsWith("index.html")) return;
+
+        const parts = path.split("/");
+        parts.pop(); // remove index.html
+        const folderName = parts.pop(); // NameThatHardware, ClientServer etc.
+        const parentPath = parts.join("/");
+
+        if (!groups[parentPath]) groups[parentPath] = [];
+        groups[parentPath].push({
+            name: folderName,
+            url: `/${path}`
+        });
+    });
+
+    return groups;
+}
+
+function render(groups) {
+    const container = document.getElementById("content");
+    container.innerHTML = "";
+
+    for (const parent in groups) {
+
+        // Make parent heading readable
+        const heading = parent
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, c => c.toUpperCase());
+
+        const section = document.createElement("section");
+        section.className = "folder";
+
+        section.innerHTML = `<h2>${parent === "" ? "Top Level Activities" : heading}</h2>`;
+
+        const grid = document.createElement("div");
+        grid.className = "card-grid";
+
+        groups[parent].forEach(item => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+                <a href="${item.url}">${item.name.replace(/-/g," ")}</a>
+                <div class="desc">Interactive activity: ${item.name}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+    }
+}
+
+async function init() {
+    const tree = await getRepoTree();
+    const files = tree.tree.map(t => t.path);
+    const groups = groupByFolder(files);
+    render(groups);
+}
+
+init();
+</script>
 </body>
 </html>
+``
