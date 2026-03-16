@@ -42,6 +42,12 @@
 <!-- Firebase compat SDKs MUST load first -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- Firebase Auth (required for RTDB rules!) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+firebase.auth().signInAnonymously().catch(e => console.error("Auth error:", e));
+</script>
 
 <!-- Now import shared.js as module -->
 <script type="module">
