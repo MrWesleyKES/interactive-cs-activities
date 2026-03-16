@@ -5,6 +5,7 @@
 <style>
 body { font-family: Segoe UI, sans-serif; padding: 20px; }
 #students div { padding: 5px; background: #e2e8f0; margin: 5px 0; border-radius: 4px; }
+#answers div { padding: 5px; background: #fef3c7; margin: 5px 0; border-radius: 4px; }
 </style>
 </head>
 
@@ -24,9 +25,14 @@ body { font-family: Segoe UI, sans-serif; padding: 20px; }
 <h3>Live Answers:</h3>
 <div id="answers"></div>
 
-<script src="shared.js"></script>
+<!-- Firebase scripts must load FIRST -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<script>
+<!-- Then load shared.js as a module -->
+<script type="module">
+import { write, update, onValue } from './shared.js';
+
 let room = null;
 
 // Create room
@@ -83,6 +89,8 @@ const observer = new MutationObserver(() => {
     }
 });
 observer.observe(document.getElementById("roomCode"), { childList:true });
+
 </script>
+
 </body>
 </html>
