@@ -7,7 +7,7 @@
 const firebaseConfig = {
   apiKey: "AIzaSyD8d03q_WJqS4bxrBISFj1igm87v9qXQ_0",
   authDomain: "livequiz-e864f.firebaseapp.com",
-  databaseURL: "https://livequiz-e864f-default-rtdb.europe-west1.firebasedatabase.app/",
+  databaseURL: "https://livequiz-e864f-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "livequiz-e864f",
   storageBucket: "livequiz-e864f.firebasestorage.app",
   messagingSenderId: "869686522658",
