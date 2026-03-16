@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interactive Computer Science Lessons</title>
+<style>
+    body {
+        font-family: Segoe UI, Arial, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 0;
+        color: #1e293b;
+    }
+    header {
+        background: #0f172a;
+        color: white;
+        padding: 24px 20px;
+        text-align: center;
+    }
+    h1 {
+        margin: 0 0 8px;
+    }
+    main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    .lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+    }
+    .lesson-list li {
+        background: white;
+        margin-bottom: 15px;
+        padding: 18px 20px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        transition: 0.2s;
+    }
+    .lesson-list li:hover {
+        border-color: #2563eb;
+        box-shadow: 0 0 6px rgba(0,0,0,0.08);
+    }
+    a {
+        text-decoration: none;
+        color: #2563eb;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .desc {
+        margin-top: 6px;
+        color: #475569;
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Interactive Computer Science Lessons</h1>
+    <p>KS3 / KS4 Activities • Client–Server • Networking • Systems</p>
+</header>
+
+<main>
+    <p>Choose an activity below:</p>
+
+    <ul class="lesson-list">
+
+        <!-- Example lesson (your working page) -->
+        <li>
+            <a href="client-server-activity-external.html">Client–Server Network Interactive Activity</a>
+            <div class="desc">Simulates requests, server responses, drag‑and‑drop message passing, and scenario questions.</div>
+        </li>
+
+        <!-- Add more lessons here as your repo grows -->
+        <li>
+            <a href="lesson2-peer-to-peer/index.html">Peer‑to‑Peer vs Client‑Server Activity</a>
+            <div class="desc">Compare architectures using real-world scenarios and decision‑making tasks.</div>
+        </li>
+
+        <li>
+            <a href="lesson3-hardware/index.html">Network Hardware Explorer</a>
+            <div class="desc">Interactive cards showing switches, routers, hubs, WAPs, NICs, and more.</div>
+        </li>
+
+        <!-- Keep adding as many as you need -->
+    </ul>
+</main>
+
+</body>
+</html>
