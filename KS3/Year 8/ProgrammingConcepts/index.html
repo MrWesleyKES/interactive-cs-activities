@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Programming Concepts – Fix‑the‑Robot</title>
+<link rel="stylesheet" href="style.css" />
+
+<style>
+body { font-family: Segoe UI, sans-serif; background: #f8fafc; margin: 0; }
+header {
+  background: #0f172a; color: white; padding: 20px; text-align: center;
+}
+main { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+.section { background: white; padding: 20px; margin: 20px 0;
+  border-radius: 10px; border: 1px solid #e2e8f0; }
+
+h2 { margin-top: 0; }
+
+.draggable {
+  padding: 10px;
+  background: #e2e8f0;
+  border: 1px dashed #94a3b8;
+  border-radius: 6px;
+  margin: 8px 0;
+  cursor: grab;
+}
+
+.dropzone {
+  min-height: 80px;
+  padding: 10px;
+  border: 2px dashed #2563eb;
+  background: #eff6ff;
+  border-radius: 6px;
+}
+
+.dropzone.over { background: #dbeafe; }
+button { background: #2563eb; color: white; padding: 10px 20px;
+  border: none; border-radius: 6px; cursor: pointer; }
+button:disabled { background: #94a3b8; cursor: default; }
+#output {
+  background: #0f172a; color: #e2e8f0; padding: 15px;
+  border-radius: 6px; margin-top: 10px; font-family: Consolas, monospace;
+  height: 150px; overflow-y: auto;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Fix‑the‑Robot: Programming Concepts Starter</h1>
+</header>
+
+<main>
+
+<div class="section">
+  <h2>1. Sequence – Put the robot's steps in order</h2>
+  <p>Drag the steps into the correct order so the robot can pick up the box.</p>
+
+  <div id="sequence-steps">
+    <div class="draggable" draggable="true">Turn left</div>
+    <div class="draggable" draggable="true">Pick up box</div>
+    <div class="draggable" draggable="true">Walk forward</div>
+    <div class="draggable" draggable="true">Turn right</div>
+  </div>
+
+  <h4>Drop your ordered solution here:</h4>
+  <div id="seq-dropzone" class="dropzone"></div>
+
+  <button id="run-sequence">Run Sequence</button>
+  <div id="output"></div>
+</div>
+
+<div class="section">
+  <h2>2. Selection – Make a decision</h2>
+  <p>Select what the robot should do if it sees an obstacle.</p>
+
+  <select id="selection-choice">
+    <option value="">Choose...</option>
+    <option value="turn">IF sees obstacle → Turn right</option>
+    <option value="wait">IF sees obstacle → Stop and wait</option>
+    <option value="jump">IF sees obstacle → Jump over it</option>
+  </select>
+
+  <button id="run-selection">Run Selection</button>
+</div>
+
+<div class="section">
+  <h2>3. Iteration – Choose a loop</h2>
+  <p>Pick the correct loop to make the robot walk forward 5 steps.</p>
+
+  <select id="loop-choice">
+    <option value="">Choose loop...</option>
+    <option value="repeat5">REPEAT 5 TIMES → Walk forward</option>
+    <option value="repeat1">REPEAT 1 TIME → Walk forward</option>
+    <option value="while">WHILE battery > 0 → Walk forward</option>
+  </select>
+
+  <button id="run-loop">Run Loop</button>
+</div>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
