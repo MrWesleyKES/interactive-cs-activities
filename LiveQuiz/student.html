@@ -39,17 +39,17 @@
 <h3>Debug</h3>
 <div id="__debug"></div>
 
-<!-- Firebase compat SDKs MUST load first -->
+<!-- ✔ Load Firebase correctly -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-<!-- Anonymous sign-in required so RTDB rules permit writes -->
+<!-- ✔ Anonymous login -->
 <script>
-firebase.auth().signInAnonymously().catch(e => console.error("AUTH ERROR:", e));
+firebase.auth().signInAnonymously().catch(err => console.error("AUTH ERROR:", err));
 </script>
 
-<!-- Import shared Firebase helpers -->
+<!-- ✔ Now import your helper module -->
 <script type="module">
 import { write, update, onValue } from './shared.js';
 
@@ -78,14 +78,16 @@ document.getElementById("join").onclick = async () => {
     studentId = String(Date.now());
     debug(`Joining room ${room} as ${studentName}`);
 
-    // Add student to roster
-    await update(`rooms/${room}/students/${studentId}`, studentName);
+    try {
+        await update(`rooms/${room}/students/${studentId}`, studentName);
+        debug("Student added.");
+    } catch (err) {
+        debug("WRITE FAILED: " + err.message);
+    }
 
-    // Enable answer box
     document.getElementById("answer").disabled = false;
     document.getElementById("sendA").disabled = false;
 
-    // Listen for question changes
     onValue(`rooms/${room}/question`, q => {
         debug("Question changed: " + q);
         document.getElementById("currentQ").textContent = q || "";
@@ -94,12 +96,16 @@ document.getElementById("join").onclick = async () => {
 
 // SEND ANSWER
 document.getElementById("sendA").onclick = async () => {
-    if (!room || !studentName) return;
     const a = document.getElementById("answer").value.trim();
     if (!a) return;
 
     debug(`Sending answer: ${a}`);
-    await update(`rooms/${room}/answers/${studentName}`, a);
+
+    try {
+        await update(`rooms/${room}/answers/${studentName}`, a);
+    } catch (err) {
+        debug("ANSWER FAILED: " + err.message);
+    }
 
     document.getElementById("answer").value = "";
 };
