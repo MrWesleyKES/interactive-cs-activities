@@ -156,7 +156,7 @@ function groupByFolder(files) {
         if (!groups[parentPath]) groups[parentPath] = [];
         groups[parentPath].push({
             name: folderName,
-            url: `/${path}`
+            url: `/${REPO}/${path}`
         });
     });
 
