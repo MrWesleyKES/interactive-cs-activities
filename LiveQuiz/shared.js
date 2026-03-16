@@ -1,4 +1,4 @@
-/* shared.js — Firebase initialization + helpers
+/* shared.js — Fireb ase initialization + helpers
    IMPORTANT: This file must contain ONLY JavaScript.
    No <script> tags, no HTML.
 */
