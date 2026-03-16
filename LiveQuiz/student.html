@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live Quiz - Student</title>
+<style>
+body { font-family: Segoe UI, sans-serif; padding: 20px; }
+</style>
+</head>
+
+<body>
+
+<h1>Join Live Quiz</h1>
+
+<label>Room code:</label>
+<input id="room">
+<br><br>
+
+<label>Your name:</label>
+<input id="name">
+<br><br>
+
+<button id="join">Join Room</button>
+
+<h2 id="currentQ"></h2>
+
+<input id="answer" placeholder="Your answer..." size="40">
+<button id="sendA">Send Answer</button>
+
+<script src="shared.js"></script>
+
+<script>
+let room = null;
+let studentName = null;
+
+document.getElementById("join").onclick = () => {
+    room = document.getElementById("room").value;
+    studentName = document.getElementById("name").value;
+
+    // Register student
+    const id = Date.now();
+    update(`rooms/${room}/students/${id}`, studentName);
+
+    // Listen for questions
+    onValue(`rooms/${room}/question`, q => {
+        document.getElementById("currentQ").textContent = q || "";
+    });
+};
+
+// Answer question
+document.getElementById("sendA").onclick = () => {
+    const a = document.getElementById("answer").value;
+    update(`rooms/${room}/answers/${studentName}`, a);
+};
+</script>
+</body>
+</html>
