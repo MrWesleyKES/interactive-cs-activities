@@ -1,9 +1,9 @@
-<!-- shared.js -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+/* shared.js — Firebase initialization + helpers
+   IMPORTANT: This file must contain ONLY JavaScript.
+   No <script> tags, no HTML.
+*/
 
-<script>
-// PASTE YOUR FIREBASE CONFIG HERE:
+// ---- Firebase Config (paste yours here) ----
 const firebaseConfig = {
   apiKey: "AIzaSyD8d03q_WJqS4bxrBISFj1igm87v9qXQ_0",
   authDomain: "livequiz-e864f.firebaseapp.com",
@@ -13,19 +13,24 @@ const firebaseConfig = {
   messagingSenderId: "869686522658",
   appId: "1:869686522658:web:98e83a44144dcfdbd4eb7b"
 };
+
+// ---- Firebase Initialization ----
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Utilities
-function write(path, value) {
-   return db.ref(path).set(value);
+// ---- Named exports for teacher/student modules ----
+export function write(path, value) {
+  return db.ref(path).set(value);
 }
 
-function update(path, value) {
-   return db.ref(path).update(value);
+export function update(path, value) {
+  return db.ref(path).update(value);
 }
 
-function onValue(path, callback) {
-   db.ref(path).on("value", snap => callback(snap.val()));
+export function onValue(path, callback) {
+  return db.ref(path).on("value", snap => callback(snap.val()));
 }
-</script>
+
+export function remove(path) {
+  return db.ref(path).remove();
+}
