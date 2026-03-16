@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live Quiz - Teacher</title>
+<style>
+body { font-family: Segoe UI, sans-serif; padding: 20px; }
+#students div { padding: 5px; background: #e2e8f0; margin: 5px 0; border-radius: 4px; }
+</style>
+</head>
+
+<body>
+<h1>Teacher Dashboard</h1>
+
+<button id="createRoom">Create Room</button>
+<h2>Room Code: <span id="roomCode">None</span></h2>
+
+<h3>Connected Students:</h3>
+<div id="students"></div>
+
+<h3>Send Question:</h3>
+<input id="question" placeholder="Type question..." size="40">
+<button id="sendQ">Send</button>
+
+<h3>Live Answers:</h3>
+<div id="answers"></div>
+
+<script src="shared.js"></script>
+
+<script>
+let room = null;
+
+// Create room
+document.getElementById("createRoom").onclick = () => {
+    room = Math.floor(10000 + Math.random()*90000).toString();
+    document.getElementById("roomCode").textContent = room;
+
+    write(`rooms/${room}`, {
+        students: {},
+        question: "",
+        answers: {}
+    });
+};
+
+// Listen for student joins
+function watchStudents() {
+    onValue(`rooms/${room}/students`, data => {
+        const box = document.getElementById("students");
+        box.innerHTML = "";
+        if (!data) return;
+        Object.values(data).forEach(name => {
+            const d = document.createElement("div");
+            d.textContent = name;
+            box.appendChild(d);
+        });
+    });
+}
+
+// Send question
+document.getElementById("sendQ").onclick = () => {
+    const q = document.getElementById("question").value;
+    update(`rooms/${room}`, { question: q, answers: {} });
+};
+
+// Listen for answers
+function watchAnswers() {
+    onValue(`rooms/${room}/answers`, data => {
+        const box = document.getElementById("answers");
+        box.innerHTML = "";
+        if (!data) return;
+        for (const [student, answer] of Object.entries(data)) {
+            const d = document.createElement("div");
+            d.textContent = `${student}: ${answer}`;
+            box.appendChild(d);
+        }
+    });
+}
+
+// React to room creation
+const observer = new MutationObserver(() => {
+    if (room) {
+        watchStudents();
+        watchAnswers();
+    }
+});
+observer.observe(document.getElementById("roomCode"), { childList:true });
+</script>
+</body>
+</html>
