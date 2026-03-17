@@ -5,22 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I/O Hardware Sort – Picture Edition</title>
 
+    <!-- Link to your CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
     <h1>I/O & Inside the Computer – Picture Sort!</h1>
-    <p>Round <span id="roundNumber">1</span> of 2. Drag each item into the correct category.</p>
+    <p>Round <span id="roundNumber">1</span> of 2. Drag each image into the correct category.</p>
 </header>
 
 <main>
 
+    <!-- LEFT: draggable images -->
     <section id="items">
         <h2>Devices</h2>
         <div id="draggables"></div>
     </section>
 
+    <!-- RIGHT: dropzones -->
     <section id="zones">
         <div class="zone" data-accept="input">
             <h3>Input Devices</h3>
@@ -51,6 +54,8 @@
     <p id="result"></p>
 </footer>
 
+<!-- Link to your JS -->
 <script src="script.js"></script>
+
 </body>
 </html>
