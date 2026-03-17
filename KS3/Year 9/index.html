@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Excel Formula Matching Activity</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      background: #f0f6ff;
+      padding: 20px;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #0a4ea1;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .box {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .draggable {
+      background: #dce8ff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: grab;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .target {
+      background: #f7f7f7;
+      border: 2px dashed #bbb;
+      padding: 10px;
+      margin-bottom: 10px;
+      min-height: 60px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .correct {
+      background: #c5f7c7 !important;
+      border-color: #49a34d !important;
+    }
+    button {
+      background: #0a4ea1;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .score {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Excel Formula Matching Activity</h1>
+  <div class="score">Score: <span id="score">0</span> / 9</div>
+  <div class="container">
+    <div class="box" id="leftBox"></div>
+    <div class="box" id="rightBox"></div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="resetGame()">Reset Activity</button>
+  </div>
+<script>
+  const leftItems = [
+    { id: "plus", label: "+" },
+    { id: "minus", label: "-" },
+    { id: "multiply", label: "*" },
+    { id: "divide", label: "/" },
+    { id: "sum", label: "=SUM(A1:A5)" },
+    { id: "average", label: "=AVERAGE(B1:B10)" },
+    { id: "max", label: "=MAX(C1:C8)" },
+    { id: "min", label: "=MIN(D1:D8)" },
+    { id: "count", label: "=COUNT(E1:E20)" }
+  ];
+
+  const rightItems = [
+    { label: "Finds the largest value in a range", match: "max" },
+    { label: "Finds the smallest value in a range", match: "min" },
+    { label: "Divides one value by another", match: "divide" },
+    { label: "Adds one value to another", match: "plus" },
+    { label: "Subtracts one value from another", match: "minus" },
+    { label: "Multiplies one value by another", match: "multiply" },
+    { label: "Adds up a range of numbers", match: "sum" },
+    { label: "Calculates the mean (average) of a range", match: "average" },
+    { label: "Counts number of cells containing numbers", match: "count" },
+  ];
+
+  let score = 0;
+
+  function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+  }
+
+  function render() {
+    const left = document.getElementById("leftBox");
+    const right = document.getElementById("rightBox");
+
+    left.innerHTML = "";
+    right.innerHTML = "";
+
+    shuffle([...leftItems]).forEach(item => {
+      const div = document.createElement("div");
+      div.className = "draggable";
+      div.textContent = item.label;
+      div.draggable = true;
+      div.dataset.id = item.id;
+
+      div.ondragstart = e => {
+        e.dataTransfer.setData("text/plain", item.id);
+      };
+
+      left.appendChild(div);
+    });
+
+    shuffle([...rightItems]).forEach(target => {
+      const div = document.createElement("div");
+      div.className = "target";
+      div.textContent = target.label;
+
+      div.ondragover = e => e.preventDefault();
+
+      div.ondrop = e => {
+        const draggedId = e.dataTransfer.getData("text/plain");
+        if (draggedId === target.match) {
+          div.classList.add("correct");
+          score++;
+          document.getElementById("score").textContent = score;
+          const draggedElem = document.querySelector(`[data-id="${draggedId}"]`);
+          draggedElem.remove();
+        }
+      };
+
+      right.appendChild(div);
+    });
+  }
+
+  function resetGame() {
+    score = 0;
+    document.getElementById("score").textContent = 0;
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
