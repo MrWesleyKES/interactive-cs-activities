@@ -91,7 +91,7 @@
 
 <script>
 // Fetch dynamic directory structure from Cloudflare Function
-fetch("/list")
+fetch(`/list?cacheBust=${Date.now()}`)
     .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
