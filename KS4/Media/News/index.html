@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Balanced Drag & Drop – 10 Terms</title>
+<style>
+ body{font-family:Arial;margin:20px;}
+ .flex{display:flex;gap:60px;justify-content:center;}
+ .col{width:45%;}
+ .item,.drop{border:2px solid #333;padding:10px;margin:10px 0;border-radius:6px;cursor:grab;}
+ .drop{height:45px;}
+ .correct{background:#c8f7c5;}
+ .wrong{background:#f7c5c5;}
+ h2{text-align:center;}
+ button{margin:10px;padding:10px 20px;font-size:16px;}
+</style>
+</head>
+<body>
+<h1>Drag & Drop – 10 Key News Terms</h1>
+<p>Drag each of the <b>10 terms</b> to the correct <b>10 definitions</b>. Then press <b>Check Answers</b>.</p>
+
+<div class="flex">
+ <div class="col" id="termsCol">
+   <h2>KEY TERMS</h2>
+   <div class="item" draggable="true" id="freepress">Free Press</div>
+   <div class="item" draggable="true" id="convergence">Convergence</div>
+   <div class="item" draggable="true" id="broadsheet">Broadsheet</div>
+   <div class="item" draggable="true" id="tabloid">Tabloid</div>
+   <div class="item" draggable="true" id="hardnews">Hard News</div>
+   <div class="item" draggable="true" id="ideology">Ideology</div>
+   <div class="item" draggable="true" id="impartial">Impartial</div>
+   <div class="item" draggable="true" id="paywall">Paywall</div>
+   <div class="item" draggable="true" id="regulation">Regulation</div>
+   <div class="item" draggable="true" id="leftwing">Left‑wing</div>
+ </div>
+
+ <div class="col">
+   <h2>DEFINITIONS</h2>
+   <p>1. Newspapers operate independently without government control.</p>
+   <div class="drop" data-answer="freepress"></div>
+
+   <p>2. Different media platforms merging into one.</p>
+   <div class="drop" data-answer="convergence"></div>
+
+   <p>3. A serious, high‑quality newspaper.</p>
+   <div class="drop" data-answer="broadsheet"></div>
+
+   <p>4. A sensational, entertainment‑based newspaper.</p>
+   <div class="drop" data-answer="tabloid"></div>
+
+   <p>5. Serious, important news topics.</p>
+   <div class="drop" data-answer="hardnews"></div>
+
+   <p>6. A set of beliefs and values shaping views.</p>
+   <div class="drop" data-answer="ideology"></div>
+
+   <p>7. Fair and balanced reporting.</p>
+   <div class="drop" data-answer="impartial"></div>
+
+   <p>8. A payment barrier blocking online content.</p>
+   <div class="drop" data-answer="paywall"></div>
+
+   <p>9. Rules governing how news organisations behave.</p>
+   <div class="drop" data-answer="regulation"></div>
+
+   <p>10. Political stance supporting equality and welfare.</p>
+   <div class="drop" data-answer="leftwing"></div>
+ </div>
+</div>
+
+<button onclick="checkAnswers()">Check Answers</button>
+<button onclick="resetQuiz()">Reset</button>
+<h2 id="score"></h2>
+
+<script>
+let termsContainer=document.getElementById('termsCol');
+const items=document.querySelectorAll('.item');
+const drops=document.querySelectorAll('.drop');
+
+function shuffle(){
+ let arr=[...items];
+ for(let i=arr.length-1;i>0;i--){
+   let j=Math.floor(Math.random()*(i+1));
+   [arr[i],arr[j]]=[arr[j],arr[i]];
+ }
+ arr.forEach(el=>termsContainer.appendChild(el));
+}
+
+items.forEach(i=>{
+ i.addEventListener('dragstart',e=>{
+  e.dataTransfer.setData('text',e.target.id);
+ });
+});
+
+drops.forEach(d=>{
+ d.addEventListener('dragover',e=>e.preventDefault());
+ d.addEventListener('drop',e=>{
+  const id=e.dataTransfer.getData('text');
+  const el=document.getElementById(id);
+  d.innerHTML='';
+  d.appendChild(el);
+ });
+});
+
+function checkAnswers(){
+ let score=0;
+ drops.forEach(d=>{
+  const expected=d.dataset.answer;
+  const child=d.children[0];
+  if(child && child.id===expected){
+    d.className='drop correct';
+    score++;
+  } else{
+    d.className='drop wrong';
+  }
+ });
+ document.getElementById('score').textContent='Score: '+score+'/10';
+}
+
+function resetQuiz(){
+ document.getElementById('score').textContent='';
+ drops.forEach(d=>{
+   d.className='drop';
+   d.innerHTML='';
+ });
+ items.forEach(i=>termsContainer.appendChild(i));
+ shuffle();
+}
+
+shuffle();
+</script>
+</body>
+</html>
