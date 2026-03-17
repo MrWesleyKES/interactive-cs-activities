@@ -1,0 +1,24 @@
+{
+  "KS3": {
+    "Year 8": {
+      "Computer Basics": {
+        "Name That Hardware": {
+          "url": "https://interactive-cs-activities.pages.dev/KS3/Year8/ComputerBasics/NameThatHardware/index.html"
+        },
+        "Programming Concepts": {
+          "url": "https://interactive-cs-activities.pages.dev/KS3/Year8/ComputerBasics/ProgrammingConcepts/index.html"
+        }
+      }
+    }
+  },
+
+  "KS4": {
+    "Year 10": {},
+    "Year 11": {}
+  },
+
+  "KS5": {
+    "Year 12": {},
+    "Year 13": {}
+  }
+}
