@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Vocabulary Sort</title>
+    style.css
+</head>
+<body>
+
+<header>
+    <h1>Encryption Vocabulary Sort</h1>
+    <p>Drag each word into the correct category.</p>
+</header>
+
+<main>
+    <section class="items">
+        <h2>Words</h2>
+        <div id="itemsContainer">
+            <div class="draggable" draggable="true" data-group="encryption">Ciphertext</div>
+            <div class="draggable" draggable="true" data-group="encryption">Plaintext</div>
+            <div class="draggable" draggable="true" data-group="keys">Key</div>
+            <div class="draggable" draggable="true" data-group="keys">Shift</div>
+            <div class="draggable" draggable="true" data-group="process">Encrypt</div>
+            <div class="draggable" draggable="true" data-group="process">Decrypt</div>
+        </div>
+    </section>
+
+    <section class="zones">
+        <div class="zone" data-accept="encryption">
+            <h3>Encryption Terms</h3>
+            <div class="dropArea"></div>
+        </div>
+
+        <div class="zone" data-accept="keys">
+            <h3>Key‑Related</h3>
+            <div class="dropArea"></div>
+        </div>
+
+        <div class="zone" data-accept="process">
+            <h3>Processes</h3>
+            <div class="dropArea"></div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <button id="checkBtn">Check Answers</button>
+    <p id="result"></p>
+</footer>
+
+script.js</script>
+</body>
+</html>
