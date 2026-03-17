@@ -58,6 +58,28 @@ textarea {
     background: #ffdddd;
 }
 
+.arrow {
+    font-size: 32px;
+    margin: 0 15px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Animation class toggled in JS */
+.arrow.active {
+    opacity: 1;
+    transform: scale(1.4);
+}
+
+/* Optional – different colours for each arrow */
+#arrow1 {
+    color: #2196F3;  /* blue */
+}
+
+#arrow2 {
+    color: #4CAF50;  /* green */
+}
+
 #receiverBox {
     background: #ddffdd;
 }
