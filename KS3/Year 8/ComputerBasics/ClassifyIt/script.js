@@ -1,35 +1,57 @@
-// Rounds with images (free icons – locally saved)
+// Wikimedia Commons image URLs (freely licensed)
+const WC = {
+    keyboard: "https://upload.wikimedia.org/wikipedia/commons/4/4d/Keyboard-icon.png",
+    microphone: "https://upload.wikimedia.org/wikipedia/commons/7/73/Microphone_icon.svg",
+    monitor: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Computer_font_awesome.svg",
+    speakers: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Speaker_Icon.svg",
+    usb: "https://upload.wikimedia.org/wikipedia/commons/5/57/USB_icon.svg",
+    harddrive: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Hard_drive_icon.png",
+    cpu: "https://upload.wikimedia.org/wikipedia/commons/4/45/Microprocessor_%28computer%29.svg",
+    ram: "https://upload.wikimedia.org/wikipedia/commons/0/0c/RAM_icon.svg",
+    motherboard: "https://upload.wikimedia.org/wikipedia/commons/0/09/Motherboard_%28computer%29_icon.svg",
+
+    touchscreen: "https://upload.wikimedia.org/wikipedia/commons/9/98/Smartphone_icon.svg",
+    webcam: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Webcam_icon.svg",
+    vr: "https://upload.wikimedia.org/wikipedia/commons/7/7c/VR_icon.svg",
+    printer: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Printer_icon.svg",
+    sdcard: "https://upload.wikimedia.org/wikipedia/commons/0/02/SD_card_icon.svg",
+    ssd: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Solid_state_drive_icon.svg",
+    gpufan: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Computer_fan_icon.svg",
+    psu: "https://upload.wikimedia.org/wikipedia/commons/5/56/Power_supply_icon.svg",
+    case: "https://upload.wikimedia.org/wikipedia/commons/3/34/Computer_tower_icon.svg"
+};
+
+// Rounds using Wikimedia Commons icons
 const rounds = [
     // -------- ROUND 1 (Normal Retrieval) --------
     [
-        { img: "img/keyboard.png", type: "input" },
-        { img: "img/microphone.png", type: "input" },
-        { img: "img/monitor.png", type: "output" },
-        { img: "img/speakers.png", type: "output" },
-        { img: "img/usb.png", type: "storage" },
-        { img: "img/harddrive.png", type: "storage" },
-        { img: "img/cpu.png", type: "inside" },
-        { img: "img/ram.png", type: "inside" },
-        { img: "img/motherboard.png", type: "inside" }
+        { img: WC.keyboard, type: "input" },
+        { img: WC.microphone, type: "input" },
+        { img: WC.monitor, type: "output" },
+        { img: WC.speakers, type: "output" },
+        { img: WC.usb, type: "storage" },
+        { img: WC.harddrive, type: "storage" },
+        { img: WC.cpu, type: "inside" },
+        { img: WC.ram, type: "inside" },
+        { img: WC.motherboard, type: "inside" }
     ],
 
     // -------- ROUND 2 (Trick Questions) --------
     [
-        { img: "img/touchscreen.png", type: "input" },  // both input and output IRL, trick choice!
-        { img: "img/webcam.png", type: "input" },
-        { img: "img/vr.png", type: "output" },          // tricky for students
-        { img: "img/printer.png", type: "output" },
-        { img: "img/sdcard.png", type: "storage" },
-        { img: "img/ssd.png", type: "storage" },
-        { img: "img/gpufan.png", type: "inside" },
-        { img: "img/powersupply.png", type: "inside" },
-        { img: "img/case.png", type: "inside" }
+        { img: WC.touchscreen, type: "input" }, 
+        { img: WC.webcam, type: "input" },
+        { img: WC.vr, type: "output" },
+        { img: WC.printer, type: "output" },
+        { img: WC.sdcard, type: "storage" },
+        { img: WC.ssd, type: "storage" },
+        { img: WC.gpufan, type: "inside" },
+        { img: WC.psu, type: "inside" },
+        { img: WC.case, type: "inside" }
     ]
 ];
 
 let currentRound = 0;
 
-// Load round
 function loadRound() {
     document.getElementById("roundNumber").textContent = currentRound + 1;
 
