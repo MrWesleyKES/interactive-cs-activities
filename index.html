@@ -87,15 +87,15 @@
 
 <header>
     <h1>Interactive Computer Science Activities</h1>
-    <p>KS3 · KS4 · KS5 — Dynamic, Interactive HTML Learning Resources</p>
+    <p>KS3 · KS4 · KS5 — Dynamic HTML Resources</p>
 </header>
 
 <div id="tree">Loading activities…</div>
 
 <script>
-// Fetch dynamic directory listing from Cloudflare Pages Function
+// Fetch dynamic directory structure from Cloudflare Function
 fetch("/list")
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => renderTree(data))
     .catch(err => {
         document.getElementById("tree").innerHTML =
@@ -103,44 +103,45 @@ fetch("/list")
         console.error(err);
     });
 
-// Build collapsible tree from JSON structure
+// Render nested folder structure
 function renderTree(data) {
-    const root = document.getElementById("tree");
-    root.innerHTML = "";
-    buildLevel("", data, root);
+    const tree = document.getElementById("tree");
+    tree.innerHTML = "";
+    buildLevel("", data, tree);
 }
 
+// Recursive DOM builder
 function buildLevel(base, obj, parent) {
     for (const key in obj) {
-        const item = obj[key];
+        const entry = obj[key];
 
-        // If item contains an index.html → it's an activity
-        if (item.index) {
+        // Activity (folder containing index.html)
+        if (entry.index) {
             const link = document.createElement("a");
             link.className = "file-link";
-            link.href = `/${item.index}`;
+            link.href = `/${entry.index}`;
             link.textContent = key;
             parent.appendChild(link);
+            continue;
         }
 
-        // Otherwise it's a folder
-        if (typeof item === "object" && !item.index) {
-            const folder = document.createElement("div");
-            folder.className = "folder";
-            folder.textContent = key;
+        // Folder
+        const folder = document.createElement("div");
+        folder.className = "folder";
+        folder.textContent = key;
 
-            const children = document.createElement("div");
-            children.className = "children";
+        const children = document.createElement("div");
+        children.className = "children";
 
-            folder.addEventListener("click", () => {
-                children.classList.toggle("open");
-            });
+        folder.addEventListener("click", () => {
+            children.classList.toggle("open");
+        });
 
-            parent.appendChild(folder);
-            parent.appendChild(children);
+        parent.appendChild(folder);
+        parent.appendChild(children);
 
-            buildLevel(`${base}${key}/`, item, children);
-        }
+        // Recurse
+        buildLevel(`${base}${key}/`, entry, children);
     }
 }
 </script>
