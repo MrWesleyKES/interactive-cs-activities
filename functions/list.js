@@ -1,4 +1,5 @@
-export async function onRequest() {
+
+export async function onRequest({ env }) {
   const REPO = "interactive-computing-activities";
   const USER = "MrWesleyKES";
 
@@ -8,18 +9,23 @@ export async function onRequest() {
   const response = await fetch(apiURL, {
     headers: {
       "User-Agent": "CloudflareWorker",
-      "Accept": "application/vnd.github+json"
+      "Accept": "application/vnd.github+json",
+      "Authorization": `Bearer ${env.GITHUB_TOKEN}`
     }
   });
 
   if (!response.ok) {
     return new Response(
-      JSON.stringify({ error: "GitHub API error", status: response.status }),
+      JSON.stringify({
+        error: "GitHub API error",
+        githubStatus: response.status
+      }),
       { status: 500 }
     );
   }
 
   const data = await response.json();
+
   const tree = data.tree.map(o => o.path);
 
   // Build nested structure
