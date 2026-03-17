@@ -3,31 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I/O & Inside Computer Starter</title>
+    <title>I/O Hardware Sort – Picture Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <h1>I/O & Inside the Computer – Quick Sort!</h1>
-    <p>Drag each item into its correct category. 5‑minute warm‑up.</p>
+    <h1>I/O & Inside the Computer – Picture Sort!</h1>
+    <p>Round <span id="roundNumber">1</span> of 2. Drag each item into the correct category.</p>
 </header>
 
 <main>
 
     <section id="items">
         <h2>Devices</h2>
-        <div id="draggables">
-            <div class="card" draggable="true" data-type="input">Keyboard</div>
-            <div class="card" draggable="true" data-type="input">Microphone</div>
-            <div class="card" draggable="true" data-type="output">Monitor</div>
-            <div class="card" draggable="true" data-type="output">Speakers</div>
-            <div class="card" draggable="true" data-type="storage">USB Stick</div>
-            <div class="card" draggable="true" data-type="storage">Hard Drive</div>
-            <div class="card" draggable="true" data-type="inside">CPU</div>
-            <div class="card" draggable="true" data-type="inside">RAM</div>
-            <div class="card" draggable="true" data-type="inside">Motherboard</div>
-        </div>
+        <div id="draggables"></div>
     </section>
 
     <section id="zones">
@@ -56,6 +46,7 @@
 
 <footer>
     <button id="checkBtn">Check Answers</button>
+    <button id="nextRoundBtn">Next Round</button>
     <p id="result"></p>
 </footer>
 
