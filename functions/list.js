@@ -1,6 +1,3 @@
-// Cloudflare Pages Function: /functions/list.js
-// Dynamically fetches your GitHub repo tree and builds navigation JSON.
-
 export async function onRequest() {
   const REPO = "interactive-computing-activities";
   const USER = "MrWesleyKES";
@@ -23,14 +20,19 @@ export async function onRequest() {
   }
 
   const data = await response.json();
-
   const tree = data.tree.map(o => o.path);
 
   // Build nested structure
   const structured = {};
 
   for (const path of tree) {
+
+    // FIX: Ignore root index.html
+    if (path === "index.html") continue;
+
+    // Only accept index.html inside subfolders
     if (!path.endsWith("index.html")) continue;
+    if (!path.includes("/")) continue; // must be nested
 
     const parts = path.split("/");
     parts.pop(); // remove index.html
