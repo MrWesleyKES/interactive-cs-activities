@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+textarea {
+    width: 100%;
+    height: 70px;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+input[type="number"] {
+    width: 80px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.output {
+    background: #eee;
+    padding: 10px;
+    min-height: 40px;
+    border-radius: 6px;
+}
+
+.brute-line {
+    padding: 6px;
+    background: #fafafa;
+    margin-bottom: 4px;
+    border-left: 4px solid #ccc;
+}
