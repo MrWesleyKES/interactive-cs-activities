@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caesar Cipher Explorer</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+    <h1>Caesar Cipher Explorer</h1>
+    <p>Experiment with encryption and decryption using letter shifts.</p>
+</header>
+
+<main>
+
+    <section class="card">
+        <h2>Encrypt a Message</h2>
+
+        <label>Your message:</label>
+        <textarea id="encryptInput"></textarea>
+
+        <label>Shift amount:</label>
+        <input type="number" id="encryptShift" value="3" min="0" max="25" />
+
+        <button id="encryptBtn">Encrypt</button>
+
+        <h3>Encrypted Output:</h3>
+        <p class="output" id="encryptOutput"></p>
+    </section>
+
+    <section class="card">
+        <h2>Decrypt a Message</h2>
+
+        <label>Encrypted text:</label>
+        <textarea id="decryptInput"></textarea>
+
+        <label>Shift amount:</label>
+        <input type="number" id="decryptShift" value="3" min="0" max="25" />
+
+        <button id="decryptBtn">Decrypt</button>
+
+        <h3>Decrypted Output:</h3>
+        <p class="output" id="decryptOutput"></p>
+    </section>
+
+    <section class="card">
+        <h2>Brute Force Decoder</h2>
+        <p>Try all 26 shifts to break a cipher.</p>
+
+        <label>Encrypted text:</label>
+        <textarea id="bruteInput"></textarea>
+
+        <button id="bruteBtn">Run Brute Force</button>
+
+        <div id="bruteResults"></div>
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
