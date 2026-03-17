@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Python Activity – Write add(a, b)</title>
+
+<!-- Pyodide (runs Python in the browser) -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#f5f5f8;
+        margin:0;
+        padding:20px;
+    }
+    h1, h2 { text-align:center; }
+
+    #editor {
+        width:100%;
+        height:180px;
+        font-family: Consolas, monospace;
+        font-size:16px;
+        padding:10px;
+        box-sizing:border-box;
+    }
+    #runBtn {
+        margin-top:10px;
+        width:100%;
+        padding:12px;
+        background:#333;
+        color:white;
+        border:none;
+        font-size:18px;
+        border-radius:5px;
+        cursor:pointer;
+    }
+    #runBtn:hover { background:#555; }
+
+    #output {
+        margin-top:20px;
+        background:white;
+        padding:10px;
+        border-radius:6px;
+        border-left:5px solid #4a90e2;
+        white-space:pre-wrap;
+        min-height:40px;
+    }
+    .correct {
+        border-left-color:#4CAF50 !important;
+    }
+    .incorrect {
+        border-left-color:#D9534F !important;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Python Coding Activity</h1>
+<h2>Write a function <code>add(a, b)</code> that returns the sum.</h2>
+
+<p>✏️ Edit the code below and click **Run Code**.</p>
+
+<textarea id="editor">
+def add(a, b):
+    # Write your solution here
+    return a + b
+</textarea>
+
+<button id="runBtn">Run Code</button>
+
+<div id="output">Output will appear here...</div>
+
+<script>
+let pyodideReady = false;
+let pyodide;
+
+// Load Pyodide
+async function loadPyodideAndPackages() {
+    pyodide = await loadPyodide();
+    pyodideReady = true;
+    document.getElementById("output").textContent =
+        "Pyodide loaded! You can now run Python code.";
+}
+loadPyodideAndPackages();
+
+document.getElementById("runBtn").addEventListener("click", async () => {
+    if (!pyodideReady) return;
+
+    const code = document.getElementById("editor").value;
+    const outputDiv = document.getElementById("output");
+    outputDiv.textContent = "Running...";
+
+    try {
+        // Load student code into Pyodide's Python environment
+        await pyodide.runPythonAsync(code);
+
+        // Now test the function
+        const tests = [
+            {a: 1, b: 2, expected: 3},
+            {a: -5, b: 10, expected: 5},
+            {a: 0, b: 0, expected: 0},
+            {a: 50, b: 70, expected: 120}
+        ];
+
+        let allCorrect = true;
+        let results = "Test Results:\n";
+
+        for (const t of tests) {
+            const result = pyodide.runPython(`add(${t.a}, ${t.b})`);
+            const ok = (result === t.expected);
+            results += `add(${t.a}, ${t.b}) → ${result}   ` +
+                       (ok ? "✓ Correct\n" : `✗ Incorrect (expected ${t.expected})\n`);
+            if (!ok) allCorrect = false;
+        }
+
+        outputDiv.textContent = results;
+        outputDiv.className = allCorrect ? "correct" : "incorrect";
+
+    } catch (err) {
+        outputDiv.textContent = "Error:\n" + err;
+        outputDiv.className = "incorrect";
+    }
+});
+</script>
+</body>
+</html>
