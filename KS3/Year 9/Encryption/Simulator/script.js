@@ -16,6 +16,31 @@ function encrypt(text, key) {
         .join("-"));
 }
 
+function animateFlow() {
+    const a1 = document.getElementById("arrow1");
+    const a2 = document.getElementById("arrow2");
+
+    // Reset first
+    a1.classList.remove("active");
+    a2.classList.remove("active");
+
+    // Step 1: highlight arrow 1 (sender → hacker)
+    setTimeout(() => {
+        a1.classList.add("active");
+    }, 300);
+
+    // Step 2: highlight arrow 2 (hacker → receiver)
+    setTimeout(() => {
+        a1.classList.remove("active");
+        a2.classList.add("active");
+    }, 900);
+
+    // Step 3: turn both off
+    setTimeout(() => {
+        a2.classList.remove("active");
+    }, 1600);
+}
+
 function decrypt(cipher, key) {
     try {
         return atob(cipher)
