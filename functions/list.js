@@ -1,41 +1,53 @@
-// /functions/list.js
+// Cloudflare Pages Function: /functions/list.js
+// Dynamically fetches your GitHub repo tree and builds navigation JSON.
 
-export async function onRequest(context) {
-  const root = await context.env.ASSETS.fetch("https://whatever/");
-  const result = await scan("/", context.env.ASSETS);
-  return new Response(JSON.stringify(result), {
+export async function onRequest() {
+  const REPO = "interactive-computing-activities";
+  const USER = "MrWesleyKES";
+
+  const apiURL =
+    `https://api.github.com/repos/${USER}/${REPO}/git/trees/main?recursive=1`;
+
+  const response = await fetch(apiURL, {
+    headers: {
+      "User-Agent": "CloudflareWorker",
+      "Accept": "application/vnd.github+json"
+    }
+  });
+
+  if (!response.ok) {
+    return new Response(
+      JSON.stringify({ error: "GitHub API error", status: response.status }),
+      { status: 500 }
+    );
+  }
+
+  const data = await response.json();
+
+  const tree = data.tree.map(o => o.path);
+
+  // Build nested structure
+  const structured = {};
+
+  for (const path of tree) {
+    if (!path.endsWith("index.html")) continue;
+
+    const parts = path.split("/");
+    parts.pop(); // remove index.html
+
+    let level = structured;
+
+    for (const part of parts) {
+      if (!level[part]) {
+        level[part] = {};
+      }
+      level = level[part];
+    }
+
+    level.index = path;
+  }
+
+  return new Response(JSON.stringify(structured), {
     headers: { "Content-Type": "application/json" }
   });
-}
-
-async function scan(path, assets) {
-  const listing = await assets.list({ prefix: path.replace(/^\//, "") });
-  const tree = {};
-
-  for (const file of listing.objects) {
-    const rel = file.key.replace(path, "").split("/");
-
-    // Skip top-level empty entries
-    if (!rel[0]) continue;
-
-    // File in current folder
-    if (rel.length === 1 && rel[0].endsWith("index.html")) {
-      tree["index"] = file.key;
-    }
-
-    // Folder
-    if (rel.length > 1) {
-      const folder = rel[0];
-      if (!tree[folder]) tree[folder] = {};
-    }
-  }
-
-  // Recurse into folders
-  for (const key of Object.keys(tree)) {
-    if (key !== "index") {
-      tree[key] = await scan(`${path}${key}/`, assets);
-    }
-  }
-
-  return tree;
 }
