@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Mini Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Modern Encryption Mini‑Simulator</h1>
+    <p>See how encryption protects messages on a network.</p>
+</header>
+
+<main>
+
+    <section class="card">
+        <h2>1. Write a Message</h2>
+        <textarea id="messageInput" placeholder="Type your secret message here..."></textarea>
+
+        <button id="encryptBtn">Encrypt & Send</button>
+    </section>
+
+    <section class="card">
+        <h2>2. Network View</h2>
+        <div id="network">
+            <div class="node" id="sender">
+                <h3>Sender</h3>
+                <div class="box" id="senderBox"></div>
+            </div>
+
+            <div class="node" id="hacker">
+                <h3>Hacker</h3>
+                <div class="box" id="hackerBox"></div>
+            </div>
+
+            <div class="node" id="receiver">
+                <h3>Receiver</h3>
+                <div class="box" id="receiverBox"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>3. Keys Used</h2>
+        <p><strong>Public Key (shared):</strong> <span id="publicKey"></span></p>
+        <p><strong>Private Key (receiver only):</strong> <span id="privateKey"></span></p>
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
