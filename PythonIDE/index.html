@@ -7,12 +7,9 @@
 
 <link rel="stylesheet" href="css/style.css">
 
-<!-- CodeMirror -->
-<link rel="stylesheet"
- href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css">
-<link rel="stylesheet"
- href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/monokai.css">
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+<!-- CodeMirror 5 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css">
+<link rel="/cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/python/python.js"></script>
 
 <!-- Pyodide -->
@@ -33,10 +30,22 @@
 <div id="main">
     <div id="tabs"></div>
     <div id="editor-container"></div>
+
     <div id="toolbar">
         <button id="run-btn">▶ Run</button>
         <button id="save-btn">💾 Save All</button>
         <button id="clear-btn">🧹 Clear Output</button>
     </div>
-    <pre id="dy>
+
+    <pre id="output"></pre>
+</div>
+
+<!-- IMPORTANT: Load JS in correct dependency order -->
+<script src="js/filesystem.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/tutorials.js"></script>
+script src="js/pyodide-loader.js"></script>
+script src="js/app.js"></script>
+
+</body>
 </html>
