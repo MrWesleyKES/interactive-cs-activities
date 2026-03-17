@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Web Python IDE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="css/style.css">
+
+<!-- CodeMirror -->
+<link rel="stylesheet"
+ href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css">
+<link rel="stylesheet"
+ href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/monokai.css">
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/python/python.js"></script>
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+</head>
+<body>
+
+<div id="sidebar">
+  <h2>Files</h2>
+  <div id="file-list"></div>
+  <button id="new-file">+ New File</button>
+
+  <h2>Tutorials</h2>
+  <div id="tutorials-list"></div>
+</div>
+
+<div id="main">
+    <div id="tabs"></div>
+    <div id="editor-container"></div>
+    <div id="toolbar">
+        <button id="run-btn">▶ Run</button>
+        <button id="save-btn">💾 Save All</button>
+        <button id="clear-btn">🧹 Clear Output</button>
+    </div>
+    <pre id="dy>
+</html>
