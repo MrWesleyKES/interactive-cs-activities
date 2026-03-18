@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Room 1</title>
+    <meta charset="UTF-8">
+    <title>Room 1 – The Locked Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="css/style.css">
 
-    https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
     <script src="js/pyodide-init.js"></script>
     <script src="js/room.js"></script>
 </head>
@@ -14,12 +17,14 @@
 
 <h1>Room 1: The Locked Terminal</h1>
 
+<p>Fix <code>count_evens()</code> so it returns the number of even numbers in the list.</p>
+
 <textarea id="code">
 def count_evens(nums):
     total = 0
     for n in nums:
         if n % 2 == 1:
-            total += 1
+            total = total + 1
     return total
 
 print(count_evens([1,2,3,4,5]))
@@ -30,12 +35,13 @@ print(count_evens([]))
 <button id="run-btn" class="run-btn">Run Code</button>
 
 <div id="output"></div>
-<div id="success">You unlocked the door!</div>
+<div id="success">Door unlocked! Proceed to the next room.</div>
 
-room2.html"><button id="next-btn" class="next-btn">Next Room</button></a>
+<a href="room2.html"><button id="next-btn" class="next-btn">Next Room</button></a>
 
 </div>
 
 <script src="js/config/room1.js"></script>
+
 </body>
 </html>
