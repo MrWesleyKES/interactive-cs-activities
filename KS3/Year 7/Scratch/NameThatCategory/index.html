@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Name That Hardware – Drag & Drop</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0f172a;          /* slate-900 */
+    --card:#111827;        /* gray-900 */
+    --panel:#1f2937;       /* gray-800 */
+    --accent:#38bdf8;      /* sky-400 */
+    --accent-2:#22c55e;    /* green-500 */
+    --accent-3:#ef4444;    /* red-500 */
+    --text:#e5e7eb;        /* gray-200 */
+    --muted:#9ca3af;       /* gray-400 */
+  }
+  html,body{height:100%}
+  body{
+    margin:0; font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background:linear-gradient(135deg,#0b1223,#0f172a 35%,#0b1223);
+    color:var(--text);
+  }
+  header{
+    padding:1rem 1.25rem 0.25rem;
+  }
+  h1{margin:0 0 .25rem; font-size:clamp(1.2rem, 1.2rem + 1vw, 1.8rem)}
+  .subtitle{color:var(--muted); margin:0 0 .75rem; font-size:.95rem}
+  .wrapper{
+    display:grid; gap:1rem; grid-template-columns: 1fr; padding: 0 1rem 1rem;
+  }
+  @media (min-width: 950px){
+    .wrapper{grid-template-columns: minmax(320px, 1fr) 2fr;}
+  }
+  .panel{
+    background:rgba(17,24,39,.8);
+    border:1px solid rgba(148,163,184,.15);
+    border-radius:.75rem;
+    padding: .75rem;
+    backdrop-filter: blur(6px);
+  }
+  .panel h2{font-size:1rem; margin:.25rem .25rem .5rem; color:#cbd5e1}
+  .controls{
+    display:flex; gap:.5rem; flex-wrap:wrap; margin:.5rem .25rem 0;
+  }
+  button{
+    background:var(--panel); color:var(--text); border:1px solid rgba(148,163,184,.25);
+    padding:.5rem .75rem; border-radius:.5rem; cursor:pointer; font-weight:600;
+  }
+  button:hover{border-color:var(--accent); box-shadow: 0 0 0 2px rgba(56,189,248,.2) inset}
+  .score{margin-left:auto; font-weight:700}
+  .grid{
+    display:grid; gap:.75rem;
+  }
+  @media (min-width: 750px){
+    .grid.dropzones{grid-template-columns: repeat(2, minmax(260px, 1fr));}
+  }
+  @media (min-width: 1100px){
+    .grid.dropzones{grid-template-columns: repeat(3, minmax(260px, 1fr));}
+  }
+  .dropzone{
+    min-height: 88px; background: var(--panel);
+    border:2px dashed rgba(148,163,184,.35); border-radius:.75rem; padding:.5rem;
+    display:flex; gap:.5rem; align-items:center; justify-content:space-between;
+  }
+  .dz-label{font-weight:700; color:#e2e8f0}
+  .slot{
+    flex: 1 1 auto; min-height: 56px; margin-left:.5rem;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:.5rem; background:#0b1223; border:1px dashed rgba(148,163,184,.2);
+  }
+  .card{
+    user-select:none; -webkit-user-drag: element;
+    display:flex; align-items:center; gap:.75rem;
+    background:linear-gradient(180deg, #0f172a, #0b1223);
+    border:1px solid rgba(148,163,184,.25); border-radius:.5rem;
+    padding:.5rem .6rem; min-height:56px; min-width: 220px; max-width: 420px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    cursor:grab;
+  }
+  .card:active{cursor:grabbing}
+  .thumb{
+    width:48px; height:48px; border-radius:.4rem; display:grid; place-items:center;
+    background:#020617; border:1px solid rgba(148,163,184,.2); color:#bae6fd; font-size:1.4rem;
+    overflow:hidden;
+  }
+  .thumb img{width:100%; height:100%; object-fit: cover; display:block}
+  .desc{font-size:.95rem; line-height:1.25rem; color:#cbd5e1}
+  .hint{font-size:.8rem; color:var(--muted)}
+  .draglist{display:flex; flex-direction:column; gap:.75rem}
+  .draglist .card{width:100%}
+  .dragover{outline:2px dashed var(--accent); outline-offset:2px}
+  .correct{border-color: rgba(34,197,94,.7) !important; box-shadow: 0 0 0 2px rgba(34,197,94,.2) inset}
+  .incorrect{border-color: rgba(239,68,68,.7) !important; box-shadow: 0 0 0 2px rgba(239,68,68,.2) inset}
+  .legend{display:flex; gap:1rem; color:var(--muted); font-size:.85rem; margin:.5rem .25rem 0}
+  .foot{margin-top:.5rem; font-size:.8rem; color:var(--muted)}
+</style>
+</head>
+<body>
+  <header>
+    <h1>🧩 Name That Hardware – Drag parts to their names</h1>
+    <p class="subtitle">Drag each part card into the matching box. Click <strong>Check answers</strong> to mark your work.</p>
+  </header>
+  <p style="padding:.25rem 1.25rem .5rem; font-size:.85rem;"><a href="/scratch.html" style="color:#38bdf8; text-decoration:none;">🐱 Try the Scratch Block Categories game →</a></p>
+
+  <div class="wrapper" role="main">
+    <!-- LEFT: DRAGGABLE CARDS -->
+    <section class="panel" aria-labelledby="parts-title">
+      <h2 id="parts-title">Parts (drag me)</h2>
+      <div id="dragContainer" class="draglist" role="list" aria-describedby="drag-hint"></div>
+      <p id="drag-hint" class="hint">Tip: If you’re on a touch screen, press and hold for a moment, then drag.</p>
+      <div class="legend"><span>✅ correct</span><span>❌ incorrect</span></div>
+    </section>
+
+    <!-- RIGHT: DROPZONES -->
+    <section class="panel" aria-labelledby="zones-title">
+      <h2 id="zones-title">Match to the correct hardware name</h2>
+      <div id="zones" class="grid dropzones"></div>
+      <div class="controls">
+        <button id="checkBtn" type="button">Check answers</button>
+        <button id="resetBtn" type="button">Reset &amp; shuffle</button>
+        <div class="score" id="score">Score: 0/0</div>
+      </div>
+      <p class="foot">Teacher: You can swap the text cards for images—see the comment in the code (search for <code>imageUrl</code>).</p>
+    </section>
+  </div>
+
+<script>
+/**
+ * DATA: You can optionally add an image URL for each part. If provided, the card will show the picture.
+ * Example image sources: Wikimedia Commons, manufacturer product pages, or your own images.
+ * Keep images school‑safe and under ~500px square for performance.
+ */
+const PARTS = [
+  {
+    id: 'cpu',
+    name: 'CPU (Central Processing Unit)',
+    description: 'The “brain” of the computer – executes instructions and performs calculations.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Intel_80486DX2_top.jpg/250px-Intel_80486DX2_top.jpg'
+  },
+  {
+    id: 'motherboard',
+    name: 'Motherboard',
+    description: 'The main circuit board that connects the CPU, RAM, storage, and expansion cards.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/PC_motherboard.JPG/250px-PC_motherboard.JPG'
+  },
+  {
+    id: 'ram',
+    name: 'RAM',
+    description: 'Short‑term memory that stores data/programs in use. Fast but volatile.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Swissbit_2GB_PC2-5300U-555.jpg/250px-Swissbit_2GB_PC2-5300U-555.jpg'
+  },
+  {
+    id: 'storage',
+    name: 'Hard Drive',
+    description: 'Long‑term storage for files and the operating system (HDD or SSD).',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Laptop-hard-drive-exposed.jpg/250px-Laptop-hard-drive-exposed.jpg'
+  },
+  {
+    id: 'psu',
+    name: 'Power Supply',
+    description: 'Converts mains AC to low‑voltage DC and powers all components.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Flex_ATX_Computer_Power_Supply_IMG_1655.JPG/250px-Flex_ATX_Computer_Power_Supply_IMG_1655.JPG'
+  },
+  {
+    id: 'gpu',
+    name: 'Graphics Card',
+    description: 'Renders images and video; contains a GPU and (often) its own memory.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Diamond_Stealth_64_Graphics_2001.jpg/250px-Diamond_Stealth_64_Graphics_2001.jpg'
+  },
+  {
+    id: 'wlan',
+    name: 'Wireless Network Card',
+    description: 'Connects the computer to Wi‑Fi networks (802.11).',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Wifi_netcard.jpg/250px-Wifi_netcard.jpg'
+  },
+  {
+    id: 'monitor',
+    name: 'Monitor/VDU',
+    description: 'The screen that displays the computer’s output.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Computer_monitor_remix_transparent.png/250px-Computer_monitor_remix_transparent.png'
+  },
+  {
+    id: 'heatsink',
+    name: 'Heat Sink',
+    description: 'Draws heat away from the CPU/GPU, often paired with a fan.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/CPU_fan_and_heatsink.jpg/250px-CPU_fan_and_heatsink.jpg'
+  },
+  {
+    id: 'case',
+    name: 'Case (Shell)',
+    description: 'Protective enclosure that holds components and manages airflow.',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Computer_case.JPG/250px-Computer_case.JPG'
+  }
+];
+
+// ------- Helper functions -------
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr }
+function el(tag, props={}, children=[]){
+  const node = document.createElement(tag);
+  const {dataset, ...rest} = props;
+  Object.assign(node, rest);
+  if(dataset) Object.assign(node.dataset, dataset);
+  (Array.isArray(children)?children:[children]).filter(Boolean).forEach(c=>node.appendChild(c));
+  return node;
+}
+
+// ------- Build UI -------
+const zonesEl = document.getElementById('zones');
+const dragContainer = document.getElementById('dragContainer');
+const checkBtn = document.getElementById('checkBtn');
+const resetBtn = document.getElementById('resetBtn');
+const scoreEl = document.getElementById('score');
+
+function build(){
+  zonesEl.innerHTML = '';
+  dragContainer.innerHTML = '';
+  scoreEl.textContent = `Score: 0/${PARTS.length}`;
+
+  // Dropzones (names fixed, alphabetised for predictability in class)
+  const byName = [...PARTS].sort((a,b)=>a.name.localeCompare(b.name));
+  byName.forEach(p=>{
+    const slot = el('div',{className:'slot', dataset:{accept:p.id}});
+    const dz = el('div',{
+      className:'dropzone',
+      dataset:{accept:p.id},
+      ondragover:(e)=>{e.preventDefault(); dz.classList.add('dragover')},
+      ondragleave:()=>dz.classList.remove('dragover'),
+      ondrop:(e)=>{
+        e.preventDefault();
+        dz.classList.remove('dragover');
+        const id = e.dataTransfer.getData('text/plain');
+        const card = document.querySelector(`.card[data-id="${id}"]`);
+        if(!card) return;
+        // If slot occupied, return child to source
+        if(slot.firstElementChild){
+          dragContainer.appendChild(slot.firstElementChild);
+        }
+        slot.appendChild(card);
+      }
+    },[
+      el('div',{className:'dz-label', textContent:p.name}),
+      slot
+    ]);
+    zonesEl.appendChild(dz);
+  });
+
+  // Draggable cards (shuffled)
+  shuffle([...PARTS]).forEach(p=>{
+    const thumb = p.imageUrl
+      ? el('div',{className:'thumb'}, [el('img',{src:p.imageUrl, alt:p.name})])
+      : el('div',{className:'thumb', innerHTML:'🧩'});
+
+    const card = el('div',{
+      className:'card',
+      draggable:true,
+      dataset:{id:p.id},
+      ondragstart:(e)=>{
+        e.dataTransfer.setData('text/plain', p.id);
+        e.dataTransfer.effectAllowed = 'move';
+      }
+    },[
+      thumb,
+      el('div', {className:'desc', innerHTML: p.description})
+    ]);
+    dragContainer.appendChild(card);
+  });
+}
+
+function checkAnswers(){
+  let correct = 0;
+  document.querySelectorAll('.dropzone').forEach(dz=>{
+    dz.classList.remove('correct','incorrect');
+    const slot = dz.querySelector('.slot');
+    const card = slot.firstElementChild;
+    if(card && card.dataset.id === dz.dataset.accept){
+      dz.classList.add('correct'); correct++;
+    } else {
+      if(card) dz.classList.add('incorrect');
+    }
+  });
+  scoreEl.textContent = `Score: ${correct}/${PARTS.length}`;
+}
+
+function resetAll(){
+  // Move any cards back, clear styling, then rebuild fresh (to reshuffle)
+  document.querySelectorAll('.dropzone').forEach(dz=>{
+    const c = dz.querySelector('.slot').firstElementChild;
+    if(c) dragContainer.appendChild(c);
+    dz.classList.remove('correct','incorrect','dragover');
+  });
+  build();
+}
+
+checkBtn.addEventListener('click', checkAnswers);
+resetBtn.addEventListener('click', resetAll);
+
+// Init
+build();
+</script>
+</body>
+</html>
