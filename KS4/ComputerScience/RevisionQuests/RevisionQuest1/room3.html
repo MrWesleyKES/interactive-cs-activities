@@ -1,95 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Revision Quest – Room 3</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Room 3 – The Chamber of Judgement</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Pyodide -->
-<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 
-<style>
-    body { font-family: Arial, sans-serif; background: #fff7e6; padding: 20px; }
-    #container {
-        max-width: 900px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 12px #d4a857;
-    }
-    textarea {
-        width: 100%;
-        height: 220px;
-        font-family: monospace;
-        font-size: 15px;
-        padding: 10px;
-        border-radius: 6px;
-    }
-    button {
-        padding: 10px 20px;
-        margin-top: 10px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    #run-btn { background: #d48806; color: white; }
-    #run-btn:hover { background: #a36a04; }
-    #output {
-        background: #111;
-        color: #0f0;
-        padding: 15px;
-        border-radius: 6px;
-        font-family: monospace;
-        margin-top: 15px;
-        height: 150px;
-        overflow-y: auto;
-    }
-    #success {
-        margin-top: 20px;
-        padding: 15px;
-        background: #e1ffcf;
-        border-left: 6px solid #3f8b1c;
-        font-size: 18px;
-        display: none;
-    }
-    #next-btn {
-        display: none;
-        background: #3f8b1c;
-        color: white;
-        margin-top: 20px;
-    }
-</style>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodideipt src="js/room.js"></script>
 </head>
 
 <body>
-
 <div id="container">
 
 <h1>Room 3: The Chamber of Judgement</h1>
 
-<p>
-An ancient machine awakens.  
-It whispers: <strong>“Prove you understand <em>selection</em>… or be denied.”</strong>
-</p>
-
-<p>Your task:</p>
-
-<p>
-Fix the function <code>grade(mark)</code> so it returns:
-</p>
-
+<p>Fix the <code>grade(mark)</code> function so that:</p>
 <ul>
-  <li>70 or more → <strong>"A"</strong></li>
-  <li>50–69 → <strong>"B"</strong></li>
-  <li>30–49 → <strong>"C"</strong></li>
-  <li>Below 30 → <strong>"D"</strong></li>
+    <li>70+ → "A"</li>
+    <li>50–69 → "B"</li>
+    <li>30–49 → "C"</li>
+    <li>&lt;30 → "D"</li>
 </ul>
 
 <textarea id="code">
 def grade(mark):
-    # This function is broken!
     if mark > 70:
         return "A"
     elif mark > 50:
@@ -97,69 +32,24 @@ def grade(mark):
     elif mark > 30:
         return "C"
     else:
-        return "F"   # wrong grade!
+        return "F"
 
-# Tests
-print(grade(85))  # A
-print(grade(60))  # B
-print(grade(45))  # C
-print(grade(10))  # D
+print(grade(85))
+print(grade(60))
+print(grade(45))
+print(grade(10))
 </textarea>
 
-<button id="run-btn">Run Code</button>
+<button id="run-btn" class="run-btn">Run Code</button>
 
-<div id="output">Output will appear here...</div>
+<div id="output"></div>
+<div id="success">You have passed the Chamber of Judgement.</div>
 
-<div id="success">
-🎉 <strong>You have passed the Chamber of Judgement.</strong><br>
-Your understanding of selection is recognised.
-</div>
-
-<a href="room4.html">
-<button id="next-btn">Go to Room 4</button>
-</a>
+<a href="room4.html"><button id="next-btn" class="next-btn">Next Room</button></a>
 
 </div>
 
-<script>
-    let pyodideReady = false;
-    let pyodide;
-
-    async function initPyodide() {
-        pyodide = await loadPyodide();
-        pyodideReady = true;
-    }
-    initPyodide();
-
-    const expected = ["A", "B", "C", "D"];
-
-    document.getElementById("run-btn").onclick = async () => {
-        if (!pyodideReady) return;
-
-        let code = document.getElementById("code").value;
-        let output = document.getElementById("output");
-        output.textContent = "Running...";
-
-        try {
-            let result = await pyodide.runPythonAsync(code);
-            output.textContent = result || "(No output)";
-
-            let lines = String(result).trim().split("\n").map(v => v.trim());
-            let correct = expected.every((v, i) => lines[i] === v);
-
-            if (correct) {
-                document.getElementById("success").style.display = "block";
-                document.getElementById("next-btn").style.display = "inline-block";
-            } else {
-                document.getElementById("success").style.display = "none";
-                document.getElementById("next-btn").style.display = "none";
-            }
-
-        } catch (err) {
-            output.textContent = "Error:\n" + err;
-        }
-    };
-</script>
+<script src="js/config/room3.js"></script>
 
 </body>
 </html>
