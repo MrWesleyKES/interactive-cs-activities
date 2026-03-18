@@ -5,52 +5,69 @@
     <title>Room 3 – The Chamber of Judgement</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="css/style.css">
-
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodideipt src="js/room.js"></script>
-</head>
-
-<body>
-<div id="container">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Room 3 – The Chamber of Judgement</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Pyodide CDN -->
+    <!-- CodeMirror 5 (CSS + JS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+    <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
-    <!-- Shared JS -->
+    <!-- Shared Pyodide loader -->
     <script src="js/pyodide-init.js"></script>
+
+    <!-- Shared room engine -->
     <script src="js/room.js"></script>
+
+    <!-- Shared Editor wrapper -->
+    <script>
+        window.loadEditor = function(startCode) {
+            window.editor = CodeMirror(document.getElementById("editor"), {
+                value: startCode,
+                mode: "python",
+                theme: "dracula",
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+        };
+
+        window.getEditorCode = function () {
+            return window.editor.getValue();
+        };
+    </script>
 </head>
 
 <body>
 <div id="container">
 
-<h1>Room 3: The Chamber of Judgement</h1>
+    <h1>Room 3: The Chamber of Judgement</h1>
 
-<p>
-The ancient machine glows.  
-It demands mastery of <strong>if / elif / else</strong>.
-</p>
+    <p>
+        The ancient machine glows and demands proof of your mastery of
+        <strong>if / elif / else</strong> logic.
+    </p>
 
-<p><strong>Your task:</strong>  
-Fix the function <code>grade(mark)</code> so it returns:</p>
+    <p><strong>Your task:</strong>  
+    Fix the function <code>grade(mark)</code> so it returns:</p>
 
-<ul>
-    <li>70+ → "A"</li>
-    <li>50–69 → "B"</li>
-    <li>30–49 → "C"</li>
-    <li>&lt;30 → "D"</li>
-</ul>
+    <ul>
+        <li>70+ → "A"</li>
+        <li>50–69 → "B"</li>
+        <li>30–49 → "C"</li>
+        <li>&lt;30 → "D"</li>
+    </ul>
 
-<textarea id="code">
+    <!-- Starter code -->
+    <script type="text/plain" id="starter-code">
 def grade(mark):
     # This logic is broken!
     if mark > 70:
@@ -60,67 +77,35 @@ def grade(mark):
     elif mark > 30:
         return "C"
     else:
-        return "F"   # wrong!
+        return "F"  # wrong!
 
-# Tests
 print(grade(85))  # A
 print(grade(60))  # B
 print(grade(45))  # C
 print(grade(10))  # D
-</textarea>
+    </script>
 
-<button id="run-btn" class="run-btn">Run Code</button>
+    <!-- CodeMirror Editor -->
+    <div id="editor"></div>
 
-<div id="output"></div>
-<div id="success">You have passed the Chamber of Judgement.</div>
+    <button id="run-btn" class="run-btn">Run Code</button>
 
-<a href="room4.html">
-    <button id="next-btn" class="next-btn">Next Room</button>
-</a>
+    <div id="output"></div>
+    <div id="success">You have passed the Chamber of Judgement.</div>
 
-</div>
-
-<!-- Room-specific config -->
-<script src="js/config/room3.js"></script>
-
-</body>
-</html>
-<h1>Room 3: The Chamber of Judgement</h1>
-
-<p>Fix the <code>grade(mark)</code> function so that:</p>
-<ul>
-    <li>70+ → "A"</li>
-    <li>50–69 → "B"</li>
-    <li>30–49 → "C"</li>
-    <li>&lt;30 → "D"</li>
-</ul>
-
-<textarea id="code">
-def grade(mark):
-    if mark > 70:
-        return "A"
-    elif mark > 50:
-        return "B"
-    elif mark > 30:
-        return "C"
-    else:
-        return "F"
-
-print(grade(85))
-print(grade(60))
-print(grade(45))
-print(grade(10))
-</textarea>
-
-<button id="run-btn" class="run-btn">Run Code</button>
-
-<div id="output"></div>
-<div id="success">You have passed the Chamber of Judgement.</div>
-
-<a href="room4.html"><button id="next-btn" class="next-btn">Next Room</button></a>
+    <a href="room4.html"><button id="next-btn" class="next-btn">Next Room</button></a>
 
 </div>
 
+<!-- Initialise the editor -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const starter = document.getElementById("starter-code").textContent.trim();
+    window.loadEditor(starter);
+});
+</script>
+
+<!-- Room-specific expected output -->
 <script src="js/config/room3.js"></script>
 
 </body>
