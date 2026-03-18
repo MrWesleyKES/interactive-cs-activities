@@ -1,7 +1,7 @@
 async function runRoom(userExpected) {
     await loadPython();
 
-    const code = document.getElementById("code").value;
+    const code = window.getEditorCode();
     const outputBox = document.getElementById("output");
     const successBox = document.getElementById("success");
     const nextBtn = document.getElementById("next-btn");
