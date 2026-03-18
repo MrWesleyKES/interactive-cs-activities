@@ -8,9 +8,13 @@
     <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- CodeMirror 5 (CSS + JS) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libsudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <!-- CodeMirror 5 CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 
+    <!-- CodeMirror 5 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
@@ -23,7 +27,7 @@
     <!-- Shared room engine -->
     <script src="js/room.js"></script>
 
-    <!-- Shared Editor wrapper -->
+    <!-- Shared CodeMirror wrapper -->
     <script>
         window.loadEditor = function(startCode) {
             window.editor = CodeMirror(document.getElementById("editor"), {
@@ -55,8 +59,9 @@
         Only those who understand <strong>lists</strong> may pass.
     </p>
 
-    <p><strong>Your Task:</strong>  
-       Fix <code>filter_large(nums)</code> so it returns a <strong>new list</strong> containing only the numbers greater than <strong>10</strong>.
+    <p><strong>Your Task:</strong><br>
+       Fix <code>filter_large(nums)</code> so it returns a <strong>new list</strong>
+       containing only the numbers greater than <strong>10</strong>.
     </p>
 
     <p>Examples:</p>
@@ -96,7 +101,11 @@ print(filter_large([11, 10, 25]))
 <!-- Initialise the editor -->
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-    const starter = document.getElementById("starter-code").textContent.trim();
+    const starter = document
+        .getElementById("starter-code")
+        .textContent
+        .trim();
+
     window.loadEditor(starter);
 });
 </script>
