@@ -108,32 +108,44 @@ print(count_evens([]))
     }
     initPyodide();
 
-    const expected = ["2", "3", "0"];
-
     document.getElementById("run-btn").onclick = async () => {
         if (!pyodideReady) return;
 
-        const code = document.getElementById("code").value;
-        let output = document.getElementById("output");
-        output.textContent = "Running...";
+        let userCode = document.getElementById("code").value;
+        let outputBox = document.getElementById("output");
+        outputBox.textContent = "Running...";
 
         try {
-            let result = await pyodide.runPythonAsync(code);
-            output.textContent = result || "(No output)";
+            // Reset stdout
+            await pyodide.runPythonAsync(`
+import sys
+import io
+sys.stdout = io.StringIO()
+            `);
 
-            let lines = String(result).trim().split("\n").map(x => x.trim());
-            let correct = expected.every((val, idx) => lines[idx] === val);
+            // Run student code
+            await pyodide.runPythonAsync(userCode);
+
+            // Get the printed output
+            let printed = pyodide.runPython("sys.stdout.getvalue()");
+            outputBox.textContent = printed.trim() || "(No output)";
+
+            // Compare to expected
+            let lines = printed.trim().split("\n").map(v => v.trim());
+            let correct = expected.every((v, i) => lines[i] === v);
 
             if (correct) {
                 document.getElementById("success").style.display = "block";
-                document.getElementById("next-btn").style.display = "inline-block";
+                let next = document.getElementById("next-btn");
+                if (next) next.style.display = "inline-block";
             } else {
                 document.getElementById("success").style.display = "none";
-                document.getElementById("next-btn").style.display = "none";
+                let next = document.getElementById("next-btn");
+                if (next) next.style.display = "none";
             }
 
         } catch (err) {
-            output.textContent = "Error:\n" + err;
+            outputBox.textContent = "Error:\n" + err;
         }
     };
 </script>
