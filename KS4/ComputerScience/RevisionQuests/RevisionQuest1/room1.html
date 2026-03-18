@@ -66,9 +66,7 @@
 <div id="container">
 <h1>Room 1: The Locked Terminal</h1>
 
-<p>
-Fix the function <strong>count_evens()</strong> so it returns the number of even values in a list.
-</p>
+<p>Fix the function <strong>count_evens()</strong> so it returns the number of even values in a list.</p>
 
 <textarea id="code">
 def count_evens(nums):
@@ -92,31 +90,34 @@ print(count_evens([]))
 🎉 <strong>Door unlocked!</strong> You may proceed.
 </div>
 
-<a href="room2.html">
-<button id="next-btn">Go to Room 2</button>
-</a>
+<a href="room2.html"><button id="next-btn">Go to Room 2</button></a>
 
 </div>
 
 <script>
+    let pyodide = null;
     let pyodideReady = false;
-    let pyodide;
 
-    async function initPyodide() {
+    async function initPyodideInstance() {
         pyodide = await loadPyodide();
         pyodideReady = true;
     }
-    initPyodide();
+    initPyodideInstance();
+
+    // 💡 EXPECTED OUTPUT:
+    const expected = ["2", "3", "0"];
 
     document.getElementById("run-btn").onclick = async () => {
-        if (!pyodideReady) return;
+        if (!pyodideReady) {
+            document.getElementById("output").textContent = "Pyodide still loading...";
+            return;
+        }
 
-        let userCode = document.getElementById("code").value;
-        let outputBox = document.getElementById("output");
-        outputBox.textContent = "Running...";
+        const userCode = document.getElementById("code").value;
+        const outputBox = document.getElementById("output");
 
         try {
-            // Reset stdout
+            // Reset stdout for a clean buffer
             await pyodide.runPythonAsync(`
 import sys
 import io
@@ -126,26 +127,25 @@ sys.stdout = io.StringIO()
             // Run student code
             await pyodide.runPythonAsync(userCode);
 
-            // Get the printed output
-            let printed = pyodide.runPython("sys.stdout.getvalue()");
+            // Capture printed output
+            const printed = pyodide.runPython("sys.stdout.getvalue()");
+
             outputBox.textContent = printed.trim() || "(No output)";
 
-            // Compare to expected
-            let lines = printed.trim().split("\n").map(v => v.trim());
-            let correct = expected.every((v, i) => lines[i] === v);
+            // Check correctness
+            const lines = printed.trim().split("\\n").map(x => x.trim());
+            const correct = expected.every((v, i) => lines[i] === v);
 
             if (correct) {
                 document.getElementById("success").style.display = "block";
-                let next = document.getElementById("next-btn");
-                if (next) next.style.display = "inline-block";
+                document.getElementById("next-btn").style.display = "inline-block";
             } else {
                 document.getElementById("success").style.display = "none";
-                let next = document.getElementById("next-btn");
-                if (next) next.style.display = "none";
+                document.getElementById("next-btn").style.display = "none";
             }
 
         } catch (err) {
-            outputBox.textContent = "Error:\n" + err;
+            outputBox.textContent = "Error:\\n" + err;
         }
     };
 </script>
