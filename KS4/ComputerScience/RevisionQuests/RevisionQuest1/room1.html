@@ -11,11 +11,13 @@
     <!-- Pyodide CDN -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
-    <!-- Shared JS: Python loader & room logic -->
+    <!-- Shared JS: Pyodide loader -->
     <script src="js/pyodide-init.js"></script>
+
+    <!-- Shared JS: Room engine -->
     <script src="js/room.js"></script>
 
-    <!-- CodeMirror (Shared Editor) -->
+    <!-- Shared JS: CodeMirror editor -->
     <script type="module" src="js/editor.js"></script>
 </head>
 
@@ -48,13 +50,11 @@ print(count_evens([]))
     <div id="output"></div>
     <div id="success">Door unlocked! Proceed to the next room.</div>
 
-    <a href="room2.html">
-        <button id="next-btn" class="next-btn">Next Room</button>
-    </a>
+    <a href="room2.html"><button id="next-btn" class="next-btn">Next Room</button></a>
 
 </div>
 
-<!-- Initialize editor after DOM loads -->
+<!-- Initialise CodeMirror -->
 <script>
 window.addEventListener("DOMContentLoaded", () => {
     const starter = document.getElementById("starter-code").textContent.trim();
