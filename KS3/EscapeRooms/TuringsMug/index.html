@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Turing’s Mug – Escape Room</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#f7f7f7;
+        margin:0;
+        padding:0;
+        line-height:1.5;
+    }
+    header {
+        background:#1a2a4a;
+        color:white;
+        padding:20px;
+        text-align:center;
+    }
+    section {
+        padding:20px;
+        display:none;
+    }
+    .visible { display:block; }
+
+    h2 { margin-top:0; }
+
+    .circle-row {
+        display:flex;
+        gap:8px;
+        margin-bottom:10px;
+    }
+    .circle {
+        width:25px;
+        height:25px;
+        border-radius:50%;
+        border:2px solid #333;
+        cursor:pointer;
+        background:white;
+    }
+    .circle.black { background:black; }
+
+    .btn {
+        padding:10px 16px;
+        background:#1a2a4a;
+        color:white;
+        cursor:pointer;
+        border:none;
+        margin-top:10px;
+    }
+
+    .word-list-container {
+        background:#fff;
+        padding:10px;
+        border:1px solid #ccc;
+        max-width:400px;
+    }
+
+    table { border-collapse: collapse; }
+    td {
+        border:1px solid #ddd;
+        padding:6px 10px;
+    }
+
+    /* Seven segment display */
+    .seg-grid {
+        display:flex;
+        gap:8px;
+        margin:10px 0;
+    }
+    .switch {
+        width:30px;
+        height:30px;
+        background:#ddd;
+        border-radius:4px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:bold;
+        cursor:pointer;
+        border:1px solid #aaa;
+    }
+    .switch.on {
+        background:#1a2a4a;
+        color:white;
+    }
+
+    .digit-box {
+        margin-top:10px;
+        font-size:32px;
+        font-weight:bold;
+    }
+
+    #unlock-message {
+        font-size:28px;
+        font-weight:bold;
+        color:green;
+        margin-top:20px;
+        display:none;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Turing’s Mug – Escape Room</h1>
+</header>
+
+<!-- STAGE 1: STORY -->
+<section id="stage1" class="visible">
+    <h2>Your Mission</h2>
+    <p>You’ve been invited into Alan Turing’s office. His mug is locked with a combination lock.  
+    A mysterious pattern in his notebook seems to hold the first clue.</p>
+
+    <p>Click <strong>Begin</strong> to start the escape room.</p>
+    <button class="btn" onclick="nextStage(2)">Begin</button>
+</section>
+
+<!-- STAGE 2: PATTERN PUZZLE -->
+<section id="stage2">
+    <h2>Puzzle 1: Decode the Pattern</h2>
+    <p>Each row of circles represents a binary number:  
+       ● = 1, ○ = 0.  
+       Convert each row to decimal to reveal letters.</p>
+
+    <div id="patternContainer"></div>
+
+    <p><strong>Decimal values:</strong></p>
+    <div id="decimalOutput"></div>
+
+    <p><strong>Letters:</strong></p>
+    <div id="letterOutput"></div>
+
+    <button class="btn" onclick="checkPattern()">Check Word</button>
+</section>
+
+<!-- STAGE 3: WORD LIST -->
+<section id="stage3">
+    <h2>Puzzle 2: Find Your Word</h2>
+    <p>The letters form a word. Find it in the list and retrieve the three numbers beside it.</p>
+
+    <div class="word-list-container">
+        <table>
+            <tr><td>bicycle</td><td>109</td><td>7</td><td>111</td></tr>
+            <tr><td>babbage</td><td>79</td><td>102</td><td>7</td></tr>
+            <tr><td>enigma</td><td>6</td><td>79</td><td>111</td></tr>
+            <tr><td>runner</td><td>125</td><td>127</td><td>0</td></tr>
+            <tr><td>cipher</td><td>0</td><td>91</td><td>109</td></tr>
+            <tr><td>engine</td><td>102</td><td>6</td><td>79</td></tr>
+            <tr><td>machine</td><td>91</td><td>125</td><td>111</td></tr>
+            <tr><td>chess</td><td>127</td><td>109</td><td>7</td></tr>
+        </table>
+    </div>
+
+    <p>Enter your chosen three numbers:</p>
+    <input id="n1" size="4"> <input id="n2" size="4"> <input id="n3" size="4"><br>
+    <button class="btn" onclick="submitWordNumbers()">Continue</button>
+</section>
+
+<!-- STAGE 4: SEVEN-SEGMENT -->
+<section id="stage4">
+    <h2>Puzzle 3: Recreate the Display</h2>
+    <p>Set the switches to match the binary for each number.</p>
+
+    <div id="segmentArea"></div>
+
+    <button class="btn" onclick="checkSegments()">Reveal Digits</button>
+
+    <div id="displayDigits" class="digit-box"></div>
+</section>
+
+<!-- STAGE 5: UNLOCK -->
+<section id="stage5">
+    <h2>The Final Combination</h2>
+    <p>Enter the three digits shown:</p>
+    <input id="final1" size="2">  
+    <input id="final2" size="2">  
+    <input id="final3" size="2">
+
+    <button class="btn" onclick="unlock()">Unlock Mug</button>
+
+    <div id="unlock-message">🎉 You unlocked Turing’s mug!</div>
+</section>
+
+<script>
+// -------------------------------------------
+// DATA FROM TEACHER NOTES & WORKSHEET
+// -------------------------------------------
+
+const patterns = {
+    "bicycle": [
+        [0,0,0,1,0],
+        [0,1,0,0,1],
+        [0,0,0,1,1],
+        [1,1,0,0,1],
+        [0,0,0,1,1],
+        [0,1,1,0,0],
+        [0,0,1,0,1]
+    ],
+    "babbage": [
+        [0,0,0,1,0],
+        [0,0,0,0,1],
+        [0,0,0,1,0],
+        [0,0,0,1,0],
+        [0,0,0,0,1],
+        [0,0,1,1,1],
+        [0,0,1,0,1]
+    ],
+    "enigma": [
+        [0,0,1,0,1],
+        [0,1,1,1,0],
+        [0,1,0,0,1],
+        [0,0,1,1,1],
+        [0,1,1,0,1],
+        [0,0,0,0,1]
+    ],
+    "runner": [
+        [1,0,0,1,0],
+        [1,0,1,0,1],
+        [0,1,1,1,0],
+        [0,1,1,1,0],
+        [0,0,1,0,1],
+        [1,0,0,1,0]
+    ],
+    "cipher": [
+        [0,0,0,1,1],
+        [0,1,0,0,1],
+        [1,0,0,0,0],
+        [0,1,0,0,0],
+        [0,0,1,0,1],
+        [1,0,0,1,0]
+    ],
+    "engine": [
+        [0,0,1,0,1],
+        [0,1,1,1,0],
+        [0,0,1,1,1],
+        [0,1,0,0,1],
+        [0,1,1,1,0],
+        [0,0,1,0,1]
+    ],
+    "machine": [
+        [0,1,1,0,1],
+        [0,0,0,0,1],
+        [0,0,0,1,1],
+        [0,1,0,0,0],
+        [0,1,0,0,1],
+        [0,1,1,1,0],
+        [0,0,1,0,1]
+    ],
+    "chess": [
+        [0,0,0,1,1],
+        [0,1,0,0,0],
+        [0,0,1,0,1],
+        [1,0,0,1,1],
+        [1,0,0,1,1]
+    ]
+};
+
+// letter mapping (decimal→letter)
+const letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// display mapping (decimal→digit)
+const displayMap = {
+    0:0,6:1,91:2,79:3,102:4,109:5,125:6,7:7,127:8,111:9
+};
+
+// -------------------------------------------
+// STATE
+// -------------------------------------------
+let chosenWord = null;
+let chosenNumbers = [];
+let solvedDigits = [];
+
+// -------------------------------------------
+// NAVIGATION
+// -------------------------------------------
+function nextStage(n) {
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("visible"));
+    document.getElementById("stage"+n).classList.add("visible");
+}
+
+// -------------------------------------------
+// STAGE 2 – Pattern puzzle
+// -------------------------------------------
+
+function renderPattern() {
+    // choose random
+    const keys = Object.keys(patterns);
+    chosenWord = keys[Math.floor(Math.random()*keys.length)];
+
+    const pat = patterns[chosenWord];
+    const container = document.getElementById("patternContainer");
+    container.innerHTML = "";
+
+    pat.forEach((row,i)=>{
+        const r = document.createElement("div");
+        r.className="circle-row";
+        row.forEach((bit,j)=>{
+            const c = document.createElement("div");
+            c.className="circle";
+            if (bit===1) c.classList.add("black");
+            c.dataset.bit = bit;
+            r.appendChild(c);
+        });
+        container.appendChild(r);
+    });
+}
+
+renderPattern();
+
+function checkPattern() {
+    const rows = document.querySelectorAll("#patternContainer .circle-row");
+    let decimals = [];
+    let lettersOut = [];
+
+    rows.forEach(r=>{
+        let bits = [...r.children].map(c=>Number(c.dataset.bit));
+        let dec = bits[0]*16 + bits[1]*8 + bits[2]*4 + bits[3]*2 + bits[4]*1;
+        decimals.push(dec);
+        lettersOut.push(letters[dec]);
+    });
+
+    document.getElementById("decimalOutput").innerText = decimals.join(", ");
+    document.getElementById("letterOutput").innerText = lettersOut.join("");
+
+    nextStage(3);
+}
+
+// -------------------------------------------
+// STAGE 3 – Word list
+// -------------------------------------------
+function submitWordNumbers() {
+    const a = parseInt(document.getElementById("n1").value);
+    const b = parseInt(document.getElementById("n2").value);
+    const c = parseInt(document.getElementById("n3").value);
+
+    if (isNaN(a)||isNaN(b)||isNaN(c)) return alert("Enter all three numbers.");
+
+    chosenNumbers = [a,b,c];
+    renderSegmentPuzzle();
+    nextStage(4);
+}
+
+// -------------------------------------------
+// STAGE 4 – 7-segment switches
+// -------------------------------------------
+function renderSegmentPuzzle() {
+    const area = document.getElementById("segmentArea");
+    area.innerHTML="";
+
+    chosenNumbers.forEach((num,index)=>{
+        const box = document.createElement("div");
+
+        box.innerHTML = `<h3>Number ${index+1}: ${num}</h3>`;
+
+        const g = document.createElement("div");
+        g.className="seg-grid";
+
+        // binary digits 64,32,16,8,4,2,1
+        const bins=[64,32,16,8,4,2,1];
+        bins.forEach(v=>{
+            const sw = document.createElement("div");
+            sw.className="switch";
+            sw.textContent="0";
+            sw.dataset.value=v;
+            sw.onclick = ()=> {
+                sw.classList.toggle("on");
+                sw.textContent = sw.classList.contains("on") ? "1":"0";
+            };
+            g.appendChild(sw);
+        });
+
+        box.appendChild(g);
+        area.appendChild(box);
+    });
+}
+
+function checkSegments() {
+    const groups = document.querySelectorAll("#segmentArea > div");
+    solvedDigits=[];
+
+    groups.forEach(g=>{
+        const switches = g.querySelectorAll(".switch");
+        let sum=0;
+        switches.forEach(sw=>{
+            if (sw.classList.contains("on")) sum+=Number(sw.dataset.value);
+        });
+
+        let digit = displayMap[sum];
+        if(digit===undefined) digit="?";
+        solvedDigits.push(digit);
+    });
+
+    document.getElementById("displayDigits").innerText = solvedDigits.join(" ");
+    nextStage(5);
+}
+
+// -------------------------------------------
+// STAGE 5 – UNLOCK
+// -------------------------------------------
+function unlock() {
+    const f1 = document.getElementById("final1").value;
+    const f2 = document.getElementById("final2").value;
+    const f3 = document.getElementById("final3").value;
+
+    if (f1==solvedDigits[0] && f2==solvedDigits[1] && f3==solvedDigits[2]) {
+        document.getElementById("unlock-message").style.display="block";
+    } else {
+        alert("Incorrect combination. Try again.");
+    }
+}
+</script>
+
+</body>
+</html>
