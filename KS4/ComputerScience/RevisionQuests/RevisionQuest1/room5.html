@@ -5,69 +5,107 @@
     <title>Room 5 – The Core of the Machine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
+    <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Pyodide CDN -->
-    <script>https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js</script>
+    <!-- CodeMirror 5 (CSS + JS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 
-    <!-- Shared Python loader -->
-    <script>js/pyodide-init.js</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
-    <!-- Shared room engine -->
-    <script>js/room.js</script>
+    <!-- Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Shared Pyodide loader -->
+    <script src="js/pyodide-init.js"></script>
+
+    <!-- Shared Room engine -->
+    <script src="js/room.js"></script>
+
+    <!-- Shared Editor wrapper -->
+    <script>
+        window.loadEditor = function(startCode) {
+            window.editor = CodeMirror(document.getElementById("editor"), {
+                value: startCode,
+                mode: "python",
+                theme: "dracula",
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+        };
+
+        window.getEditorCode = function () {
+            return window.editor.getValue();
+        };
+    </script>
 </head>
 
 <body>
 <div id="container">
 
-<h1>Room 5: The Core of the Machine</h1>
+    <h1>Room 5: The Core of the Machine</h1>
 
-<p>
-You have reached the heart of the labyrinth.  
-A giant mechanical eye opens and demands proof of your mastery of 
-<strong>functions</strong>.
-</p>
+    <p>
+        You have reached the heart of the labyrinth.  
+        The machine speaks:  
+        <strong>“Only one who truly understands functions may pass.”</strong>
+    </p>
 
-<p><strong>Final Task:</strong></p>
-<p>
-Write a function <code>repeat_word(word, n)</code> that returns 
-<code>word</code> repeated <code>n</code> times, with no spaces.
-</p>
+    <p><strong>Your final task:</strong>  
+        Write a function <code>repeat_word(word, n)</code> that returns  
+        <code>word</code> repeated <code>n</code> times.
+    </p>
 
-<p>Examples:</p>
-<ul>
-    <li>repeat_word("hi", 3) → <strong>hihihi</strong></li>
-    <li>repeat_word("a", 5) → <strong>aaaaa</strong></li>
-    <li>repeat_word("ok", 1) → <strong>ok</strong></li>
-</ul>
+    <p>Examples:</p>
+    <ul>
+        <li>repeat_word("hi", 3) → <strong>hihihi</strong></li>
+        <li>repeat_word("a", 5) → <strong>aaaaa</strong></li>
+        <li>repeat_word("ok", 1) → <strong>ok</strong></li>
+    </ul>
 
-<textarea id="code">
+    <!-- Starter code -->
+    <script type="text/plain" id="starter-code">
 def repeat_word(word, n):
     # TODO: build and return the repeated string
     result = ""
     # your code here
     return result
 
-# Tests
 print(repeat_word("hi", 3))
 print(repeat_word("a", 5))
 print(repeat_word("ok", 1))
-</textarea>
+    </script>
 
-<button id="run-btn" class="run-btn">Run Code</button>
+    <!-- CodeMirror Editor -->
+    <div id="editor"></div>
 
-<div id="output"></div>
-<div id="success">You have conquered the Core. The exit opens...</div>
+    <button id="run-btn" class="run-btn">Run Code</button>
 
-<a href="victory.html">
-    <button id="next-btn" class="next-btn">Finish the Quest</button>
-</a>
+    <div id="output"></div>
+    <div id="success">You have mastered all five chambers. The exit opens...</div>
+
+    <a href="victory.html">
+        <button id="next-btn" class="next-btn">Finish the Quest</button>
+    </a>
 
 </div>
 
-<!-- Room-specific config -->
-<script>js/config/room5.js</script>
+<!-- Initialise the editor -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const starter = document.getElementById("starter-code").textContent.trim();
+    window.loadEditor(starter);
+});
+</script>
+
+<!-- Room-specific expected output -->
+<script src="js/config/room5.js"></script>
 
 </body>
 </html>
