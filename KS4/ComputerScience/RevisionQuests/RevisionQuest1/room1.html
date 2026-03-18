@@ -8,17 +8,25 @@
     <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Pyodide CDN -->
+    <!-- CodeMirror CSS FIRST -->
+    <link rel="stylesheet" href="https://esm.sh/@codemirror/theme-one-dark/dist/index.css">
+
+    <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
-    <!-- Shared JS: Pyodide loader -->
-    <script src="js/pyodide-init.js"></script>
+    <!-- Shared Pyodide loader -->
+    <script src="js/pyodide-init.jsdules BEFORE editor.js -->
+    <script type="module">
+        import { EditorView, basicSetup } from "https://esm.sh/@codemirror/basic-setup";
+        import { python } from "https://esm.sh/@codemirror/lang-python";
+        import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark";
 
-    <!-- Shared JS: Room engine -->
-    <script src="js/room.js"></script>
+        // expose for editor.js
+        window.CM = { EditorView, basicSetup, python, oneDark };
+    </script>
 
-    <!-- Shared JS: CodeMirror editor -->
-    <script type="module" src="js/editor.js"></script>
+    <!-- Now load the shared editor -->
+    <script src="js/editor.js" type="module"></script>
 </head>
 
 <body>
