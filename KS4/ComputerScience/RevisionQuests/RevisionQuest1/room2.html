@@ -5,53 +5,99 @@
     <title>Room 2 – The Loop Chamber</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- CodeMirror 5 (CSS + JS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+    <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Shared Pyodide loader -->
     <script src="js/pyodide-init.js"></script>
+
+    <!-- Shared Room engine -->
     <script src="js/room.js"></script>
+
+    <!-- Shared Editor (non-module CodeMirror wrapper) -->
+    <script>
+        window.loadEditor = function(startCode) {
+            window.editor = CodeMirror(document.getElementById("editor"), {
+                value: startCode,
+                mode: "python",
+                theme: "dracula",
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+        };
+
+        window.getEditorCode = function () {
+            return window.editor.getValue();
+        };
+    </script>
 </head>
 
 <body>
 <div id="container">
 
-<h1>Room 2: The Loop Chamber</h1>
+    <h1>Room 2: The Loop Chamber</h1>
 
-<p>
-To proceed, complete the function <code>sum_to_n(n)</code> so that it
-returns the sum of all numbers from 1 to n <strong>using a loop</strong>.
-</p>
+    <p>
+        To proceed, complete the function <code>sum_to_n(n)</code> so it returns
+        the sum of all numbers from 1 to n <strong>using a loop</strong>.
+    </p>
 
-<p>Examples:</p>
-<ul>
-    <li>sum_to_n(5) → 15</li>
-    <li>sum_to_n(1) → 1</li>
-    <li>sum_to_n(10) → 55</li>
-</ul>
+    <p>Examples:</p>
+    <ul>
+        <li>sum_to_n(5) → 15</li>
+        <li>sum_to_n(1) → 1</li>
+        <li>sum_to_n(10) → 55</li>
+    </ul>
 
-<textarea id="code">
+    <!-- Starter code -->
+    <script type="text/plain" id="starter-code">
 def sum_to_n(n):
     total = 0
     # TODO: loop from 1 to n and add each number to total
     return total
 
-# Tests
 print(sum_to_n(5))   # 15
 print(sum_to_n(1))   # 1
 print(sum_to_n(10))  # 55
-</textarea>
+    </script>
 
-<button id="run-btn" class="run-btn">Run Code</button>
+    <!-- CodeMirror Editor -->
+    <div id="editor"></div>
 
-<div id="output"></div>
-<div id="success">The Loop Chamber opens. You may pass.</div>
+    <button id="run-btn" class="run-btn">Run Code</button>
 
-<a href="room3.html">
-    <button id="next-btn" class="next-btn">Next Room</button>
-</a>
+    <div id="output"></div>
+    <div id="success">The Loop Chamber opens. You may proceed.</div>
+
+    <a href="room3.html">
+        <button id="next-btn" class="next-btn">Next Room</button>
+    </a>
 
 </div>
 
+<!-- Initialise the editor -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const starter = document.getElementById("starter-code").textContent.trim();
+    window.loadEditor(starter);
+});
+</script>
+
+<!-- Room-specific expected output -->
 <script src="js/config/room2.js"></script>
 
 </body>
