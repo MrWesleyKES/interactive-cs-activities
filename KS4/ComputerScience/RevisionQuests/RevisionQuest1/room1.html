@@ -8,25 +8,42 @@
     <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- CodeMirror CSS FIRST -->
-    <link rel="stylesheet" href="https://esm.sh/@codemirror/theme-one-dark/dist/index.css">
+    <!-- CodeMirror 5 (works everywhere, no modules needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
     <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 
     <!-- Shared Pyodide loader -->
-    <script src="js/pyodide-init.jsdules BEFORE editor.js -->
-    <script type="module">
-        import { EditorView, basicSetup } from "https://esm.sh/@codemirror/basic-setup";
-        import { python } from "https://esm.sh/@codemirror/lang-python";
-        import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark";
+    <script src="js/pyodide-init.js"></script>
 
-        // expose for editor.js
-        window.CM = { EditorView, basicSetup, python, oneDark };
+    <!-- Shared Room engine -->
+    <script src="js/room.js"></script>
+
+    <!-- Shared Editor (simple, non-module) -->
+    <script>
+        window.loadEditor = function(startCode) {
+            window.editor = CodeMirror(document.getElementById("editor"), {
+                value: startCode,
+                mode: "python",
+                theme: "dracula",
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+        };
+
+        window.getEditorCode = function () {
+            return window.editor.getValue();
+        };
     </script>
-
-    <!-- Now load the shared editor -->
-    <script src="js/editor.js"></script>
 </head>
 
 <body>
