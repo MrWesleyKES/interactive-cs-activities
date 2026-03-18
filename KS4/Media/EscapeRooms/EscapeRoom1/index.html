@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GCSE Media Escape Room – 6 Sections with Hints (OCR J200)</title>
+<style>
+  :root{ --accent:#ffcc00; --bg:#111; --card:#1c1c1c; --ok:#18c28f; --bad:#ff5a5f; --muted:#bbb; }
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#fff;margin:0;padding:24px}
+  h1,h2{text-align:center;margin:.2rem 0}
+  .wrap{max-width:980px;margin:0 auto}
+  .card{background:var(--card);border:2px solid var(--accent);border-radius:8px;margin:16px 0;padding:16px}
+  .q{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;margin:8px 0;padding:8px;border:1px dashed #444;border-radius:6px}
+  .q label{grid-column:1 / -1}
+  .q input{padding:8px;border-radius:4px;border:1px solid #333;background:#000;color:#fff}
+  .q button{padding:8px 12px;background:var(--accent);border:none;border-radius:4px;font-weight:700;cursor:pointer}
+  .q .status{font-weight:700; justify-self:start}
+  .hint-btn{background:#333;color:#fff;border:1px solid #666}
+  .hinttext{grid-column:1 / -1;color:var(--muted);font-size:.9rem}
+  .ok{color:var(--ok)} .bad{color:var(--bad)} .muted{color:var(--muted)}
+  .section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+  .badge{background:#333;border:1px solid #666;padding:6px 10px;border-radius:999px;font-size:.9rem}
+  .letter{font-size:1.2rem;font-weight:900;color:var(--accent)}
+  .final{font-size:1.1rem}
+  .letters-collect{display:flex;gap:8px;flex-wrap:wrap}
+  .tile{width:44px;height:44px;display:grid;place-items:center;border:2px solid var(--accent);border-radius:6px;font-weight:900;background:#000}
+  .success{background:#0b3;}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧠 GCSE Media Studies Escape Room</h1>
+  <h2>OCR J200 • 6 Sections • 5 Questions Each • Hints Included</h2>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 1 — Media Language (TV: <em>Vigil</em> & <em>The Avengers</em>)</h3>
+      <span class="badge">Earned Letter: <span id="letter1" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s1q1">1) In <em>Vigil</em>, fast-paced editing & cross-cutting build a sense of ______.</label>
+      <input id="s1q1" placeholder="your answer">
+      <button onclick="check('s1q1',['tension','urgency'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s1q1')">Hint</button>
+      <span id="s1q1_status" class="status muted"> </span>
+      <div id="s1q1_hint" class="hinttext hidden">Think about how quicker cuts make the audience feel on edge; it starts with <em>t…</em>.</div>
+    </div>
+
+    <div class="q">
+      <label for="s1q2">2) Handheld camera use gives a "__________" feel.</label>
+      <input id="s1q2" placeholder="your answer">
+      <button onclick="check('s1q2',['documentary','documentary feel'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s1q2')">Hint</button>
+      <span id="s1q2_status" class="status muted"> </span>
+      <div id="s1q2_hint" class="hinttext hidden">As if it’s recording ‘real life’ — a <em>docu‑…</em> style.</div>
+    </div>
+
+    <div class="q">
+      <label for="s1q3">3) Cross-cutting between sub & land links the progress of the ______.</label>
+      <input id="s1q3" placeholder="your answer">
+      <button onclick="check('s1q3',['case','investigation'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s1q3')">Hint</button>
+      <span id="s1q3_status" class="status muted"> </span>
+      <div id="s1q3_hint" class="hinttext hidden">What are Amy and Kirsten both working on? The <em>c…</em> / <em>i…</em>.</div>
+    </div>
+
+    <div class="q">
+      <label for="s1q4">4) In <em>The Avengers</em>, mostly mid/long shots with occasional ________ for emphasis.</label>
+      <input id="s1q4" placeholder="your answer">
+      <button onclick="check('s1q4',['close up','close-up','closeups','close-ups','closeup'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s1q4')">Hint</button>
+      <span id="s1q4_status" class="status muted"> </span>
+      <div id="s1q4_hint" class="hinttext hidden">The camera moves very near to a face or object — a <em>c____ ___</em>.</div>
+    </div>
+
+    <div class="q">
+      <label for="s1q5">5) Background score that characters cannot hear is called ______-diegetic music.</label>
+      <input id="s1q5" placeholder="your answer">
+      <button onclick="check('s1q5',['non','non diegetic','non-diegetic','nondiegetic','non diegetic music','non-diegetic music','nondiegetic music'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s1q5')">Hint</button>
+      <span id="s1q5_status" class="status muted"> </span>
+      <div id="s1q5_hint" class="hinttext hidden">Opposite of “diegetic” — add a small prefix before “diegetic”.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 2 — Representation & Context (<em>Vigil</em>)</h3>
+      <span class="badge">Earned Letter: <span id="letter2" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s2q1">1) Name the lead investigator: DCI ______ Silva.</label>
+      <input id="s2q1" placeholder="your answer">
+      <button onclick="check('s2q1',['amy'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s2q1')">Hint</button>
+      <span id="s2q1_status" class="status muted"> </span>
+      <div id="s2q1_hint" class="hinttext hidden">Her first name begins with <em>A</em>.</div>
+    </div>
+
+    <div class="q">
+      <label for="s2q2">2) The series is based on the UK's ________ nuclear deterrent.</label>
+      <input id="s2q2" placeholder="your answer">
+      <button onclick="check('s2q2',['trident'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s2q2')">Hint</button>
+      <span id="s2q2_status" class="status muted"> </span>
+      <div id="s2q2_hint" class="hinttext hidden">The name of a three‑pronged spear — also the UK system.</div>
+    </div>
+
+    <div class="q">
+      <label for="s2q3">3) Tara Kierly is a Warfare Specialist Submariner in the Royal ____.</label>
+      <input id="s2q3" placeholder="your answer">
+      <button onclick="check('s2q3',['navy'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s2q3')">Hint</button>
+      <span id="s2q3_status" class="status muted"> </span>
+      <div id="s2q3_hint" class="hinttext hidden">Sea‑based armed forces.</div>
+    </div>
+
+    <div class="q">
+      <label for="s2q4">4) Original UK broadcaster for <em>Vigil</em> (Sun 9pm, 2021): ___ ___.</label>
+      <input id="s2q4" placeholder="your answer">
+      <button onclick="check('s2q4',['bbc one','bbc1','bbc one channel'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s2q4')">Hint</button>
+      <span id="s2q4_status" class="status muted"> </span>
+      <div id="s2q4_hint" class="hinttext hidden">Public service channel — two words, starts with <em>BBC…</em></div>
+    </div>
+
+    <div class="q">
+      <label for="s2q5">5) Captain of HMS Vigil: Commander Neil ______.</label>
+      <input id="s2q5" placeholder="your answer">
+      <button onclick="check('s2q5',['newsome'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s2q5')">Hint</button>
+      <span id="s2q5_status" class="status muted"> </span>
+      <div id="s2q5_hint" class="hinttext hidden">Surname begins with <em>N</em>.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 3 — Representation & Context (<em>The Avengers</em>)</h3>
+      <span class="badge">Earned Letter: <span id="letter3" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s3q1">1) Emma Peel represents the new "working ______" of the 60s.</label>
+      <input id="s3q1" placeholder="your answer">
+      <button onclick="check('s3q1',['woman'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s3q1')">Hint</button>
+      <span id="s3q1_status" class="status muted"> </span>
+      <div id="s3q1_hint" class="hinttext hidden">Opposite of “man”.</div>
+    </div>
+
+    <div class="q">
+      <label for="s3q2">2) The set episode "Grave Diggers" first aired in (year): ____.</label>
+      <input id="s3q2" placeholder="your answer">
+      <button onclick="check('s3q2',['1965'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s3q2')">Hint</button>
+      <span id="s3q2_status" class="status muted"> </span>
+      <div id="s3q2_hint" class="hinttext hidden">Mid‑1960s.</div>
+    </div>
+
+    <div class="q">
+      <label for="s3q3">3) Steed's bowler hat & umbrella symbolise the British "_____ gentleman".</label>
+      <input id="s3q3" placeholder="your answer">
+      <button onclick="check('s3q3',['city'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s3q3')">Hint</button>
+      <span id="s3q3_status" class="status muted"> </span>
+      <div id="s3q3_hint" class="hinttext hidden">Think of London’s financial district — the <em>_____</em>.</div>
+    </div>
+
+    <div class="q">
+      <label for="s3q4">4) The show was shot in _________ (colour format) at the time.</label>
+      <input id="s3q4" placeholder="your answer">
+      <button onclick="check('s3q4',['black and white','black & white','b&w','bw','monochrome'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s3q4')">Hint</button>
+      <span id="s3q4_status" class="status muted"> </span>
+      <div id="s3q4_hint" class="hinttext hidden">Not colour — two (or three) words.</div>
+    </div>
+
+    <div class="q">
+      <label for="s3q5">5) Core genre: British ______ drama (also called espionage).</label>
+      <input id="s3q5" placeholder="your answer">
+      <button onclick="check('s3q5',['spy','espionage'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s3q5')">Hint</button>
+      <span id="s3q5_status" class="status muted"> </span>
+      <div id="s3q5_hint" class="hinttext hidden">Short 3‑letter word beginning with <em>S</em>.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 4 — Film Industry & Production (<em>The Lego Movie</em>)</h3>
+      <span class="badge">Earned Letter: <span id="letter4" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s4q1">1) One company controlling production, distribution and the game is called ______ integration.</label>
+      <input id="s4q1" placeholder="your answer">
+      <button onclick="check('s4q1',['vertical integration','vertical-integration','vertical'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s4q1')">Hint</button>
+      <span id="s4q1_status" class="status muted"> </span>
+      <div id="s4q1_hint" class="hinttext hidden">The opposite of horizontal; often shown in ownership diagrams.</div>
+    </div>
+
+    <div class="q">
+      <label for="s4q2">2) Promoting linked products across film, game, toys and ads is called ________.</label>
+      <input id="s4q2" placeholder="your answer">
+      <button onclick="check('s4q2',['synergy'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s4q2')">Hint</button>
+      <span id="s4q2_status" class="status muted"> </span>
+      <div id="s4q2_hint" class="hinttext hidden">When parts work together so the whole is bigger than the sum.</div>
+    </div>
+
+    <div class="q">
+      <label for="s4q3">3) UK age rating by BBFC: __ (single letter).</label>
+      <input id="s4q3" placeholder="your answer">
+      <button onclick="check('s4q3',['u'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s4q3')">Hint</button>
+      <span id="s4q3_status" class="status muted"> </span>
+      <div id="s4q3_hint" class="hinttext hidden">Suitable for all.</div>
+    </div>
+
+    <div class="q">
+      <label for="s4q4">4) Computer technique used instead of stop-motion: ____.</label>
+      <input id="s4q4" placeholder="your answer">
+      <button onclick="check('s4q4',['cgi'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s4q4')">Hint</button>
+      <span id="s4q4_status" class="status muted"> </span>
+      <div id="s4q4_hint" class="hinttext hidden">Three-letter acronym.</div>
+    </div>
+
+    <div class="q">
+      <label for="s4q5">5) Studio behind film & game: ______ Bros.</label>
+      <input id="s4q5" placeholder="your answer">
+      <button onclick="check('s4q5',['warner'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s4q5')">Hint</button>
+      <span id="s4q5_status" class="status muted"> </span>
+      <div id="s4q5_hint" class="hinttext hidden">Same studio as DC’s Batman films.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 5 — Promotion & Posters (<em>The Lego Movie</em>)</h3>
+      <span class="badge">Earned Letter: <span id="letter5" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s5q1">1) Tagline: "The Story of a ______ who Saved Everybody".</label>
+      <input id="s5q1" placeholder="your answer">
+      <button onclick="check('s5q1',['nobody'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s5q1')">Hint</button>
+      <span id="s5q1_status" class="status muted"> </span>
+      <div id="s5q1_hint" class="hinttext hidden">Opposite of “somebody”.</div>
+    </div>
+
+    <div class="q">
+      <label for="s5q2">2) US poster phrasing: "assembling ______ 7" (month).</label>
+      <input id="s5q2" placeholder="your answer">
+      <button onclick="check('s5q2',['february','feb'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s5q2')">Hint</button>
+      <span id="s5q2_status" class="status muted"> </span>
+      <div id="s5q2_hint" class="hinttext hidden">Half‑term month; starts with <em>Feb…</em></div>
+    </div>
+
+    <div class="q">
+      <label for="s5q3">3) The crane implies the film is under __________.</label>
+      <input id="s5q3" placeholder="your answer">
+      <button onclick="check('s5q3',['construction'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s5q3')">Hint</button>
+      <span id="s5q3_status" class="status muted"> </span>
+      <div id="s5q3_hint" class="hinttext hidden">What cranes do on building sites.</div>
+    </div>
+
+    <div class="q">
+      <label for="s5q4">4) The ITV all‑Lego ad break reached about __ million viewers.</label>
+      <input id="s5q4" placeholder="your answer">
+      <button onclick="check('s5q4',['6','six'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s5q4')">Hint</button>
+      <span id="s5q4_status" class="status muted"> </span>
+      <div id="s5q4_hint" class="hinttext hidden">Between five and seven.</div>
+    </div>
+
+    <div class="q">
+      <label for="s5q5">5) Name one brand in that ad break (e.g., charity or hotel).</label>
+      <input id="s5q5" placeholder="your answer">
+      <button onclick="check('s5q5',['british heart foundation','confused.com','bt','premier inn','premier-inn'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s5q5')">Hint</button>
+      <span id="s5q5_status" class="status muted"> </span>
+      <div id="s5q5_hint" class="hinttext hidden">Examples: national heart charity, a big hotel chain, or a telecoms provider.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h3>Section 6 — Audience & Uses & Gratifications</h3>
+      <span class="badge">Earned Letter: <span id="letter6" class="letter">—</span></span>
+    </div>
+
+    <div class="q">
+      <label for="s6q1">1) Which U&G covers enjoying together & discussion? <em>Social __________</em>.</label>
+      <input id="s6q1" placeholder="your answer">
+      <button onclick="check('s6q1',['interaction'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s6q1')">Hint</button>
+      <span id="s6q1_status" class="status muted"> </span>
+      <div id="s6q1_hint" class="hinttext hidden">Begins with <em>i…</em>; chatting, sharing, co‑playing.</div>
+    </div>
+
+    <div class="q">
+      <label for="s6q2">2) PEGI age rating for the video game: __+.</label>
+      <input id="s6q2" placeholder="your answer">
+      <button onclick="check('s6q2',['7','7+','seven'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s6q2')">Hint</button>
+      <span id="s6q2_status" class="status muted"> </span>
+      <div id="s6q2_hint" class="hinttext hidden">A single digit less than 8.</div>
+    </div>
+
+    <div class="q">
+      <label for="s6q3">3) The film is a hybrid of action‑adventure and ________.</label>
+      <input id="s6q3" placeholder="your answer">
+      <button onclick="check('s6q3',['comedy'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s6q3')">Hint</button>
+      <span id="s6q3_status" class="status muted"> </span>
+      <div id="s6q3_hint" class="hinttext hidden">Makes you laugh.</div>
+    </div>
+
+    <div class="q">
+      <label for="s6q4">4) Name one DC hero appearing as intertextuality.</label>
+      <input id="s6q4" placeholder="your answer">
+      <button onclick="check('s6q4',['batman','superman','wonder woman','wonderwoman','green lantern','greenlantern'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s6q4')">Hint</button>
+      <span id="s6q4_status" class="status muted"> </span>
+      <div id="s6q4_hint" class="hinttext hidden">Think caped crusader, man of steel, or an emerald ring bearer.</div>
+    </div>
+
+    <div class="q">
+      <label for="s6q5">5) Adults often enjoy Lego for a sense of _________ (looking back).</label>
+      <input id="s6q5" placeholder="your answer">
+      <button onclick="check('s6q5',['nostalgia'])">Check</button>
+      <button class="hint-btn" onclick="toggleHint('s6q5')">Hint</button>
+      <span id="s6q5_status" class="status muted"> </span>
+      <div id="s6q5_hint" class="hinttext hidden">Warm feelings about the past.</div>
+    </div>
+  </div>
+
+  <div class="card final">
+    <h3>Final Door — Unscramble the 6 Letters</h3>
+    <p>When all answers are correct in each section, you will earn 6 letters. Unscramble them to form a key Media Studies term and enter it below.</p>
+
+    <div class="letters-collect">
+      <div class="tile" id="t1">?</div>
+      <div class="tile" id="t2">?</div>
+      <div class="tile" id="t3">?</div>
+      <div class="tile" id="t4">?</div>
+      <div class="tile" id="t5">?</div>
+      <div class="tile" id="t6">?</div>
+    </div>
+
+    <p style="margin-top:10px">Enter the final word:</p>
+    <input id="final" placeholder="your answer" style="padding:8px;border-radius:4px;border:1px solid #333;background:#000;color:#fff">
+    <button onclick="checkFinal()">Unlock</button>
+    <span id="final_status" class="status muted"> </span>
+  </div>
+</div>
+
+<script>
+  const sectionLetters = {1:'G',2:'E',3:'N',4:'R',5:'E',6:'S'}; // GENRES
+  const sectionSize = 5;
+  const correctMap = {};
+
+  function normalise(str){
+    return (str||'').toString().trim().toLowerCase()
+      .replaceAll(/[\.\!\?\,;:_\-\s]+/g,' ')
+      .replaceAll('  ',' ').trim();
+  }
+  function setStatus(id, ok){
+    const el = document.getElementById(id+"_status");
+    el.classList.remove('muted','ok','bad');
+    el.classList.add(ok? 'ok':'bad');
+    el.textContent = ok? '✓ Correct' : '✗ Try again';
+  }
+  function check(id, validList){
+    const val = normalise(document.getElementById(id).value);
+    const ok = validList.map(normalise).includes(val) || validList.some(v=> val.includes(normalise(v)) && normalise(v).length>1);
+    setStatus(id, ok);
+    correctMap[id] = ok;
+    evaluateSections();
+  }
+  function evaluateSections(){
+    for(let s=1;s<=6;s++){
+      let allCorrect = true;
+      for(let q=1;q<=sectionSize;q++){
+        const id = `s${s}q${q}`;
+        if(!correctMap[id]) { allCorrect = false; break; }
+      }
+      const letterSpan = document.getElementById('letter'+s);
+      const tile = document.getElementById('t'+s);
+      if(allCorrect){
+        const letter = sectionLetters[s];
+        letterSpan.textContent = letter;
+        tile.textContent = letter;
+        tile.classList.add('success');
+      }
+    }
+  }
+  function checkFinal(){
+    const word = normalise(document.getElementById('final').value).replaceAll(' ','');
+    const ok = (word === 'genres');
+    const out = document.getElementById('final_status');
+    out.classList.remove('muted','ok','bad');
+    out.classList.add(ok? 'ok':'bad');
+    out.textContent = ok? '🎉 Unlocked! You escaped the Media Vault.' : 'Not quite. Use the 6 letters you earned to form a key term.';
+  }
+  function toggleHint(id){
+    const el = document.getElementById(id+"_hint");
+    if(!el) return;
+    el.classList.toggle('hidden');
+  }
+</script>
+</body>
+</html>
