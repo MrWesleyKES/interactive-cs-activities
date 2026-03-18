@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Revision Quest – Room 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+<style>
+    body { font-family: Arial, sans-serif; background: #f4f4f7; padding: 20px; }
+    #container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    textarea {
+        width: 100%;
+        height: 180px;
+        font-family: monospace;
+        font-size: 15px;
+        padding: 10px;
+        border-radius: 6px;
+    }
+    button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    #run-btn { background: #1769aa; color: white; }
+    #run-btn:hover { background: #0e4d7d; }
+    #output {
+        background: #111;
+        color: #0f0;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        margin-top: 15px;
+        height: 150px;
+        overflow-y: auto;
+    }
+    #success {
+        margin-top: 20px;
+        padding: 15px;
+        background: #d2ffd2;
+        border-left: 6px solid #2a7a2a;
+        font-size: 18px;
+        display: none;
+    }
+    #next-btn {
+        display: none;
+        background: #4caf50;
+        color: white;
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+<div id="container">
+<h1>Room 1: The Locked Terminal</h1>
+
+<p>
+Fix the function <strong>count_evens()</strong> so it returns the number of even values in a list.
+</p>
+
+<textarea id="code">
+def count_evens(nums):
+    total = 0
+    for n in nums:
+        if n % 2 == 1:   # This is wrong!
+            total = total + 1
+    return total
+
+# Tests
+print(count_evens([1,2,3,4,5]))
+print(count_evens([2,2,2]))
+print(count_evens([]))
+</textarea>
+
+<button id="run-btn">Run Code</button>
+
+<div id="output">Output will appear here...</div>
+
+<div id="success">
+🎉 <strong>Door unlocked!</strong> You may proceed.
+</div>
+
+<a href="room2.html">
+<button id="next-btn">Go to Room 2</button>
+</a>
+
+</div>
+
+<script>
+    let pyodideReady = false;
+    let pyodide;
+
+    async function initPyodide() {
+        pyodide = await loadPyodide();
+        pyodideReady = true;
+    }
+    initPyodide();
+
+    const expected = ["2", "3", "0"];
+
+    document.getElementById("run-btn").onclick = async () => {
+        if (!pyodideReady) return;
+
+        const code = document.getElementById("code").value;
+        let output = document.getElementById("output");
+        output.textContent = "Running...";
+
+        try {
+            let result = await pyodide.runPythonAsync(code);
+            output.textContent = result || "(No output)";
+
+            let lines = String(result).trim().split("\n").map(x => x.trim());
+            let correct = expected.every((val, idx) => lines[idx] === val);
+
+            if (correct) {
+                document.getElementById("success").style.display = "block";
+                document.getElementById("next-btn").style.display = "inline-block";
+            } else {
+                document.getElementById("success").style.display = "none";
+                document.getElementById("next-btn").style.display = "none";
+            }
+
+        } catch (err) {
+            output.textContent = "Error:\n" + err;
+        }
+    };
+</script>
+
+</body>
+</html>
