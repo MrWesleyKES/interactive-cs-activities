@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset='utf-8'>
+<title>Data Centre Lockdown – Full Interactive Escape Room</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+:root{
+ --bg:#0f172a;--card:#111827;--text:#e5e7eb;--accent:#22c55e;--warn:#f59e0b;--error:#ef4444;
+}
+body{background:var(--bg);color:var(--text);font-family:system-ui;margin:0;padding:0}
+header{text-align:center;padding:20px}
+h1{margin:0;color:var(--accent);font-size:2.4rem}
+#timerBox{font-size:2rem;color:#93c5fd;margin-top:10px}
+button{background:#065f46;color:white;border:none;border-radius:8px;padding:10px 16px;margin:4px;font-size:1rem;cursor:pointer}
+.panel{background:var(--card);margin:20px;padding:16px;border-radius:12px}
+.q{margin-top:12px;margin-bottom:6px;font-weight:bold}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:10px}
+.opt{background:#0b1220;padding:10px;border-radius:8px}
+.hint{color:var(--warn)}
+.good{color:var(--accent);font-weight:bold}
+.bad{color:var(--error);font-weight:bold}
+input.letter{width:44px;height:44px;text-align:center;font-size:20px;margin:4px}
+#gate{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
+#error{color:var(--error);margin-top:10px;font-weight:bold}
+#content{display:none}
+</style>
+<script>
+function enter(){
+ let pw=document.getElementById('pw').value.trim();
+ if(pw==='EDWARD'){document.getElementById('gate').style.display='none';document.getElementById('content').style.display='block';}
+ else{document.getElementById('error').textContent='Incorrect password';}
+}
+let timeLeft=45*60; let timer=null;
+function startTimer(){if(timer) return; timer=setInterval(()=>{timeLeft--; let m=Math.floor(timeLeft/60); let s=timeLeft%60; document.getElementById('timerBox').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; if(timeLeft<=0){clearInterval(timer); alert('Time up!');}},1000)}
+function pauseTimer(){clearInterval(timer); timer=null;}
+function resetTimer(){pauseTimer(); timeLeft=45*60; document.getElementById('timerBox').textContent='45:00';}
+function reveal(station){ let sel=document.querySelector(`input[name=${station}]:checked`); if(!sel){alert('Choose an answer');return;} document.getElementById(`${station}out`).innerHTML='Extraction Number: <span class=good>'+sel.value+'</span>'; }
+function checkEscape(){ const correct=[69,83,67,65,80,69]; const entered=[c1,c2,c3,c4,c5,c6].map(e=>Number(e.value)); if(entered.every((v,i)=>v===correct[i])){ result.textContent='ESCAPE SUCCESSFUL!'; result.className='good'; pauseTimer(); } else{ result.textContent='Incorrect ASCII'; result.className='bad'; }}
+</script>
+</head>
+<body>
+<div id='gate'>
+<h2>Enter Password to Begin</h2>
+<input id='pw' type='password' placeholder='Password...'>
+<button onclick='enter()'>ENTER</button>
+<div id='error'></div>
+</div>
+
+<div id='content'>
+<header>
+<h1>DATA CENTRE LOCKDOWN</h1>
+<p>Interactive Escape Room – 5 Questions Per Station, Real J277 Content</p>
+<div id='timerBox'>45:00</div>
+<button onclick='startTimer()'>Start</button><button onclick='pauseTimer()'>Pause</button><button onclick='resetTimer()'>Reset</button>
+</header>
+<main>
+
+<div class='panel'><h2>Station 1 – CPU & Architecture</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>What does the ALU do?</li><div class='options'><label class='opt'><input type='radio' name='s1q1'> Arithmetic & Logic</label><label class='opt'><input type='radio' name='s1q1'> Control Signals</label></div><li class='q'>Which register stores the next instruction address?</li><div class='options'><label class='opt'><input type='radio' name='s1q2'> PC</label><label class='opt'><input type='radio' name='s1q2'> MAR</label></div><li class='q'>What cycle does the CPU follow repeatedly?</li><div class='options'><label class='opt'><input type='radio' name='s1q3'> Fetch-Decode-Execute</label><label class='opt'><input type='radio' name='s1q3'> Boot cycle</label></div><li class='q'>What component holds the current instruction?</li><div class='options'><label class='opt'><input type='radio' name='s1q4'> CIR</label><label class='opt'><input type='radio' name='s1q4'> ACC</label></div><li class='q'>Which is NOT a CPU register? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s1' value='5'> MAR (5)</label><label class='opt'><input type='radio' name='s1' value='3'> MDR (3)</label><label class='opt'><input type='radio' name='s1' value='2'> ACC (2)</label><label class='opt'><input type='radio' name='s1' value='7'> L1 Cache (7)</label></div></ol><button onclick="reveal('s1')">REVEAL NUMBER</button><div id='s1out'></div><p class='hint'>Extraction word: <strong>EXECUTE</strong></p></div><div class='panel'><h2>Station 2 – Memory & Storage</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>Which memory is fastest?</li><div class='options'><label class='opt'><input type='radio' name='s2q1'> Cache</label><label class='opt'><input type='radio' name='s2q1'> RAM</label></div><li class='q'>Which is non-volatile?</li><div class='options'><label class='opt'><input type='radio' name='s2q2'> ROM</label><label class='opt'><input type='radio' name='s2q2'> HDD</label></div><li class='q'>Which stores BIOS?</li><div class='options'><label class='opt'><input type='radio' name='s2q3'> ROM</label><label class='opt'><input type='radio' name='s2q3'> SSD</label></div><li class='q'>Which is secondary storage?</li><div class='options'><label class='opt'><input type='radio' name='s2q4'> USB</label><label class='opt'><input type='radio' name='s2q4'> RAM</label></div><li class='q'>Which memory is VOLATILE? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s2' value='1'> RAM (1)</label><label class='opt'><input type='radio' name='s2' value='3'> ROM (3)</label><label class='opt'><input type='radio' name='s2' value='4'> SSD (4)</label><label class='opt'><input type='radio' name='s2' value='2'> DVD (2)</label></div></ol><button onclick="reveal('s2')">REVEAL NUMBER</button><div id='s2out'></div><p class='hint'>Extraction word: <strong>STORAGE</strong></p></div><div class='panel'><h2>Station 3 – Networks</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>What is a LAN?</li><div class='options'><label class='opt'><input type='radio' name='s3q1'> Local Area Network</label><label class='opt'><input type='radio' name='s3q1'> Large Area Network</label></div><li class='q'>What device improves collisions?</li><div class='options'><label class='opt'><input type='radio' name='s3q2'> Switch</label><label class='opt'><input type='radio' name='s3q2'> Hub</label></div><li class='q'>Which uses a central switch?</li><div class='options'><label class='opt'><input type='radio' name='s3q3'> Star</label><label class='opt'><input type='radio' name='s3q3'> Bus</label></div><li class='q'>Which layer uses IP?</li><div class='options'><label class='opt'><input type='radio' name='s3q4'> Network layer</label><label class='opt'><input type='radio' name='s3q4'> Data link</label></div><li class='q'>Which device connects networks? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s3' value='2'> Switch (2)</label><label class='opt'><input type='radio' name='s3' value='3'> Hub (3)</label><label class='opt'><input type='radio' name='s3' value='1'> Router (1)</label><label class='opt'><input type='radio' name='s3' value='4'> WAP (4)</label></div></ol><button onclick="reveal('s3')">REVEAL NUMBER</button><div id='s3out'></div><p class='hint'>Extraction word: <strong>CIPHER</strong></p></div><div class='panel'><h2>Station 4 – Security</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>What is phishing?</li><div class='options'><label class='opt'><input type='radio' name='s4q1'> Fake emails</label><label class='opt'><input type='radio' name='s4q1'> Fake hardware</label></div><li class='q'>What is malware?</li><div class='options'><label class='opt'><input type='radio' name='s4q2'> Malicious software</label><label class='opt'><input type='radio' name='s4q2'> Password</label></div><li class='q'>What is shoulder surfing?</li><div class='options'><label class='opt'><input type='radio' name='s4q3'> Watching someone type</label><label class='opt'><input type='radio' name='s4q3'> Guessing passwords</label></div><li class='q'>What is a brute force attack?</li><div class='options'><label class='opt'><input type='radio' name='s4q4'> Trying many passwords</label><label class='opt'><input type='radio' name='s4q4'> Watching victims</label></div><li class='q'>Best control for stolen laptop? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s4' value='4'> Firewall (4)</label><label class='opt'><input type='radio' name='s4' value='3'> Antivirus (3)</label><label class='opt'><input type='radio' name='s4' value='1'> Encryption (1)</label><label class='opt'><input type='radio' name='s4' value='2'> Pen test (2)</label></div></ol><button onclick="reveal('s4')">REVEAL NUMBER</button><div id='s4out'></div><p class='hint'>Extraction word: <strong>AUTHENTICATION</strong></p></div><div class='panel'><h2>Station 5 – System Software</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>What is an OS?</li><div class='options'><label class='opt'><input type='radio' name='s5q1'> Manages hardware</label><label class='opt'><input type='radio' name='s5q1'> Runs malware</label></div><li class='q'>What does scheduling do?</li><div class='options'><label class='opt'><input type='radio' name='s5q2'> Allocates CPU time</label><label class='opt'><input type='radio' name='s5q2'> Downloads files</label></div><li class='q'>What does defrag do?</li><div class='options'><label class='opt'><input type='radio' name='s5q3'> Reorganises files</label><label class='opt'><input type='radio' name='s5q3'> Installs drivers</label></div><li class='q'>What is UI?</li><div class='options'><label class='opt'><input type='radio' name='s5q4'> User Interface</label><label class='opt'><input type='radio' name='s5q4'> USB Input</label></div><li class='q'>Which utility reduces file size? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s5' value='1'> Compression (1)</label><label class='opt'><input type='radio' name='s5' value='3'> Backup (3)</label><label class='opt'><input type='radio' name='s5' value='4'> Defrag (4)</label><label class='opt'><input type='radio' name='s5' value='2'> Cleanup (2)</label></div></ol><button onclick="reveal('s5')">REVEAL NUMBER</button><div id='s5out'></div><p class='hint'>Extraction word: <strong>PERIPHERALS</strong></p></div><div class='panel'><h2>Station 6 – Impacts & Law</h2><p><strong>Extraction Question = Q5</strong></p><ol><li class='q'>What does CMA protect?</li><div class='options'><label class='opt'><input type='radio' name='s6q1'> Unauthorised access</label><label class='opt'><input type='radio' name='s6q1'> Memory errors</label></div><li class='q'>What does GDPR cover?</li><div class='options'><label class='opt'><input type='radio' name='s6q2'> Personal data</label><label class='opt'><input type='radio' name='s6q2'> Hardware failures</label></div><li class='q'>What is e-waste?</li><div class='options'><label class='opt'><input type='radio' name='s6q3'> Old hardware</label><label class='opt'><input type='radio' name='s6q3'> New hardware</label></div><li class='q'>What is copyright?</li><div class='options'><label class='opt'><input type='radio' name='s6q4'> Ownership</label><label class='opt'><input type='radio' name='s6q4'> Malware</label></div><li class='q'>GDPR principle limiting data collection? (Extraction)</li><div class='options'><label class='opt'><input type='radio' name='s6' value='1'> Data minimisation (1)</label><label class='opt'><input type='radio' name='s6' value='2'> Lawful basis (2)</label><label class='opt'><input type='radio' name='s6' value='3'> Right to erasure (3)</label><label class='opt'><input type='radio' name='s6' value='4'> Integrity (4)</label></div></ol><button onclick="reveal('s6')">REVEAL NUMBER</button><div id='s6out'></div><p class='hint'>Extraction word: <strong>ETHICAL</strong></p></div><div class='panel'>
+<h2>Final ASCII Check</h2>
+<p>Enter ASCII values for your 6 letters:</p>
+<input id='c1' type='number'> <input id='c2' type='number'> <input id='c3' type='number'>
+<input id='c4' type='number'> <input id='c5' type='number'> <input id='c6' type='number'>
+<button onclick='checkEscape()'>CHECK & ESCAPE</button>
+<p id='result'></p>
+</div>
+</main></div></body></html>
