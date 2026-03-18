@@ -1,168 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Revision Quest – Room 4</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Room 4 – The Hall of Many Items</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Pyodide -->
-<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 
-<style>
-    body { font-family: Arial, sans-serif; background: #e8fff4; padding: 20px; }
-    #container {
-        max-width: 900px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 12px #7dd8ae;
-    }
-    textarea {
-        width: 100%;
-        height: 240px;
-        font-family: monospace;
-        font-size: 15px;
-        padding: 10px;
-        border-radius: 6px;
-    }
-    button {
-        padding: 10px 20px;
-        margin-top: 10px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    #run-btn { background: #0e9f6e; color: white; }
-    #run-btn:hover { background: #0b7a54; }
-    #output {
-        background: #000;
-        color: #0f0;
-        padding: 15px;
-        border-radius: 6px;
-        font-family: monospace;
-        margin-top: 15px;
-        height: 150px;
-        overflow-y: auto;
-    }
-    #success {
-        margin-top: 20px;
-        padding: 15px;
-        background: #e6ffd5;
-        border-left: 6px solid #3f8b1c;
-        font-size: 18px;
-        display: none;
-    }
-    #next-btn {
-        display: none;
-        background: #0e9f6e;
-        color: white;
-        margin-top: 20px;
-    }
-</style>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <script src="js/pyodide-init.js"></script>
+    <script src="js/room.js"></script>
 </head>
 
 <body>
-
 <div id="container">
 
 <h1>Room 4: The Hall of Many Items</h1>
 
 <p>
-You enter a grand hall filled with floating crystals, each one representing a value.  
-A voice echoes:<br><br>
-<strong>“Only one who can master lists may proceed.”</strong>
+The crystals glow around you. Only those who understand <strong>lists</strong>
+may pass. Your task:
 </p>
 
-<p><strong>Your task:</strong></p>
-<p>
-Fix the function <code>filter_large(nums)</code> so it returns a **new list** containing  
-only the numbers greater than <strong>10</strong>.
+<p><strong>Fix the function <code>filter_large(nums)</code></strong> so it returns a
+<strong>new list</strong> containing only the numbers greater than <strong>10</strong>.
 </p>
 
-<p>Examples:</p>
+<p>Correct examples:</p>
 <ul>
-  <li>filter_large([5, 12, 3, 19]) → <strong>[12, 19]</strong></li>
-  <li>filter_large([1, 2, 3]) → <strong>[]</strong></li>
-  <li>filter_large([11, 10, 25]) → <strong>[11, 25]</strong></li>
+    <li>filter_large([5, 12, 3, 19]) → <strong>[12, 19]</strong></li>
+    <li>filter_large([1, 2, 3]) → <strong>[]</strong></li>
+    <li>filter_large([11, 10, 25]) → <strong>[11, 25]</strong></li>
 </ul>
 
 <textarea id="code">
 def filter_large(nums):
-    # This code is broken - it always returns the original list!
-    result = nums   # WRONG: this is the same list, not a new one
-
+    # TODO: return a NEW list of numbers > 10
+    result = nums   # this is wrong (points to the original list)
     for n in nums:
         if n > 10:
-            pass  # TODO: append n to the result list
-
+            pass  # TODO: append n to result
     return result
 
 # Tests
-print(filter_large([5, 12, 3, 19]))   # [12, 19]
-print(filter_large([1, 2, 3]))        # []
-print(filter_large([11, 10, 25]))     # [11, 25]
+print(filter_large([5, 12, 3, 19]))
+print(filter_large([1, 2, 3]))
+print(filter_large([11, 10, 25]))
 </textarea>
 
-<button id="run-btn">Run Code</button>
+<button id="run-btn" class="run-btn">Run Code</button>
 
-<div id="output">Output will appear here...</div>
-
-<div id="success">
-🎉 <strong>The Hall of Many Items recognises your skill.</strong><br>
-A new pathway reveals itself…
-</div>
+<div id="output"></div>
+<div id="success">The Hall of Many Items grants you passage.</div>
 
 <a href="room5.html">
-<button id="next-btn">Go to Room 5</button>
+    <button id="next-btn" class="next-btn">Next Room</button>
 </a>
 
 </div>
 
-<script>
-    let pyodideReady = false;
-    let pyodide;
-
-    async function initPyodide() {
-        pyodide = await loadPyodide();
-        pyodideReady = true;
-    }
-    initPyodide();
-
-    const expected = [
-        "[12, 19]",
-        "[]",
-        "[11, 25]"
-    ];
-
-    document.getElementById("run-btn").onclick = async () => {
-        if (!pyodideReady) return;
-
-        let code = document.getElementById("code").value;
-        let output = document.getElementById("output");
-        output.textContent = "Running...";
-
-        try {
-            let result = await pyodide.runPythonAsync(code);
-            output.textContent = result || "(No output)";
-
-            let lines = String(result).trim().split("\n").map(v => v.trim());
-            let correct = expected.every((v, i) => lines[i] === v);
-
-            if (correct) {
-                document.getElementById("success").style.display = "block";
-                document.getElementById("next-btn").style.display = "inline-block";
-            } else {
-                document.getElementById("success").style.display = "none";
-                document.getElementById("next-btn").style.display = "none";
-            }
-
-        } catch (err) {
-            output.textContent = "Error:\n" + err;
-        }
-    };
-</script>
+<script src="js/config/room4.js"></script>
 
 </body>
 </html>
