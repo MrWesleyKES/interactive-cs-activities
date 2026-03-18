@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Revision Quest – Room 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+<style>
+    body { font-family: Arial, sans-serif; background: #eaf0ff; padding: 20px; }
+    #container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #9bb3ff;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        font-family: monospace;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 6px;
+    }
+    button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    #run-btn { background: #304ffe; color: white; }
+    #run-btn:hover { background: #1a35c4; }
+    #output {
+        background: #000;
+        color: #0f0;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        margin-top: 15px;
+        height: 150px;
+        overflow-y: auto;
+    }
+    #success {
+        margin-top: 20px;
+        padding: 15px;
+        background: #d2ffd2;
+        border-left: 6px solid #2a7a2a;
+        font-size: 18px;
+        display: none;
+    }
+    #next-btn {
+        display: none;
+        background: #28a745;
+        color: white;
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+<div id="container">
+
+<h1>Room 2: The Loop Chamber</h1>
+<p>
+A glowing inscription appears on the wall:<br><br>
+<strong>“Only those who master repetition may proceed.”</strong>
+</p>
+
+<p>Your task:</p>
+<p>
+Write a function <code>sum_to_n(n)</code> that returns the sum of all integers from <strong>1</strong> to <strong>n</strong> using a <strong>loop</strong>.
+</p>
+
+<p>Examples:</p>
+<ul>
+  <li>sum_to_n(5) → 15</li>
+  <li>sum_to_n(1) → 1</li>
+  <li>sum_to_n(10) → 55</li>
+</ul>
+
+<textarea id="code">
+def sum_to_n(n):
+    # TODO: Complete this using a loop
+    total = 0
+    # your loop here
+    return total
+
+# Tests
+print(sum_to_n(5))   # should be 15
+print(sum_to_n(1))   # should be 1
+print(sum_to_n(10))  # should be 55
+</textarea>
+
+<button id="run-btn">Run Code</button>
+
+<div id="output">Output will appear here...</div>
+
+<div id="success">
+🎉 <strong>The chamber opens!</strong><br>
+You have shown mastery of loops.
+</div>
+
+<a href="room3.html">
+<button id="next-btn">Go to Room 3</button>
+</a>
+
+</div>
+
+<script>
+    let pyodideReady = false;
+    let pyodide;
+
+    async function initPyodide() {
+        pyodide = await loadPyodide();
+        pyodideReady = true;
+    }
+    initPyodide();
+
+    const expected = ["15", "1", "55"];
+
+    document.getElementById("run-btn").onclick = async () => {
+        if (!pyodideReady) return;
+
+        let code = document.getElementById("code").value;
+        let output = document.getElementById("output");
+        output.textContent = "Running...";
+
+        try {
+            let result = await pyodide.runPythonAsync(code);
+            output.textContent = result || "(No output)";
+
+            let lines = String(result).trim().split("\n").map(v => v.trim());
+            let correct = expected.every((v, i) => lines[i] === v);
+
+            if (correct) {
+                document.getElementById("success").style.display = "block";
+                document.getElementById("next-btn").style.display = "inline-block";
+            } else {
+                document.getElementById("success").style.display = "none";
+                document.getElementById("next-btn").style.display = "none";
+            }
+
+        } catch (err) {
+            output.textContent = "Error:\n" + err;
+        }
+    };
+</script>
+
+</body>
+</html>
