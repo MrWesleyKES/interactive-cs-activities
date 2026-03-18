@@ -5,42 +5,64 @@
     <title>Room 1 – The Locked Terminal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- Pyodide CDN -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Shared JS: Python loader & room logic -->
     <script src="js/pyodide-init.js"></script>
     <script src="js/room.js"></script>
+
+    <!-- CodeMirror (Shared Editor) -->
+    <script type="module" src="js/editor.js"></script>
 </head>
 
 <body>
 <div id="container">
 
-<h1>Room 1: The Locked Terminal</h1>
+    <h1>Room 1: The Locked Terminal</h1>
 
-<p>Fix <code>count_evens()</code> so it returns the number of even numbers in the list.</p>
+    <p>Fix <code>count_evens()</code> so it returns the number of even numbers in the list.</p>
 
-<textarea id="code">
+    <!-- Starter code stored safely -->
+    <script type="text/plain" id="starter-code">
 def count_evens(nums):
     total = 0
     for n in nums:
-        if n % 2 == 1:
+        if n % 2 == 1:  # wrong
             total = total + 1
     return total
 
 print(count_evens([1,2,3,4,5]))
 print(count_evens([2,2,2]))
 print(count_evens([]))
-</textarea>
+    </script>
 
-<button id="run-btn" class="run-btn">Run Code</button>
+    <!-- Code editor container -->
+    <div id="editor"></div>
 
-<div id="output"></div>
-<div id="success">Door unlocked! Proceed to the next room.</div>
+    <button id="run-btn" class="run-btn">Run Code</button>
 
-<a href="room2.html"><button id="next-btn" class="next-btn">Next Room</button></a>
+    <div id="output"></div>
+    <div id="success">Door unlocked! Proceed to the next room.</div>
+
+    <a href="room2.html">
+        <button id="next-btn" class="next-btn">Next Room</button>
+    </a>
 
 </div>
 
+<!-- Initialize editor after DOM loads -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const starter = document.getElementById("starter-code").textContent.trim();
+    window.loadEditor(starter);
+});
+</script>
+
+<!-- Room-specific config -->
 <script src="js/config/room1.js"></script>
 
 </body>
