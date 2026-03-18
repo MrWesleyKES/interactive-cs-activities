@@ -4,411 +4,764 @@
 <meta charset="UTF-8">
 <title>Turing’s Mug – Escape Room</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background:#f7f7f7;
-        margin:0;
-        padding:0;
-        line-height:1.5;
-    }
-    header {
-        background:#1a2a4a;
-        color:white;
-        padding:20px;
-        text-align:center;
-    }
-    section {
-        padding:20px;
-        display:none;
-    }
-    .visible { display:block; }
 
-    h2 { margin-top:0; }
+/* ===============================
+   BLETCHLEY PARK VISUAL THEME
+   =============================== */
 
-    .circle-row {
-        display:flex;
-        gap:8px;
-        margin-bottom:10px;
-    }
-    .circle {
-        width:25px;
-        height:25px;
-        border-radius:50%;
-        border:2px solid #333;
-        cursor:pointer;
-        background:white;
-    }
-    .circle.black { background:black; }
+body {
+    margin:0;
+    background:#e9e4d3 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkgID/DwABBgEAAn9HpgAAAABJRU5ErkJggg==') repeat;
+    font-family: "Courier New", monospace;
+    color:#222;
+}
 
-    .btn {
-        padding:10px 16px;
-        background:#1a2a4a;
-        color:white;
-        cursor:pointer;
-        border:none;
-        margin-top:10px;
-    }
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 230px;
+    height: 100vh;
+    background: #2e2b23;
+    color: #eee;
+    padding: 20px;
+    box-sizing:border-box;
+    overflow-y:auto;
+}
 
-    .word-list-container {
-        background:#fff;
-        padding:10px;
-        border:1px solid #ccc;
-        max-width:400px;
-    }
+#sidebar h2 {
+    margin-top:0;
+    font-size:22px;
+    text-align:center;
+    color:#f5f5dc;
+}
 
-    table { border-collapse: collapse; }
-    td {
-        border:1px solid #ddd;
-        padding:6px 10px;
-    }
+#sidebar button {
+    display:block;
+    width:100%;
+    background:#4a4638;
+    border:none;
+    padding:10px;
+    margin:8px 0;
+    color:#eee;
+    cursor:pointer;
+    font-family:inherit;
+}
+#sidebar button:hover {
+    background:#5a5646;
+}
 
-    /* Seven segment display */
-    .seg-grid {
-        display:flex;
-        gap:8px;
-        margin:10px 0;
-    }
-    .switch {
-        width:30px;
-        height:30px;
-        background:#ddd;
-        border-radius:4px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-weight:bold;
-        cursor:pointer;
-        border:1px solid #aaa;
-    }
-    .switch.on {
-        background:#1a2a4a;
-        color:white;
-    }
+#main {
+    margin-left:230px;
+    padding:20px;
+}
 
-    .digit-box {
-        margin-top:10px;
-        font-size:32px;
-        font-weight:bold;
-    }
+section {
+    display:none;
+}
 
-    #unlock-message {
-        font-size:28px;
-        font-weight:bold;
-        color:green;
-        margin-top:20px;
-        display:none;
-    }
+.visible {
+    display:block;
+}
+
+/* Paper Card Style */
+.card {
+    background:#f7f3e8;
+    border:1px solid #c2bca8;
+    box-shadow:2px 2px 4px rgba(0,0,0,0.2);
+    padding:20px;
+    margin-bottom:25px;
+}
+
+/* Page Headers */
+h1, h2 {
+    font-family:"Courier New", monospace;
+    color:#2e2b23;
+}
+
+/* Countdown Timer */
+#timer {
+    position:fixed;
+    top:10px;
+    right:20px;
+    background:#2e2b23;
+    color:#f5f5dc;
+    padding:10px 18px;
+    border-radius:4px;
+    font-size:20px;
+    box-shadow:0 0 6px rgba(0,0,0,0.35);
+    z-index:5000;
+}
+
+/* Notes Drawer */
+#notesDrawer {
+    position:fixed;
+    top:0;
+    right:-400px;
+    width:400px;
+    height:100vh;
+    background:#f7f3e8;
+    border-left:3px solid #2e2b23;
+    padding:20px;
+    transition: right .4s ease;
+    box-shadow:-3px 0 6px rgba(0,0,0,0.3);
+    z-index:3000;
+}
+#notesDrawer.open {
+    right:0;
+}
+#notesDrawer textarea {
+    width:100%;
+    height:85vh;
+    font-family:inherit;
+    font-size:16px;
+}
+
+#openNotesBtn {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#2e2b23;
+    color:#f5f5dc;
+    padding:14px 18px;
+    border:none;
+    cursor:pointer;
+    border-radius:4px;
+}
+
+/* Puzzle Elements */
+.circle-row {
+    display:flex;
+    gap:10px;
+    margin:10px 0;
+}
+.circle {
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:3px solid #2e2b23;
+    background:white;
+}
+.circle.black {
+    background:black;
+}
+
+/* Buttons */
+.btn {
+    background:#2e2b23;
+    color:#f5f5dc;
+    padding:10px 16px;
+    cursor:pointer;
+    border:none;
+    margin-top:10px;
+    font-family:inherit;
+}
+.btn:hover {
+    background:#413e35;
+}
+
+/* 7-Segment Display */
+.segment-container {
+    margin:20px 0;
+}
+.segbox {
+    position:relative;
+    width:120px;
+    height:200px;
+    background:#1c1a15;
+    margin:20px;
+    display:inline-block;
+    border-radius:10px;
+    padding:10px;
+}
+.seg {
+    position:absolute;
+    width:70px;
+    height:18px;
+    background:#333;
+    border-radius:8px;
+    transition:background .2s;
+    cursor:pointer;
+}
+.seg.on {
+    background:red;
+}
+
+/* Segment Positions */
+.seg.a { top:10px; left:25px; width:70px; height:18px; }
+.seg.b { top:30px; right:10px; width:18px; height:70px; }
+.seg.c { bottom:30px; right:10px; width:18px; height:70px; }
+.seg.d { bottom:10px; left:25px; width:70px; height:18px; }
+.seg.e { bottom:30px; left:10px; width:18px; height:70px; }
+.seg.f { top:30px; left:10px; width:18px; height:70px; }
+.seg.g { top:90px; left:25px; width:70px; height:18px; }
+
+/* Mug Unlock */
+#mugArea {
+    text-align:center;
+    margin-top:30px;
+}
+#mugImage {
+    width:200px;
+    transition: transform .5s;
+}
+.shake {
+    animation: shakeAnim .5s infinite;
+}
+@keyframes shakeAnim {
+    0% { transform:rotate(0deg); }
+    25% { transform:rotate(3deg);}
+    50% { transform:rotate(0deg);}
+    75% { transform:rotate(-3deg);}
+    100% { transform:rotate(0);}
+}
+
+/* Student Report */
+#reportBox {
+    white-space:pre-wrap;
+    background:#fff;
+    padding:20px;
+    border:1px solid #aaa;
+    font-family:inherit;
+}
 </style>
 </head>
+
 <body>
 
-<header>
-    <h1>Turing’s Mug – Escape Room</h1>
-</header>
+<div id="timer">45:00</div>
 
-<!-- STAGE 1: STORY -->
-<section id="stage1" class="visible">
-    <h2>Your Mission</h2>
-    <p>You’ve been invited into Alan Turing’s office. His mug is locked with a combination lock.  
-    A mysterious pattern in his notebook seems to hold the first clue.</p>
+<button id="openNotesBtn" onclick="toggleNotes()">Notes</button>
 
-    <p>Click <strong>Begin</strong> to start the escape room.</p>
-    <button class="btn" onclick="nextStage(2)">Begin</button>
+<div id="notesDrawer">
+    <h2>Your Notes</h2>
+    <textarea id="notesArea"></textarea>
+</div>
+
+<div id="sidebar">
+    <h2>Turing Escape</h2>
+    <button onclick="showSection('story')">Story</button>
+    <button onclick="showSection('puzzle1')">Puzzle 1</button>
+    <button onclick="showSection('puzzle2')">Puzzle 2</button>
+    <button onclick="showSection('puzzle3')">Puzzle 3</button>
+    <button onclick="showSection('final')">Final Lock</button>
+    <button onclick="showSection('report')">Student Report</button>
+</div>
+
+<div id="main">
+
+    <!-- ===============================
+     STORY SECTION
+     =============================== -->
+
+<section id="story" class="visible">
+<div class="card">
+<h1>Turing’s Mug – Escape Room</h1>
+<p>
+You have been granted access to Alan Turing’s wartime office at Bletchley Park.  
+On his desk sits a battered mug, chained to a radiator with a combination lock.  
+Your mission is to decode the clues hidden in Turing’s notes and discover the correct 3‑digit code.
+</p>
+<p>
+Use the navigation on the left to move between puzzles at any time.  
+Your countdown timer has already started.
+</p>
+</div>
 </section>
 
-<!-- STAGE 2: PATTERN PUZZLE -->
-<section id="stage2">
-    <h2>Puzzle 1: Decode the Pattern</h2>
-    <p>Each row of circles represents a binary number:  
-       ● = 1, ○ = 0.  
-       Convert each row to decimal to reveal letters.</p>
 
-    <div id="patternContainer"></div>
+<!-- ===============================
+     PUZZLE 1 – BINARY PATTERN
+     =============================== -->
 
-    <p><strong>Decimal values:</strong></p>
-    <div id="decimalOutput"></div>
+<section id="puzzle1">
+<div class="card">
+<h2>Puzzle 1: Decode the Pattern</h2>
+<p>
+Each pattern row contains five circles.  
+Black = 1, White = 0.  
+Convert each row to a 5‑bit binary number → then to decimal → then translate to letters (A=1, B=2 … Z=26).
+</p>
 
-    <p><strong>Letters:</strong></p>
-    <div id="letterOutput"></div>
+<div id="patternContainer"></div>
 
-    <button class="btn" onclick="checkPattern()">Check Word</button>
+<button class="btn" onclick="checkPattern()">Check Pattern</button>
+
+<div id="patternFeedback" style="margin-top:15px; font-weight:bold;"></div>
+
+</div>
 </section>
 
-<!-- STAGE 3: WORD LIST -->
-<section id="stage3">
-    <h2>Puzzle 2: Find Your Word</h2>
-    <p>The letters form a word. Find it in the list and retrieve the three numbers beside it.</p>
 
-    <div class="word-list-container">
-        <table>
-            <tr><td>bicycle</td><td>109</td><td>7</td><td>111</td></tr>
-            <tr><td>babbage</td><td>79</td><td>102</td><td>7</td></tr>
-            <tr><td>enigma</td><td>6</td><td>79</td><td>111</td></tr>
-            <tr><td>runner</td><td>125</td><td>127</td><td>0</td></tr>
-            <tr><td>cipher</td><td>0</td><td>91</td><td>109</td></tr>
-            <tr><td>engine</td><td>102</td><td>6</td><td>79</td></tr>
-            <tr><td>machine</td><td>91</td><td>125</td><td>111</td></tr>
-            <tr><td>chess</td><td>127</td><td>109</td><td>7</td></tr>
-        </table>
-    </div>
+<!-- ===============================
+     PUZZLE 2 – WORD LIST
+     =============================== -->
 
-    <p>Enter your chosen three numbers:</p>
-    <input id="n1" size="4"> <input id="n2" size="4"> <input id="n3" size="4"><br>
-    <button class="btn" onclick="submitWordNumbers()">Continue</button>
+<section id="puzzle2">
+<div class="card">
+<h2>Puzzle 2: Find Your Word</h2>
+<p>
+From Puzzle 1 you should now have a word.  
+Locate it in the list below — each word has three numbers beside it.  
+Enter the three numbers to proceed.
+</p>
+
+<table style="background:white; border:1px solid #aaa;">
+<tr><td>bicycle</td><td>109</td><td>7</td><td>111</td></tr>
+<tr><td>babbage</td><td>79</td><td>102</td><td>7</td></tr>
+<tr><td>enigma</td><td>6</td><td>79</td><td>111</td></tr>
+<tr><td>runner</td><td>125</td><td>127</td><td>0</td></tr>
+<tr><td>cipher</td><td>0</td><td>91</td><td>109</td></tr>
+<tr><td>engine</td><td>102</td><td>6</td><td>79</td></tr>
+<tr><td>machine</td><td>91</td><td>125</td><td>111</td></tr>
+<tr><td>chess</td><td>127</td><td>109</td><td>7</td></tr>
+</table>
+
+<p style="margin-top:10px;">
+<input id="num1" size="4"> 
+<input id="num2" size="4"> 
+<input id="num3" size="4">
+</p>
+
+<button class="btn" onclick="submitWordNumbers()">Submit Numbers</button>
+
+<div id="wordFeedback" style="margin-top:15px; font-weight:bold;"></div>
+
+</div>
 </section>
 
-<!-- STAGE 4: SEVEN-SEGMENT -->
-<section id="stage4">
-    <h2>Puzzle 3: Recreate the Display</h2>
-    <p>Set the switches to match the binary for each number.</p>
 
-    <div id="segmentArea"></div>
+<!-- ===============================
+     PUZZLE 3 – INTERACTIVE 7‑SEGMENT DISPLAY
+     =============================== -->
 
-    <button class="btn" onclick="checkSegments()">Reveal Digits</button>
+<section id="puzzle3">
+<div class="card">
+<h2>Puzzle 3: Recreate Turing’s Display</h2>
+<p>
+For each number you entered, toggle the segments of the 7‑segment display  
+until you believe the digit shown matches the number’s binary pattern.
+</p>
 
-    <div id="displayDigits" class="digit-box"></div>
+<div id="segmentDisplays"></div>
+
+<button class="btn" onclick="checkSegments()">Check Digits</button>
+
+<div id="segmentFeedback" style="margin-top:15px; font-weight:bold;"></div>
+
+<div id="digitResult" style="margin-top:20px; font-size:26px;"></div>
+
+</div>
 </section>
 
-<!-- STAGE 5: UNLOCK -->
-<section id="stage5">
-    <h2>The Final Combination</h2>
-    <p>Enter the three digits shown:</p>
-    <input id="final1" size="2">  
-    <input id="final2" size="2">  
-    <input id="final3" size="2">
 
-    <button class="btn" onclick="unlock()">Unlock Mug</button>
+<!-- ===============================
+     FINAL LOCK – ENTER THE CODE
+     =============================== -->
 
-    <div id="unlock-message">🎉 You unlocked Turing’s mug!</div>
+<section id="final">
+<div class="card">
+<h2>Final Lock</h2>
+<p>
+Enter the three digits produced by your 7‑segment displays.  
+If correct, Turing’s mug will unlock.
+</p>
+
+<p>
+<input id="finalA" size="2"> 
+<input id="finalB" size="2"> 
+<input id="finalC" size="2">
+</p>
+
+<button class="btn" onclick="unlockMug()">Unlock Mug</button>
+
+<div id="finalFeedback" style="margin-top:15px; font-weight:bold;"></div>
+
+<div id="mugArea">
+    <img id="mugImage" src="data:image/png;base64,
+    iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAM1BMVEUAAAD///
+    8/Pz09PTv7+/p6enx8fH4+Pjw8PDf39/m5ubk5OTq6urR0dHb29vY2Njc3Nybm
+    5t6t84YAAABHklEQVR4nO3YwQ3CMBRFUSQpiVxz/39ZLgmtQUJPtL1x9zbbnl
+    DgAAAAAAAAAAAAD8W16GG17fytR4qVkvqWUX6llL6llF+pZS+pZRfqWUvqWUX
+    6llF+pZS+pZRfqWUvqWUX6llF+pZS+pZRf6Zaf3CtT3sbC9VHAAAAAElFTkSu
+    QmCC">
+</div>
+
+</div>
 </section>
 
+
+<!-- ===============================
+     STUDENT REPORT
+     =============================== -->
+
+<section id="report">
+<div class="card">
+<h2>Student Report</h2>
+<p>Your results will appear below. You can copy/paste this into a document.</p>
+
+<button class="btn" onclick="generateReport()">Generate Report</button>
+
+<div id="reportBox" style="margin-top:20px;"></div>
+
+</div>
+</section>
 <script>
-// -------------------------------------------
-// DATA FROM TEACHER NOTES & WORKSHEET
-// -------------------------------------------
 
-const patterns = {
-    "bicycle": [
-        [0,0,0,1,0],
-        [0,1,0,0,1],
-        [0,0,0,1,1],
-        [1,1,0,0,1],
-        [0,0,0,1,1],
-        [0,1,1,0,0],
-        [0,0,1,0,1]
+/* ============================================================
+   GLOBAL STATE
+   ============================================================ */
+
+let chosenWord = "";
+let chosenPattern = [];
+let decodedWord = "";
+let chosenNumbers = [];
+let segmentSolutions = [];
+let segmentDigits = [];
+let finalDigits = [];
+let timerSeconds = 45 * 60;
+let timerInterval = null;
+
+/* ============================================================
+   SOUND EFFECTS (Base64 embedded WAVs)
+   ============================================================ */
+
+const S_click = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEA..."); 
+const S_success = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEA...");
+const S_error = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEA...");
+const S_unlock = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEA...");
+const S_warning = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEA...");
+
+// NOTE: Replace "..." with real Base64 audio (you can paste your own).
+// This keeps file size manageable here.
+
+
+/* ============================================================
+   NOTES DRAWER
+   ============================================================ */
+
+function toggleNotes() {
+    const drawer = document.getElementById("notesDrawer");
+    drawer.classList.toggle("open");
+    S_click.play();
+}
+
+document.getElementById("notesArea").addEventListener("input", function() {
+    localStorage.setItem("turing_notes", this.value);
+});
+document.getElementById("notesArea").value = localStorage.getItem("turing_notes") || "";
+
+
+/* ============================================================
+   SIDEBAR NAVIGATION
+   ============================================================ */
+
+function showSection(id) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("visible"));
+    document.getElementById(id).classList.add("visible");
+    S_click.play();
+}
+
+
+/* ============================================================
+   COUNTDOWN TIMER (45 minutes)
+   ============================================================ */
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+
+        if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById("timer").innerText = "00:00";
+            S_error.play();
+            alert("Time is up! Turing’s mug remains locked.");
+            return;
+        }
+
+        let m = Math.floor(timerSeconds / 60);
+        let s = timerSeconds % 60;
+        if (m < 10) m = "0" + m;
+        if (s < 10) s = "0" + s;
+
+        document.getElementById("timer").innerText = `${m}:${s}`;
+
+        if (timerSeconds === 300) {
+            S_warning.play();
+        }
+
+    }, 1000);
+}
+startTimer();
+
+
+/* ============================================================
+   PATTERNS FOR PUZZLE 1
+   ============================================================ */
+
+const patternData = {
+    bicycle:[
+        [0,0,0,1,0],[0,1,0,0,1],[0,0,0,1,1],[1,1,0,0,1],
+        [0,0,0,1,1],[0,1,1,0,0],[0,0,1,0,1]
     ],
-    "babbage": [
-        [0,0,0,1,0],
-        [0,0,0,0,1],
-        [0,0,0,1,0],
-        [0,0,0,1,0],
-        [0,0,0,0,1],
-        [0,0,1,1,1],
-        [0,0,1,0,1]
+    babbage:[
+        [0,0,0,1,0],[0,0,0,0,1],[0,0,0,1,0],[0,0,0,1,0],
+        [0,0,0,0,1],[0,0,1,1,1],[0,0,1,0,1]
     ],
-    "enigma": [
-        [0,0,1,0,1],
-        [0,1,1,1,0],
-        [0,1,0,0,1],
-        [0,0,1,1,1],
-        [0,1,1,0,1],
-        [0,0,0,0,1]
+    enigma:[
+        [0,0,1,0,1],[0,1,1,1,0],[0,1,0,0,1],
+        [0,0,1,1,1],[0,1,1,0,1],[0,0,0,0,1]
     ],
-    "runner": [
-        [1,0,0,1,0],
-        [1,0,1,0,1],
-        [0,1,1,1,0],
-        [0,1,1,1,0],
-        [0,0,1,0,1],
-        [1,0,0,1,0]
+    runner:[
+        [1,0,0,1,0],[1,0,1,0,1],[0,1,1,1,0],
+        [0,1,1,1,0],[0,0,1,0,1],[1,0,0,1,0]
     ],
-    "cipher": [
-        [0,0,0,1,1],
-        [0,1,0,0,1],
-        [1,0,0,0,0],
-        [0,1,0,0,0],
-        [0,0,1,0,1],
-        [1,0,0,1,0]
+    cipher:[
+        [0,0,0,1,1],[0,1,0,0,1],[1,0,0,0,0],
+        [0,1,0,0,0],[0,0,1,0,1],[1,0,0,1,0]
     ],
-    "engine": [
-        [0,0,1,0,1],
-        [0,1,1,1,0],
-        [0,0,1,1,1],
-        [0,1,0,0,1],
-        [0,1,1,1,0],
-        [0,0,1,0,1]
+    engine:[
+        [0,0,1,0,1],[0,1,1,1,0],[0,0,1,1,1],
+        [0,1,0,0,1],[0,1,1,1,0],[0,0,1,0,1]
     ],
-    "machine": [
-        [0,1,1,0,1],
-        [0,0,0,0,1],
-        [0,0,0,1,1],
-        [0,1,0,0,0],
-        [0,1,0,0,1],
-        [0,1,1,1,0],
-        [0,0,1,0,1]
+    machine:[
+        [0,1,1,0,1],[0,0,0,0,1],[0,0,0,1,1],
+        [0,1,0,0,0],[0,1,0,0,1],[0,1,1,1,0],[0,0,1,0,1]
     ],
-    "chess": [
-        [0,0,0,1,1],
-        [0,1,0,0,0],
-        [0,0,1,0,1],
-        [1,0,0,1,1],
-        [1,0,0,1,1]
+    chess:[
+        [0,0,0,1,1],[0,1,0,0,0],[0,0,1,0,1],
+        [1,0,0,1,1],[1,0,0,1,1]
     ]
 };
 
-// letter mapping (decimal→letter)
-const letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-// display mapping (decimal→digit)
-const displayMap = {
-    0:0,6:1,91:2,79:3,102:4,109:5,125:6,7:7,127:8,111:9
-};
+/* ============================================================
+   PUZZLE 1 – RENDER RANDOM PATTERN
+   ============================================================ */
 
-// -------------------------------------------
-// STATE
-// -------------------------------------------
-let chosenWord = null;
-let chosenNumbers = [];
-let solvedDigits = [];
+function loadRandomPattern() {
+    const words = Object.keys(patternData);
+    chosenWord = words[Math.floor(Math.random() * words.length)];
+    chosenPattern = patternData[chosenWord];
 
-// -------------------------------------------
-// NAVIGATION
-// -------------------------------------------
-function nextStage(n) {
-    document.querySelectorAll("section").forEach(s=>s.classList.remove("visible"));
-    document.getElementById("stage"+n).classList.add("visible");
-}
-
-// -------------------------------------------
-// STAGE 2 – Pattern puzzle
-// -------------------------------------------
-
-function renderPattern() {
-    // choose random
-    const keys = Object.keys(patterns);
-    chosenWord = keys[Math.floor(Math.random()*keys.length)];
-
-    const pat = patterns[chosenWord];
     const container = document.getElementById("patternContainer");
     container.innerHTML = "";
 
-    pat.forEach((row,i)=>{
-        const r = document.createElement("div");
-        r.className="circle-row";
-        row.forEach((bit,j)=>{
+    chosenPattern.forEach(row => {
+        const line = document.createElement("div");
+        line.className = "circle-row";
+        row.forEach(bit => {
             const c = document.createElement("div");
-            c.className="circle";
-            if (bit===1) c.classList.add("black");
+            c.className = "circle " + (bit ? "black" : "");
             c.dataset.bit = bit;
-            r.appendChild(c);
+            line.appendChild(c);
         });
-        container.appendChild(r);
+        container.appendChild(line);
     });
 }
 
-renderPattern();
+loadRandomPattern();
+
+
+/* ============================================================
+   PUZZLE 1 – CHECK PATTERN
+   ============================================================ */
 
 function checkPattern() {
-    const rows = document.querySelectorAll("#patternContainer .circle-row");
-    let decimals = [];
-    let lettersOut = [];
+    const decimals = [];
+    const letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    let letterString = "";
 
-    rows.forEach(r=>{
-        let bits = [...r.children].map(c=>Number(c.dataset.bit));
-        let dec = bits[0]*16 + bits[1]*8 + bits[2]*4 + bits[3]*2 + bits[4]*1;
+    document.querySelectorAll("#patternContainer .circle-row").forEach(r => {
+        const bits = [...r.children].map(c => Number(c.dataset.bit));
+        const dec = bits[0]*16 + bits[1]*8 + bits[2]*4 + bits[3]*2 + bits[4];
         decimals.push(dec);
-        lettersOut.push(letters[dec]);
+        letterString += letters[dec] || "?";
     });
 
-    document.getElementById("decimalOutput").innerText = decimals.join(", ");
-    document.getElementById("letterOutput").innerText = lettersOut.join("");
+    decodedWord = letterString.toLowerCase();
 
-    nextStage(3);
+    if (decodedWord === chosenWord) {
+        document.getElementById("patternFeedback").innerText =
+            "Correct! The word is: " + decodedWord.toUpperCase();
+        S_success.play();
+    } else {
+        document.getElementById("patternFeedback").innerText =
+            "Incorrect. Keep checking.";
+        S_error.play();
+    }
 }
 
-// -------------------------------------------
-// STAGE 3 – Word list
-// -------------------------------------------
-function submitWordNumbers() {
-    const a = parseInt(document.getElementById("n1").value);
-    const b = parseInt(document.getElementById("n2").value);
-    const c = parseInt(document.getElementById("n3").value);
 
-    if (isNaN(a)||isNaN(b)||isNaN(c)) return alert("Enter all three numbers.");
+/* ============================================================
+   PUZZLE 2 – SUBMIT NUMBERS
+   ============================================================ */
+
+function submitWordNumbers() {
+    const a = Number(document.getElementById("num1").value);
+    const b = Number(document.getElementById("num2").value);
+    const c = Number(document.getElementById("num3").value);
+
+    if (!a || !b || !c) {
+        document.getElementById("wordFeedback").innerText =
+            "Enter all three numbers.";
+        S_error.play();
+        return;
+    }
 
     chosenNumbers = [a,b,c];
-    renderSegmentPuzzle();
-    nextStage(4);
+    document.getElementById("wordFeedback").innerText = "Numbers accepted.";
+    S_success.play();
+
+    renderSegmentDisplays();
 }
 
-// -------------------------------------------
-// STAGE 4 – 7-segment switches
-// -------------------------------------------
-function renderSegmentPuzzle() {
-    const area = document.getElementById("segmentArea");
-    area.innerHTML="";
 
-    chosenNumbers.forEach((num,index)=>{
+/* ============================================================
+   PUZZLE 3 – 7 SEGMENT INTERFACE
+   ============================================================ */
+
+const digitMap = {
+    "abcdef" : 0,
+    "bc" : 1,
+    "abged" : 2,
+    "abgcd" : 3,
+    "fgbc" : 4,
+    "afgcd" : 5,
+    "afgecd" : 6,
+    "abc" : 7,
+    "abcdefg" : 8,
+    "abcfgd" : 9
+};
+
+function renderSegmentDisplays() {
+    const area = document.getElementById("segmentDisplays");
+    area.innerHTML = "";
+
+    chosenNumbers.forEach((num, index) => {
         const box = document.createElement("div");
-
         box.innerHTML = `<h3>Number ${index+1}: ${num}</h3>`;
 
-        const g = document.createElement("div");
-        g.className="seg-grid";
+        const segbox = document.createElement("div");
+        segbox.className = "segbox";
 
-        // binary digits 64,32,16,8,4,2,1
-        const bins=[64,32,16,8,4,2,1];
-        bins.forEach(v=>{
-            const sw = document.createElement("div");
-            sw.className="switch";
-            sw.textContent="0";
-            sw.dataset.value=v;
-            sw.onclick = ()=> {
-                sw.classList.toggle("on");
-                sw.textContent = sw.classList.contains("on") ? "1":"0";
+        ["a","b","c","d","e","f","g"].forEach(seg => {
+            const el = document.createElement("div");
+            el.className = "seg " + seg;
+            el.dataset.seg = seg;
+            el.onclick = () => {
+                el.classList.toggle("on");
+                S_click.play();
             };
-            g.appendChild(sw);
+            segbox.appendChild(el);
         });
 
-        box.appendChild(g);
+        box.appendChild(segbox);
         area.appendChild(box);
     });
 }
 
+
 function checkSegments() {
-    const groups = document.querySelectorAll("#segmentArea > div");
-    solvedDigits=[];
+    const results = [];
 
-    groups.forEach(g=>{
-        const switches = g.querySelectorAll(".switch");
-        let sum=0;
-        switches.forEach(sw=>{
-            if (sw.classList.contains("on")) sum+=Number(sw.dataset.value);
-        });
+    document.querySelectorAll(".segbox").forEach(box => {
+        const onSegs = [...box.querySelectorAll(".seg.on")]
+            .map(s => s.dataset.seg)
+            .sort()
+            .join("");
 
-        let digit = displayMap[sum];
-        if(digit===undefined) digit="?";
-        solvedDigits.push(digit);
+        let digit = "?";
+
+        for (const key in digitMap) {
+            if (key.split("").sort().join("") === onSegs) {
+                digit = digitMap[key];
+                break;
+            }
+        }
+
+        results.push(digit);
     });
 
-    document.getElementById("displayDigits").innerText = solvedDigits.join(" ");
-    nextStage(5);
-}
+    segmentDigits = results;
+    document.getElementById("digitResult").innerText = 
+        "Digits: " + results.join(" ");
 
-// -------------------------------------------
-// STAGE 5 – UNLOCK
-// -------------------------------------------
-function unlock() {
-    const f1 = document.getElementById("final1").value;
-    const f2 = document.getElementById("final2").value;
-    const f3 = document.getElementById("final3").value;
-
-    if (f1==solvedDigits[0] && f2==solvedDigits[1] && f3==solvedDigits[2]) {
-        document.getElementById("unlock-message").style.display="block";
+    if (results.includes("?")) {
+        document.getElementById("segmentFeedback").innerText =
+            "Some digits are invalid.";
+        S_error.play();
     } else {
-        alert("Incorrect combination. Try again.");
+        document.getElementById("segmentFeedback").innerText =
+            "Digits accepted.";
+        S_success.play();
     }
 }
+
+
+/* ============================================================
+   FINAL LOCK
+   ============================================================ */
+
+function unlockMug() {
+    const a = document.getElementById("finalA").value;
+    const b = document.getElementById("finalB").value;
+    const c = document.getElementById("finalC").value;
+
+    if (a == segmentDigits[0] && b == segmentDigits[1] && c == segmentDigits[2]) {
+        // Animate mug
+        const mug = document.getElementById("mugImage");
+        mug.classList.add("shake");
+        S_unlock.play();
+
+        setTimeout(() => {
+            mug.classList.remove("shake");
+            mug.style.transform = "scale(1.2)";
+        }, 1500);
+
+        document.getElementById("finalFeedback").innerText =
+            "Success! The mug is unlocked!";
+    } else {
+        document.getElementById("finalFeedback").innerText =
+            "Incorrect combination.";
+        S_error.play();
+    }
+}
+
+
+/* ============================================================
+   STUDENT REPORT
+   ============================================================ */
+
+function generateReport() {
+    const timeLeft = document.getElementById("timer").innerText;
+
+    const report = `
+TURING ESCAPE ROOM – STUDENT REPORT
+===================================
+
+Random Pattern Word:   ${decodedWord.toUpperCase()}
+Correct Word:          ${chosenWord.toUpperCase()}
+
+Numbers Found:         ${chosenNumbers.join(", ")}
+
+7-Segment Digits:      ${segmentDigits.join(", ")}
+
+Final Code Entered:    ${document.getElementById("finalA").value}
+                        ${document.getElementById("finalB").value}
+                        ${document.getElementById("finalC").value}
+
+Time Remaining:        ${timeLeft}
+
+Notes:
+${document.getElementById("notesArea").value}
+
+Generated: ${new Date().toLocaleString()}
+`;
+
+    document.getElementById("reportBox").innerText = report;
+}
+
 </script>
 
 </body>
