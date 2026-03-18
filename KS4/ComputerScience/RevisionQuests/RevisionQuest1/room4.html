@@ -5,60 +5,103 @@
     <title>Room 4 – The Hall of Many Items</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Shared CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- CodeMirror 5 (CSS + JS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libsudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+    <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Shared Pyodide loader -->
     <script src="js/pyodide-init.js"></script>
+
+    <!-- Shared room engine -->
     <script src="js/room.js"></script>
+
+    <!-- Shared Editor wrapper -->
+    <script>
+        window.loadEditor = function(startCode) {
+            window.editor = CodeMirror(document.getElementById("editor"), {
+                value: startCode,
+                mode: "python",
+                theme: "dracula",
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineWrapping: true
+            });
+        };
+
+        window.getEditorCode = function () {
+            return window.editor.getValue();
+        };
+    </script>
 </head>
 
 <body>
 <div id="container">
 
-<h1>Room 4: The Hall of Many Items</h1>
+    <h1>Room 4: The Hall of Many Items</h1>
 
-<p>
-The crystals glow around you. Only those who understand <strong>lists</strong>
-may pass. Your task:
-</p>
+    <p>
+        You enter a vast hall filled with floating objects.  
+        Only those who understand <strong>lists</strong> may pass.
+    </p>
 
-<p><strong>Fix the function <code>filter_large(nums)</code></strong> so it returns a
-<strong>new list</strong> containing only the numbers greater than <strong>10</strong>.
-</p>
+    <p><strong>Your Task:</strong>  
+       Fix <code>filter_large(nums)</code> so it returns a <strong>new list</strong> containing only the numbers greater than <strong>10</strong>.
+    </p>
 
-<p>Correct examples:</p>
-<ul>
-    <li>filter_large([5, 12, 3, 19]) → <strong>[12, 19]</strong></li>
-    <li>filter_large([1, 2, 3]) → <strong>[]</strong></li>
-    <li>filter_large([11, 10, 25]) → <strong>[11, 25]</strong></li>
-</ul>
+    <p>Examples:</p>
+    <ul>
+        <li>filter_large([5, 12, 3, 19]) → <strong>[12, 19]</strong></li>
+        <li>filter_large([1, 2, 3]) → <strong>[]</strong></li>
+        <li>filter_large([11, 10, 25]) → <strong>[11, 25]</strong></li>
+    </ul>
 
-<textarea id="code">
+    <!-- Starter code -->
+    <script type="text/plain" id="starter-code">
 def filter_large(nums):
-    # TODO: return a NEW list of numbers > 10
-    result = nums   # this is wrong (points to the original list)
+    # This is wrong (points to the same list)
+    result = nums
     for n in nums:
         if n > 10:
-            pass  # TODO: append n to result
+            pass  # TODO: append n to the result list
     return result
 
-# Tests
 print(filter_large([5, 12, 3, 19]))
 print(filter_large([1, 2, 3]))
 print(filter_large([11, 10, 25]))
-</textarea>
+    </script>
 
-<button id="run-btn" class="run-btn">Run Code</button>
+    <!-- CodeMirror Editor -->
+    <div id="editor"></div>
 
-<div id="output"></div>
-<div id="success">The Hall of Many Items grants you passage.</div>
+    <button id="run-btn" class="run-btn">Run Code</button>
 
-<a href="room5.html">
-    <button id="next-btn" class="next-btn">Next Room</button>
-</a>
+    <div id="output"></div>
+    <div id="success">You have mastered lists. The hall reveals a new path.</div>
+
+    <a href="room5.html"><button id="next-btn" class="next-btn">Next Room</button></a>
 
 </div>
 
+<!-- Initialise the editor -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const starter = document.getElementById("starter-code").textContent.trim();
+    window.loadEditor(starter);
+});
+</script>
+
+<!-- Room-specific expected output -->
 <script src="js/config/room4.js"></script>
 
 </body>
