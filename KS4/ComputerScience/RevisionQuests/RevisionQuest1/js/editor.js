@@ -1,27 +1,26 @@
-/*  editor.js
- *  Shared CodeMirror-based editor for all rooms
- *  Loads once per page, no duplication needed
- */
+<!-- CodeMirror JS bundle -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
-import { EditorView, basicSetup } from "https://esm.sh/@codemirror/basic-setup";
-import { python } from "https://esm.sh/@codemirror/lang-python";
-import { oneDark } from "https://esm.sh/@codemirror/theme-one-dark";
+<!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 
-/* Create CodeMirror editor */
+<script>
+// create editor
 window.loadEditor = function(startCode) {
-    window.editor = new EditorView({
-        doc: startCode,
-        extensions: [
-            basicSetup,
-            python(),
-            oneDark,
-            EditorView.lineWrapping
-        ],
-        parent: document.getElementById("editor")
+    window.editor = CodeMirror(document.getElementById('editor'), {
+        value: startCode,
+        mode: "python",
+        lineNumbers: true,
+        theme: "dracula",
+        indentUnit: 4,
+        smartIndent: true,
+        lineWrapping: true,
     });
 };
 
-/* Helper to retrieve current code */
 window.getEditorCode = function() {
-    return window.editor.state.doc.toString();
+    return window.editor.getValue();
 };
+</script>
