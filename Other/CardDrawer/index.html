@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Draw</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #1a5c2e;
+      background-image:
+        radial-gradient(ellipse at center, #1e6b35 0%, #0f3d1e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #f0e6c8;
+      padding: 24px;
+      gap: 32px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      color: #f5dfa0;
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .card-wrap {
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.55));
+      transition: transform 0.3s ease;
+    }
+
+    .card-wrap:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-svg {
+      display: block;
+    }
+
+    .info-box {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 20px 32px;
+      min-width: 280px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .info-box h2 {
+      font-size: 1.5rem;
+      color: #f5dfa0;
+      margin-bottom: 12px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 8px 24px;
+      text-align: left;
+    }
+
+    .info-label {
+      font-size: 0.85rem;
+      color: #b0c8b0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-top: 2px;
+    }
+
+    .info-value {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #f0e6c8;
+    }
+
+    .info-value.red {
+      color: #e8524a;
+    }
+
+    .info-value.black {
+      color: #f0e6c8;
+    }
+
+    button {
+      background: #c8a84b;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-family: Georgia, serif;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+    }
+
+    button:hover {
+      background: #d9bc62;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .flip-enter {
+      animation: flipIn 0.4s ease forwards;
+    }
+
+    @keyframes flipIn {
+      0%   { transform: rotateY(90deg) scale(0.85); opacity: 0; }
+      60%  { transform: rotateY(-8deg) scale(1.02); opacity: 1; }
+      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Card Draw</h1>
+  <div class="stage">
+    <div class="card-wrap" id="cardWrap">
+      <!-- SVG rendered here by JS -->
+    </div>
+
+    <div class="info-box" id="infoBox">
+      <h2 id="cardName"></h2>
+      <div class="info-grid">
+        <span class="info-label">Suit</span>
+        <span class="info-value" id="infoSuit"></span>
+        <span class="info-label">Colour</span>
+        <span class="info-value" id="infoColour"></span>
+        <span class="info-label">Value</span>
+        <span class="info-value" id="infoValue"></span>
+      </div>
+    </div>
+
+    <button id="drawBtn" onclick="draw()">Draw a Card</button>
+  </div>
+
+  <script>
+    const SUITS = [
+      { name: 'Spades',   symbol: '♠', colour: 'black', svgPath: 'M50 10 C50 10 15 38 15 58 C15 72 27 80 37 76 C33 84 26 88 18 90 L82 90 C74 88 67 84 63 76 C73 80 85 72 85 58 C85 38 50 10 50 10Z' },
+      { name: 'Clubs',    symbol: '♣', colour: 'black', svgPath: 'M50 72 L44 90 L56 90 Z M50 72 C50 72 35 70 30 58 C25 46 35 36 47 40 C40 30 44 18 50 18 C56 18 60 30 53 40 C65 36 75 46 70 58 C65 70 50 72 50 72Z' },
+      { name: 'Hearts',   symbol: '♥', colour: 'red',   svgPath: 'M50 82 C50 82 15 56 15 38 C15 24 24 16 33 16 C40 16 46 20 50 26 C54 20 60 16 67 16 C76 16 85 24 85 38 C85 56 50 82 50 82Z' },
+      { name: 'Diamonds', symbol: '♦', colour: 'red',   svgPath: 'M50 8 L82 50 L50 92 L18 50 Z' },
+    ];
+
+    const RANKS = [
+      { label: 'A',  name: 'Ace',   value: 1  },
+      { label: '2',  name: 'Two',   value: 2  },
+      { label: '3',  name: 'Three', value: 3  },
+      { label: '4',  name: 'Four',  value: 4  },
+      { label: '5',  name: 'Five',  value: 5  },
+      { label: '6',  name: 'Six',   value: 6  },
+      { label: '7',  name: 'Seven', value: 7  },
+      { label: '8',  name: 'Eight', value: 8  },
+      { label: '9',  name: 'Nine',  value: 9  },
+      { label: '10', name: 'Ten',   value: 10 },
+      { label: 'J',  name: 'Jack',  value: 11 },
+      { label: 'Q',  name: 'Queen', value: 12 },
+      { label: 'K',  name: 'King',  value: 13 },
+    ];
+
+    function randomCard() {
+      const suit = SUITS[Math.floor(Math.random() * 4)];
+      const rank = RANKS[Math.floor(Math.random() * 13)];
+      return { suit, rank };
+    }
+
+    // Build pip grid positions for number cards
+    function pipPositions(count) {
+      const sets = {
+        1:  [[50, 50]],
+        2:  [[50, 28], [50, 72]],
+        3:  [[50, 22], [50, 50], [50, 78]],
+        4:  [[30, 28], [70, 28], [30, 72], [70, 72]],
+        5:  [[30, 28], [70, 28], [50, 50], [30, 72], [70, 72]],
+        6:  [[30, 22], [70, 22], [30, 50], [70, 50], [30, 78], [70, 78]],
+        7:  [[30, 22], [70, 22], [50, 36], [30, 50], [70, 50], [30, 78], [70, 78]],
+        8:  [[30, 22], [70, 22], [50, 33], [30, 50], [70, 50], [50, 67], [30, 78], [70, 78]],
+        9:  [[30, 20], [70, 20], [30, 38], [70, 38], [50, 50], [30, 62], [70, 62], [30, 80], [70, 80]],
+        10: [[30, 20], [70, 20], [50, 30], [30, 38], [70, 38], [30, 62], [70, 62], [50, 70], [30, 80], [70, 80]],
+      };
+      return sets[count] || [];
+    }
+
+    function makePipSvg(suitPath, fill, cx, cy, scale) {
+      scale = scale || 0.18;
+      // transform: translate to center on cx,cy, scale around (50,50)
+      const tx = cx - 50 * scale;
+      const ty = cy - 50 * scale;
+      return `<path d="${suitPath}" fill="${fill}" transform="translate(${tx},${ty}) scale(${scale})"/>`;
+    }
+
+    function makeFaceSvg(rank, suitSymbol, fill) {
+      // Face letter in center
+      return `
+        <text x="50" y="62" text-anchor="middle" dominant-baseline="middle"
+          font-family="Georgia,serif" font-size="44" font-weight="bold"
+          fill="${fill}">${rank}</text>
+        <text x="50" y="100" text-anchor="middle" dominant-baseline="middle"
+          font-family="Georgia,serif" font-size="22"
+          fill="${fill}">${suitSymbol}</text>
+      `;
+    }
+
+    function buildCardSVG(card) {
+      const { suit, rank } = card;
+      const fill = suit.colour === 'red' ? '#cc2222' : '#1a1a2e';
+      const w = 200, h = 280;
+      const rx = 14;
+
+      // Corner rank + symbol
+      const corners = `
+        <text x="14" y="30" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}">${rank.label}</text>
+        <text x="14" y="50" font-family="Georgia,serif" font-size="18" fill="${fill}">${suit.symbol}</text>
+        <text x="${w - 14}" y="${h - 18}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}"
+          text-anchor="end" transform="rotate(180 ${w / 2} ${h / 2})">${rank.label}</text>
+        <text x="${w - 14}" y="${h - 38}" font-family="Georgia,serif" font-size="18" fill="${fill}"
+          text-anchor="end" transform="rotate(180 ${w / 2} ${h / 2})">${suit.symbol}</text>
+      `;
+
+      let center = '';
+
+      if (rank.label === 'A') {
+        // Big ace pip in center
+        center = makePipSvg(suit.svgPath, fill, w / 2, h / 2, 0.5);
+      } else if (['J', 'Q', 'K'].includes(rank.label)) {
+        // Face card initials
+        const offsetX = w / 2;
+        const offsetY = h / 2 - 14;
+        center = `
+          <text x="${offsetX}" y="${offsetY + 10}" text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia,serif" font-size="56" font-weight="bold"
+            fill="${fill}">${rank.label}</text>
+          <text x="${offsetX}" y="${offsetY + 64}" text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia,serif" font-size="28"
+            fill="${fill}">${suit.symbol}</text>
+        `;
+      } else {
+        // Pip cards — map positions from 100x100 grid to card coords
+        const pips = pipPositions(rank.value);
+        const scaleX = w / 100;
+        const scaleY = h / 100;
+        center = pips.map(([px, py]) => {
+          const cx = px * scaleX;
+          const cy = py * scaleY;
+          // Flip bottom half pips (y > 50)
+          const flipY = py > 52;
+          const transform = flipY
+            ? `translate(${cx}, ${cy}) scale(0.22) rotate(180, 50, 50) translate(-50, -50)`
+            : `translate(${cx}, ${cy}) scale(0.22) translate(-50, -50)`;
+          return `<path d="${suit.svgPath}" fill="${fill}" transform="${transform}"/>`;
+        }).join('\n');
+      }
+
+      return `
+        <svg class="card-svg" xmlns="http://www.w3.org/2000/svg"
+          width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+          <!-- Card background -->
+          <rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${rx}" ry="${rx}"
+            fill="white" stroke="#d0d0d0" stroke-width="1.5"/>
+          <!-- Subtle inner border -->
+          <rect x="6" y="6" width="${w - 12}" height="${h - 12}" rx="${rx - 4}" ry="${rx - 4}"
+            fill="none" stroke="${suit.colour === 'red' ? '#f0b0b0' : '#b0b8c8'}" stroke-width="0.8"/>
+
+          ${corners}
+          ${center}
+        </svg>
+      `;
+    }
+
+    function draw() {
+      const card = randomCard();
+      const wrap = document.getElementById('cardWrap');
+
+      // Remove animation class, force reflow, re-add
+      wrap.classList.remove('flip-enter');
+      void wrap.offsetWidth;
+      wrap.innerHTML = buildCardSVG(card);
+      wrap.classList.add('flip-enter');
+
+      // Info panel
+      const colourClass = card.suit.colour;
+      document.getElementById('cardName').textContent =
+        `${card.rank.name} of ${card.suit.name}`;
+      document.getElementById('infoSuit').textContent =
+        `${card.suit.symbol} ${card.suit.name}`;
+      document.getElementById('infoColour').className = `info-value ${colourClass}`;
+      document.getElementById('infoColour').textContent =
+        card.suit.colour.charAt(0).toUpperCase() + card.suit.colour.slice(1);
+      document.getElementById('infoValue').textContent = card.rank.value;
+    }
+
+    // Draw on load
+    draw();
+  </script>
+</body>
+</html>
+```
