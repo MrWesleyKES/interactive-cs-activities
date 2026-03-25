@@ -187,41 +187,23 @@
       return { suit, rank };
     }
 
-    // Build pip grid positions for number cards
+    // Pip positions: [x, y, flip] in 0-100 grid
+    // Pip area has margins so pips stay clear of corner labels
     function pipPositions(count) {
+      const T = 24, M = 50, B = 76;
+      const L = 28, R = 72;
       const sets = {
-        1:  [[50, 50]],
-        2:  [[50, 28], [50, 72]],
-        3:  [[50, 22], [50, 50], [50, 78]],
-        4:  [[30, 28], [70, 28], [30, 72], [70, 72]],
-        5:  [[30, 28], [70, 28], [50, 50], [30, 72], [70, 72]],
-        6:  [[30, 22], [70, 22], [30, 50], [70, 50], [30, 78], [70, 78]],
-        7:  [[30, 22], [70, 22], [50, 36], [30, 50], [70, 50], [30, 78], [70, 78]],
-        8:  [[30, 22], [70, 22], [50, 33], [30, 50], [70, 50], [50, 67], [30, 78], [70, 78]],
-        9:  [[30, 20], [70, 20], [30, 38], [70, 38], [50, 50], [30, 62], [70, 62], [30, 80], [70, 80]],
-        10: [[30, 20], [70, 20], [50, 30], [30, 38], [70, 38], [30, 62], [70, 62], [50, 70], [30, 80], [70, 80]],
+        2:  [[M,T,false],[M,B,true]],
+        3:  [[M,T,false],[M,M,false],[M,B,true]],
+        4:  [[L,T,false],[R,T,false],[L,B,true],[R,B,true]],
+        5:  [[L,T,false],[R,T,false],[M,M,false],[L,B,true],[R,B,true]],
+        6:  [[L,T,false],[R,T,false],[L,M,false],[R,M,false],[L,B,true],[R,B,true]],
+        7:  [[L,T,false],[R,T,false],[M,37,false],[L,M,false],[R,M,false],[L,B,true],[R,B,true]],
+        8:  [[L,T,false],[R,T,false],[M,34,false],[L,M,false],[R,M,false],[M,66,true],[L,B,true],[R,B,true]],
+        9:  [[L,T,false],[R,T,false],[L,37,false],[R,37,false],[M,M,false],[L,63,true],[R,63,true],[L,B,true],[R,B,true]],
+        10: [[L,T,false],[R,T,false],[M,33,false],[L,37,false],[R,37,false],[L,63,true],[R,63,true],[M,67,true],[L,B,true],[R,B,true]],
       };
       return sets[count] || [];
-    }
-
-    function makePipSvg(suitPath, fill, cx, cy, scale) {
-      scale = scale || 0.18;
-      // transform: translate to center on cx,cy, scale around (50,50)
-      const tx = cx - 50 * scale;
-      const ty = cy - 50 * scale;
-      return `<path d="${suitPath}" fill="${fill}" transform="translate(${tx},${ty}) scale(${scale})"/>`;
-    }
-
-    function makeFaceSvg(rank, suitSymbol, fill) {
-      // Face letter in center
-      return `
-        <text x="50" y="62" text-anchor="middle" dominant-baseline="middle"
-          font-family="Georgia,serif" font-size="44" font-weight="bold"
-          fill="${fill}">${rank}</text>
-        <text x="50" y="100" text-anchor="middle" dominant-baseline="middle"
-          font-family="Georgia,serif" font-size="22"
-          fill="${fill}">${suitSymbol}</text>
-      `;
     }
 
     function buildCardSVG(card) {
@@ -229,61 +211,54 @@
       const fill = suit.colour === 'red' ? '#cc2222' : '#1a1a2e';
       const w = 200, h = 280;
       const rx = 14;
+      const PIP_SCALE = 0.24;
 
-      // Corner rank + symbol
+      // Corner labels: top-left group, then same group rotated 180° around card centre for bottom-right
       const corners = `
-        <text x="14" y="30" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}">${rank.label}</text>
-        <text x="14" y="50" font-family="Georgia,serif" font-size="18" fill="${fill}">${suit.symbol}</text>
-        <text x="${w - 14}" y="${h - 18}" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}"
-          text-anchor="end" transform="rotate(180 ${w / 2} ${h / 2})">${rank.label}</text>
-        <text x="${w - 14}" y="${h - 38}" font-family="Georgia,serif" font-size="18" fill="${fill}"
-          text-anchor="end" transform="rotate(180 ${w / 2} ${h / 2})">${suit.symbol}</text>
+        <text x="12" y="30" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}">${rank.label}</text>
+        <text x="12" y="50" font-family="Georgia,serif" font-size="16" fill="${fill}">${suit.symbol}</text>
+        <g transform="rotate(180,${w / 2},${h / 2})">
+          <text x="12" y="30" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="${fill}">${rank.label}</text>
+          <text x="12" y="50" font-family="Georgia,serif" font-size="16" fill="${fill}">${suit.symbol}</text>
+        </g>
       `;
 
       let center = '';
 
       if (rank.label === 'A') {
-        // Big ace pip in center
-        center = makePipSvg(suit.svgPath, fill, w / 2, h / 2, 0.5);
+        const aceScale = 0.6;
+        const tx = w / 2 - 50 * aceScale;
+        const ty = h / 2 - 50 * aceScale;
+        center = `<path d="${suit.svgPath}" fill="${fill}" transform="translate(${tx},${ty}) scale(${aceScale})"/>`;
       } else if (['J', 'Q', 'K'].includes(rank.label)) {
-        // Face card initials
-        const offsetX = w / 2;
-        const offsetY = h / 2 - 14;
         center = `
-          <text x="${offsetX}" y="${offsetY + 10}" text-anchor="middle" dominant-baseline="middle"
-            font-family="Georgia,serif" font-size="56" font-weight="bold"
-            fill="${fill}">${rank.label}</text>
-          <text x="${offsetX}" y="${offsetY + 64}" text-anchor="middle" dominant-baseline="middle"
-            font-family="Georgia,serif" font-size="28"
-            fill="${fill}">${suit.symbol}</text>
+          <text x="${w / 2}" y="${h / 2 + 10}" text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia,serif" font-size="64" font-weight="bold" fill="${fill}">${rank.label}</text>
+          <text x="${w / 2}" y="${h / 2 + 58}" text-anchor="middle" dominant-baseline="middle"
+            font-family="Georgia,serif" font-size="26" fill="${fill}">${suit.symbol}</text>
         `;
       } else {
-        // Pip cards — map positions from 100x100 grid to card coords
+        // Pip cards — map 0-100 grid into the safe pip area, away from corner labels
+        const pipTop  = 0.18 * h, pipBot  = 0.82 * h;
+        const pipLeft = 0.15 * w, pipRight = 0.85 * w;
         const pips = pipPositions(rank.value);
-        const scaleX = w / 100;
-        const scaleY = h / 100;
-        center = pips.map(([px, py]) => {
-          const cx = px * scaleX;
-          const cy = py * scaleY;
-          // Flip bottom half pips (y > 50)
-          const flipY = py > 52;
-          const transform = flipY
-            ? `translate(${cx}, ${cy}) scale(0.22) rotate(180, 50, 50) translate(-50, -50)`
-            : `translate(${cx}, ${cy}) scale(0.22) translate(-50, -50)`;
-          return `<path d="${suit.svgPath}" fill="${fill}" transform="${transform}"/>`;
+        center = pips.map(([px, py, flip]) => {
+          const cx = pipLeft  + (px / 100) * (pipRight - pipLeft);
+          const cy = pipTop   + (py / 100) * (pipBot   - pipTop);
+          const rot = flip ? 'rotate(180,50,50) ' : '';
+          const tx = cx - 50 * PIP_SCALE;
+          const ty = cy - 50 * PIP_SCALE;
+          return `<path d="${suit.svgPath}" fill="${fill}" transform="translate(${tx},${ty}) scale(${PIP_SCALE}) ${rot}"/>`;
         }).join('\n');
       }
 
       return `
         <svg class="card-svg" xmlns="http://www.w3.org/2000/svg"
           width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-          <!-- Card background -->
           <rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="${rx}" ry="${rx}"
             fill="white" stroke="#d0d0d0" stroke-width="1.5"/>
-          <!-- Subtle inner border -->
           <rect x="6" y="6" width="${w - 12}" height="${h - 12}" rx="${rx - 4}" ry="${rx - 4}"
             fill="none" stroke="${suit.colour === 'red' ? '#f0b0b0' : '#b0b8c8'}" stroke-width="0.8"/>
-
           ${corners}
           ${center}
         </svg>
