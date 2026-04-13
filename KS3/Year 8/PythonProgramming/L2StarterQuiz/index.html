@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lesson 2 Starter – Prediction + Python Runner</title>
+<style>
+  body { font-family: Arial; max-width: 800px; margin: auto; padding: 20px; }
+  .question { background: #f1f1f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
+  .code { background: #272822; color: #eee; padding: 10px; font-family: monospace; border-radius: 5px; white-space: pre; }
+  button { margin-top: 10px; }
+  .python-box { background: #eee; padding: 10px; margin-top: 15px; border-radius: 5px; }
+  #output { background: #111; color: #0f0; padding: 10px; min-height: 50px; white-space: pre-wrap; }
+</style>
+
+<!-- Skulpt (Python-in-the-browser) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
+
+<script>
+// Run Python using Skulpt
+function runPython(code) {
+    let outputArea = document.getElementById("output");
+    outputArea.textContent = "Running...\n";
+
+    Sk.configure({
+        output: text => outputArea.textContent += text,
+        read: x => Sk.builtinFiles.files["src/lib/" + x] || ""
+    });
+
+    Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code))
+        .catch(err => outputArea.textContent += "\nERROR: " + err.toString());
+}
+
+// Answer checking
+function checkAnswer(qNum, correct) {
+  const chosen = document.querySelector(`input[name="q${qNum}"]:checked`);
+  const feedback = document.getElementById(`feedback${qNum}`);
+
+  if (!chosen) {
+    feedback.textContent = "Please select an answer.";
+    feedback.style.color = "red";
+    return;
+  }
+
+  if (chosen.value === correct) {
+    feedback.textContent = "✅ Correct!";
+    feedback.style.color = "green";
+  } else {
+    feedback.textContent = "❌ Incorrect – try running the code!";
+    feedback.style.color = "red";
+  }
+}
+</script>
+</head>
+<body>
+
+<h1>Lesson 2 Starter – Prediction Activity</h1>
+<p>Make a prediction for each question, then run the code to test your understanding.</p>
+
+<hr>
+
+<!-- ✅ QUESTION 1 -->
+<div class="question">
+  <h3>Question 1</h3>
+  <p><b>What will this program output?</b></p>
+
+  <div class="code">lucky = 13
+print("My lucky number is", lucky)</div>
+
+  <label><input type="radio" name="q1" value="a"> My lucky number is lucky</label><br>
+  <label><input type="radio" name="q1" value="b"> My lucky number is 13</label><br>
+  <label><input type="radio" name="q1" value="c"> It is not possible to know</label><br>
+  <label><input type="radio" name="q1" value="d"> There is an error</label><br>
+
+  <button onclick="checkAnswer(1, 'b')">Check Answer</button>
+  <p id="feedback1"></p>
+
+  <div class="python-box">
+    <button onclick="runPython(`lucky = 13\nprint('My lucky number is', lucky)`);">▶ Run this code</button>
+  </div>
+</div>
+
+<!-- ✅ QUESTION 2 -->
+<div class="question">
+  <h3>Question 2</h3>
+  <p><b>What will this program output?</b></p>
+
+  <div class="code">print("My lucky number is", lucky)
+lucky = 13</div>
+
+  <label><input type="radio" name="q2" value="a"> My lucky number is lucky</label><br>
+  <label><input type="radio" name="q2" value="b"> My lucky number is 13</label><br>
+  <label><input type="radio" name="q2" value="c"> It is not possible to know</label><br>
+  <label><input type="radio" name="q2" value="d"> There is an error</label><br>
+
+  <button onclick="checkAnswer(2, 'd')">Check Answer</button>
+  <p id="feedback2"></p>
+
+  <div class="python-box">
+    <button onclick="runPython(`print('My lucky number is', lucky)\nlucky = 13`);">▶ Run this code</button>
+  </div>
+</div>
+
+<!-- ✅ QUESTION 3 -->
+<div class="question">
+  <h3>Question 3</h3>
+  <p><b>True or false: this program always produces the same output?</b></p>
+
+  <div class="code">print("What’s your name?")
+user = input()
+print("Hello", user)</div>
+
+  <label><input type="radio" name="q3" value="true"> True</label><br>
+  <label><input type="radio" name="q3" value="false"> False</label><br>
+
+  <button onclick="checkAnswer(3, 'false')">Check Answer</button>
+  <p id="feedback3"></p>
+
+  <div class="python-box">
+    <input id="nameInput" placeholder="Type a name for input()">
+    <button onclick="runPython(`user = '` + document.getElementById('nameInput').value + `'\nprint('Hello', user)`);">▶ Run this code</button>
+  </div>
+</div>
+
+<hr>
+
+<h2>Python Output</h2>
+<div id="output"></div>
+
+</body>
+</html>
