@@ -12,31 +12,34 @@
   .output { background: #111; color: #0f0; padding: 10px; min-height: 40px; border-radius: 5px; white-space: pre-wrap; margin-top: 10px; }
 </style>
 
-<!-- Correct Skulpt sources -->
+<!-- ✅ Correct Skulpt Includes -->
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 
 <script>
-// Run Python into a specific output box
+// ✅ Fully working Skulpt runner with correct stdlib loader
+
 function runPythonTo(code, outputId) {
     const outputArea = document.getElementById(outputId);
     outputArea.textContent = "Running...\n";
 
     Sk.configure({
         output: txt => outputArea.textContent += txt,
-        read: x => {
-            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"]["src/lib/" + x] === undefined) {
+        read: function (x) {
+            if (Sk.builtinFiles === undefined ||
+                Sk.builtinFiles["files"]["src/lib/" + x] === undefined) {
                 throw "File not found: '" + x + "'";
             }
             return Sk.builtinFiles["files"]["src/lib/" + x];
         }
     });
 
-    Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code))
-        .catch(err => outputArea.textContent += "\nERROR: " + err.toString());
+    Sk.misceval.asyncToPromise(() =>
+        Sk.importMainWithBody("<stdin>", false, code)
+    ).catch(err => outputArea.textContent += "\nERROR: " + err.toString());
 }
 
-// MCQ checking
+// ✅ MCQ feedback logic
 function checkAnswer(qNum, correct) {
   const chosen = document.querySelector(`input[name="q${qNum}"]:checked`);
   const fb = document.getElementById(`feedback${qNum}`);
@@ -61,7 +64,7 @@ function checkAnswer(qNum, correct) {
 <body>
 
 <h1>Lesson 2 Starter – Predict the Output</h1>
-<p>Choose an answer, then run the code to check.</p>
+<p>Make a prediction first, then run the code to test it.</p>
 
 <hr>
 
@@ -126,9 +129,12 @@ print("Hello", user)</div>
 
   <div class="python-box">
     <input id="nameInput" placeholder="Type a name to simulate input()">
-    <button onclick="runPythonTo(`user = '` + document.getElementById('nameInput').value + `'\nprint('Hello', user)`, 'out3')">
-      ▶ Run Code
-    </button>
+    <button onclick="
+      runPythonTo(
+        `print('What’s your name?')\nuser='${document.getElementById('nameInput').value}'\nprint('Hello', user)`,
+        'out3'
+      )
+    ">▶ Run Code</button>
     <div id="out3" class="output"></div>
   </div>
 </div>
