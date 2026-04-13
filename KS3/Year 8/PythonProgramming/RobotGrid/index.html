@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Robot Algorithm Starter</title>
+<style>
+  body { font-family: Arial; max-width: 450px; margin: auto; }
+  #grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 5px; margin: 20px 0; }
+  .cell { width: 60px; height: 60px; background: #eee; display:flex; justify-content:center; align-items:center; font-size:25px; }
+</style>
+</head>
+<body>
+
+<h2>Robot Algorithm Challenge</h2>
+<p>Give the robot commands:<br><b>up, down, left, right</b></p>
+
+<textarea id="commands" rows="5" style="width:100%;" placeholder="Type one command per line..."></textarea>
+<button id="runBtn">Run</button>
+
+<div id="grid"></div>
+
+<script>
+let robot = { x: 2, y: 2 };
+
+function drawGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 5; col++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      if (row === robot.y && col === robot.x) cell.textContent = "🤖";
+      grid.appendChild(cell);
+    }
+  }
+}
+
+document.getElementById("runBtn").onclick = function () {
+  const cmds = document.getElementById("commands").value.trim().split("\n");
+  cmds.forEach(c => {
+    c = c.trim().toLowerCase();
+    if (c === "up" && robot.y > 0) robot.y--;
+    if (c === "down" && robot.y < 4) robot.y++;
+    if (c === "left" && robot.x > 0) robot.x--;
+    if (c === "right" && robot.x < 4) robot.x++;
+  });
+  drawGrid();
+};
+
+drawGrid();
+</script>
+
+</body>
+</html>
