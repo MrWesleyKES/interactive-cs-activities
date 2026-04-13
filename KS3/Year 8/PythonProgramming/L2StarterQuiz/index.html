@@ -3,65 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Lesson 2 Starter – Prediction + Python Runner</title>
+
 <style>
   body { font-family: Arial; max-width: 800px; margin: auto; padding: 20px; }
   .question { background: #f1f1f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
   .code { background: #272822; color: #eee; padding: 10px; font-family: monospace; border-radius: 5px; white-space: pre; }
-  button { margin-top: 10px; }
-  .python-box { background: #eee; padding: 10px; margin-top: 15px; border-radius: 5px; }
-  #output { background: #111; color: #0f0; padding: 10px; min-height: 50px; white-space: pre-wrap; }
+  .python-box { background: #eee; padding: 10px; margin-top: 10px; border-radius: 5px; }
+  .output { background: #111; color: #0f0; padding: 10px; min-height: 40px; border-radius: 5px; white-space: pre-wrap; margin-top: 10px; }
 </style>
 
-<!-- Skulpt (Python-in-the-browser) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
+<!-- Correct Skulpt sources -->
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 
 <script>
-// Run Python using Skulpt
-function runPython(code) {
-    let outputArea = document.getElementById("output");
+// Run Python into a specific output box
+function runPythonTo(code, outputId) {
+    const outputArea = document.getElementById(outputId);
     outputArea.textContent = "Running...\n";
 
     Sk.configure({
-        output: text => outputArea.textContent += text,
-        read: x => Sk.builtinFiles.files["src/lib/" + x] || ""
+        output: txt => outputArea.textContent += txt,
+        read: x => {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"]["src/lib/" + x] === undefined) {
+                throw "File not found: '" + x + "'";
+            }
+            return Sk.builtinFiles["files"]["src/lib/" + x];
+        }
     });
 
     Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code))
         .catch(err => outputArea.textContent += "\nERROR: " + err.toString());
 }
 
-// Answer checking
+// MCQ checking
 function checkAnswer(qNum, correct) {
   const chosen = document.querySelector(`input[name="q${qNum}"]:checked`);
-  const feedback = document.getElementById(`feedback${qNum}`);
+  const fb = document.getElementById(`feedback${qNum}`);
 
   if (!chosen) {
-    feedback.textContent = "Please select an answer.";
-    feedback.style.color = "red";
+    fb.textContent = "Please choose an answer.";
+    fb.style.color = "red";
     return;
   }
 
   if (chosen.value === correct) {
-    feedback.textContent = "✅ Correct!";
-    feedback.style.color = "green";
+    fb.textContent = "✅ Correct!";
+    fb.style.color = "green";
   } else {
-    feedback.textContent = "❌ Incorrect – try running the code!";
-    feedback.style.color = "red";
+    fb.textContent = "❌ Incorrect — try running the code!";
+    fb.style.color = "red";
   }
 }
 </script>
+
 </head>
 <body>
 
-<h1>Lesson 2 Starter – Prediction Activity</h1>
-<p>Make a prediction for each question, then run the code to test your understanding.</p>
+<h1>Lesson 2 Starter – Predict the Output</h1>
+<p>Choose an answer, then run the code to check.</p>
 
 <hr>
 
 <!-- ✅ QUESTION 1 -->
 <div class="question">
-  <h3>Question 1</h3>
+  <h2>Question 1</h2>
   <p><b>What will this program output?</b></p>
 
   <div class="code">lucky = 13
@@ -76,13 +82,14 @@ print("My lucky number is", lucky)</div>
   <p id="feedback1"></p>
 
   <div class="python-box">
-    <button onclick="runPython(`lucky = 13\nprint('My lucky number is', lucky)`);">▶ Run this code</button>
+    <button onclick="runPythonTo(`lucky = 13\nprint('My lucky number is', lucky)`, 'out1')">▶ Run Code</button>
+    <div id="out1" class="output"></div>
   </div>
 </div>
 
 <!-- ✅ QUESTION 2 -->
 <div class="question">
-  <h3>Question 2</h3>
+  <h2>Question 2</h2>
   <p><b>What will this program output?</b></p>
 
   <div class="code">print("My lucky number is", lucky)
@@ -97,13 +104,14 @@ lucky = 13</div>
   <p id="feedback2"></p>
 
   <div class="python-box">
-    <button onclick="runPython(`print('My lucky number is', lucky)\nlucky = 13`);">▶ Run this code</button>
+    <button onclick="runPythonTo(`print('My lucky number is', lucky)\nlucky = 13`, 'out2')">▶ Run Code</button>
+    <div id="out2" class="output"></div>
   </div>
 </div>
 
 <!-- ✅ QUESTION 3 -->
 <div class="question">
-  <h3>Question 3</h3>
+  <h2>Question 3</h2>
   <p><b>True or false: this program always produces the same output?</b></p>
 
   <div class="code">print("What’s your name?")
@@ -117,15 +125,13 @@ print("Hello", user)</div>
   <p id="feedback3"></p>
 
   <div class="python-box">
-    <input id="nameInput" placeholder="Type a name for input()">
-    <button onclick="runPython(`user = '` + document.getElementById('nameInput').value + `'\nprint('Hello', user)`);">▶ Run this code</button>
+    <input id="nameInput" placeholder="Type a name to simulate input()">
+    <button onclick="runPythonTo(`user = '` + document.getElementById('nameInput').value + `'\nprint('Hello', user)`, 'out3')">
+      ▶ Run Code
+    </button>
+    <div id="out3" class="output"></div>
   </div>
 </div>
-
-<hr>
-
-<h2>Python Output</h2>
-<div id="output"></div>
 
 </body>
 </html>
