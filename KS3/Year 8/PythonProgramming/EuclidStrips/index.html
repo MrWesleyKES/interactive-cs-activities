@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Euclid Strips Interactive</title>
+<style>
+  body { font-family: Arial; max-width: 600px; margin: 20px auto; }
+  .bar { height: 30px; background: steelblue; margin: 10px 0; transition: width 0.3s; }
+  #log { background: #eee; padding: 10px; height: 150px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<h2>Euclid's Algorithm – Strip Simulation</h2>
+
+<label>X length: <span id="xVal">30</span></label>
+<input type="range" min="5" max="100" value="30" id="x">
+<br>
+<label>Y length: <span id="yVal">18</span></label>
+<input type="range" min="5" max="100" value="18" id="y">
+
+<h3>Strips:</h3>
+<div id="stripX" class="bar"></div>
+<div id="stripY" class="bar" style="background: orange;"></div>
+
+<button id="stepBtn">Step</button>
+<button id="resetBtn">Reset</button>
+
+<h3>Process Log</h3>
+<div id="log"></div>
+
+<script>
+function updateBars() {
+  let x = parseInt(document.getElementById("x").value);
+  let y = parseInt(document.getElementById("y").value);
+  document.getElementById("xVal").textContent = x;
+  document.getElementById("yVal").textContent = y;
+  document.getElementById("stripX").style.width = x * 4 + "px";
+  document.getElementById("stripY").style.width = y * 4 + "px";
+}
+
+document.getElementById("x").oninput = updateBars;
+document.getElementById("y").oninput = updateBars;
+
+function log(msg) {
+  const logBox = document.getElementById("log");
+  logBox.innerHTML += msg + "<br>";
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+document.getElementById("stepBtn").onclick = function () {
+  let x = parseInt(document.getElementById("x").value);
+  let y = parseInt(document.getElementById("y").value);
+  if (x === y) {
+    log(`<b>Done!</b> Both strips are ${x}. LCF = ${x}.`);
+    return;
+  }
+  if (x > y) {
+    log(`Cut X: ${x} → ${x - y}`);
+    x -= y;
+    document.getElementById("x").value = x;
+  } else {
+    log(`Cut Y: ${y} → ${y - x}`);
+    y -= x;
+    document.getElementById("y").value = y;
+  }
+  updateBars();
+};
+
+document.getElementById("resetBtn").onclick = function () {
+  document.getElementById("x").value = 30;
+  document.getElementById("y").value = 18;
+  document.getElementById("log").innerHTML = "";
+  updateBars();
+};
+
+updateBars();
+</script>
+
+</body>
+</html>
