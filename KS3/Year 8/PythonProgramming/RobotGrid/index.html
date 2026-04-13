@@ -2,43 +2,43 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Robot Algorithm Challenge</title>
+<title>Robot Algorithm Challenge – Animated</title>
 <style>
   body { font-family: Arial; max-width: 500px; margin: auto; }
-  #grid { 
-    display: grid; 
-    grid-template-columns: repeat(5, 60px); 
-    gap: 5px; 
-    margin: 20px 0; 
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(5, 60px);
+    gap: 5px;
+    margin: 20px 0;
   }
-  .cell { 
-    width: 60px; height: 60px; 
-    background: #eee; 
-    display:flex; justify-content:center; align-items:center; 
-    font-size:30px; 
+  .cell {
+    width: 60px; height: 60px;
+    background: #eee;
+    display:flex; justify-content:center; align-items:center;
+    font-size:30px;
+    transition: background 0.2s;
   }
   .wall { background: #444 !important; }
   .goal { background: #8BC34A !important; }
+  .robot { animation: pop 0.2s ease; }
+  @keyframes pop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
 </style>
 </head>
 <body>
 
-<h2>Robot Algorithm Challenge</h2>
+<h2>Robot Algorithm Challenge (Animated)</h2>
 
-<p><b>Instructions:</b></p>
 <ul>
   <li>Write one instruction per line</li>
   <li>Allowed commands: <b>up, down, left, right</b></li>
-  <li>You can only <b>Run</b> once per attempt — use <b>Reset</b> to try again</li>
-  <li>In Challenge Mode, click <b>Generate New Level</b> to get a random map</li>
+  <li>You can <b>Run</b> only once — press <b>Reset</b> to try again</li>
+  <li>Toggle Challenge Mode for random mazes</li>
 </ul>
 
-<textarea id="commands" rows="8" style="width:100%;" 
-placeholder="Example:
-up
-up
-left
-right"></textarea>
+<textarea id="commands" rows="8" style="width:100%;"></textarea>
 <br><br>
 
 <button id="runBtn">Run Program</button>
@@ -51,9 +51,6 @@ right"></textarea>
 <p id="status" style="font-weight:bold;"></p>
 
 <script>
-// -----------------------
-// INITIAL STATE
-// -----------------------
 let robotStart = { x: 0, y: 4 };
 let robot = { ...robotStart };
 let goal = { x: 4, y: 0 };
@@ -62,7 +59,7 @@ let challengeMode = false;
 let walls = [];
 
 // -----------------------
-// GENERATORS
+// RANDOM LEVEL GENERATORS
 // -----------------------
 function generateRandomGoal() {
   let gx, gy;
@@ -75,16 +72,16 @@ function generateRandomGoal() {
 
 function generateRandomWalls() {
   walls = [];
-  let wallCount = Math.floor(Math.random() * 4) + 2; // between 2 and 5 walls
-  
-  while (walls.length < wallCount) {
+  let count = Math.floor(Math.random() * 4) + 2;
+
+  while (walls.length < count) {
     let wx = Math.floor(Math.random() * 5);
     let wy = Math.floor(Math.random() * 5);
 
-    // Avoid start, goal, and duplicates
     if ((wx === robotStart.x && wy === robotStart.y) ||
         (wx === goal.x && wy === goal.y) ||
-        walls.some(w => w.x === wx && w.y === wy)) continue;
+        walls.some(w => w.x === wx && w.y === wy))
+        continue;
 
     walls.push({ x: wx, y: wy });
   }
@@ -96,41 +93,39 @@ function isWall(x, y) {
 }
 
 // -----------------------
-// GRID RENDER
+// GRID DRAWING
 // -----------------------
 function drawGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
+
   for (let row = 0; row < 5; row++) {
     for (let col = 0; col < 5; col++) {
       const cell = document.createElement("div");
       cell.className = "cell";
 
-      if (goal.x === col && goal.y === row) 
+      if (goal.x === col && goal.y === row)
         cell.classList.add("goal");
-
-      if (isWall(col, row)) 
+      if (isWall(col, row))
         cell.classList.add("wall");
-
-      if (robot.x === col && robot.y === row) 
+      if (robot.x === col && robot.y === row) {
         cell.textContent = "🤖";
-
+        cell.classList.add("robot");
+      }
       grid.appendChild(cell);
     }
   }
 }
 
 // -----------------------
-// RUN PROGRAM
+// ANIMATED MOVE FUNCTION
 // -----------------------
-document.getElementById("runBtn").onclick = function () {
-  if (programUsed) return;
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-  const cmds = document.getElementById("commands").value.trim().split("\n")
-    .map(c => c.trim().toLowerCase())
-    .filter(c => c !== "");
-
-  cmds.forEach(cmd => {
+async function animateMoves(commands) {
+  for (let cmd of commands) {
     let newX = robot.x;
     let newY = robot.y;
 
@@ -139,20 +134,35 @@ document.getElementById("runBtn").onclick = function () {
     if (cmd === "left") newX--;
     if (cmd === "right") newX++;
 
-    if (newX < 0 || newX > 4 || newY < 0 || newY > 4) return;
-    if (isWall(newX, newY)) return;
+    if (newX < 0 || newX > 4 || newY < 0 || newY > 4) continue;
+    if (isWall(newX, newY)) continue;
 
     robot.x = newX;
     robot.y = newY;
-  });
+
+    drawGrid();
+    await sleep(300);  // animation delay
+  }
+}
+
+// -----------------------
+// RUN PROGRAM
+// -----------------------
+document.getElementById("runBtn").onclick = async function () {
+  if (programUsed) return;
+
+  const cmds = document.getElementById("commands").value
+    .trim().split("\n")
+    .map(c => c.trim().toLowerCase())
+    .filter(c => c !== "");
 
   programUsed = true;
-  drawGrid();
+  await animateMoves(cmds);
 
   if (robot.x === goal.x && robot.y === goal.y) {
     document.getElementById("status").textContent = "✅ Success! You reached the goal!";
   } else {
-    document.getElementById("status").textContent = "❌ Program ended. You did not reach the goal.";
+    document.getElementById("status").textContent = "❌ Program finished — goal not reached.";
   }
 };
 
@@ -167,24 +177,19 @@ document.getElementById("resetBtn").onclick = function () {
 };
 
 // -----------------------
-// TOGGLE CHALLENGE MODE
+// CHALLENGE MODE + RANDOM LEVELS
 // -----------------------
 document.getElementById("toggleChallengeBtn").onclick = function () {
   challengeMode = !challengeMode;
   document.getElementById("newLevelBtn").disabled = !challengeMode;
 
   if (!challengeMode) {
-    // revert to default level
-    goal = { x: 4, y: 0 };
     walls = [];
+    goal = { x: 4, y: 0 };
   }
-
   drawGrid();
 };
 
-// -----------------------
-// NEW RANDOM LEVEL
-// -----------------------
 document.getElementById("newLevelBtn").onclick = function () {
   generateRandomGoal();
   generateRandomWalls();
@@ -194,7 +199,6 @@ document.getElementById("newLevelBtn").onclick = function () {
   drawGrid();
 };
 
-// initial draw
 drawGrid();
 </script>
 
