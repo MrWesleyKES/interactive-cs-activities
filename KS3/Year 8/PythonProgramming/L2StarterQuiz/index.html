@@ -164,6 +164,7 @@ async function loadPython() {
 }
 loadPython();
 
+
 async function runCode() {
   outputDiv.textContent = "";
 
@@ -171,12 +172,19 @@ async function runCode() {
     pyodide.setStdout({ batched: t => outputDiv.textContent += t });
     pyodide.setStderr({ batched: t => outputDiv.textContent += t });
 
+    // ✅ Fake input() using browser prompt
+    await pyodide.runPythonAsync(`
+import builtins
+builtins.input = lambda prompt="": __import__("js").prompt(prompt)
+`);
+
     await pyodide.runPythonAsync(editor.getValue());
     checkTasks();
   } catch (err) {
     outputDiv.textContent += err;
   }
 }
+
 
 function unlock(n) {
   document.getElementById("task" + n).classList.remove("locked");
