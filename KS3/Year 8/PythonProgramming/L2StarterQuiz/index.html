@@ -1,143 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Lesson 2 Starter – Prediction + Python Runner</title>
+  <meta charset="UTF-8">
+  <title>Python Starter – Year 8</title>
 
-<style>
-  body { font-family: Arial; max-width: 800px; margin: auto; padding: 20px; }
-  .question { background: #f1f1f1; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
-  .code { background: #272822; color: #eee; padding: 10px; font-family: monospace; border-radius: 5px; white-space: pre; }
-  .python-box { background: #eee; padding: 10px; margin-top: 10px; border-radius: 5px; }
-  .output { background: #111; color: #0f0; padding: 10px; min-height: 40px; border-radius: 5px; white-space: pre-wrap; margin-top: 10px; }
-</style>
+  <!-- CodeMirror (Editor + Syntax Highlighting) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
 
-<!-- ✅ Correct Skulpt Includes -->
-<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #1e1e1e;
+      color: #ffffff;
+    }
 
-<script>
-// ✅ Fully working Skulpt runner with correct stdlib loader
+    header {
+      background: #0078d4;
+      padding: 15px 25px;
+      font-size: 20px;
+      font-weight: 600;
+    }
 
-function runPythonTo(code, outputId) {
-    const outputArea = document.getElementById(outputId);
-    outputArea.textContent = "Running...\n";
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: calc(100vh - 60px);
+    }
 
-    Sk.configure({
-        output: txt => outputArea.textContent += txt,
-        read: function (x) {
-            if (Sk.builtinFiles === undefined ||
-                Sk.builtinFiles["files"]["src/lib/" + x] === undefined) {
-                throw "File not found: '" + x + "'";
-            }
-            return Sk.builtinFiles["files"]["src/lib/" + x];
-        }
-    });
+    .left, .right {
+      padding: 15px;
+    }
 
-    Sk.misceval.asyncToPromise(() =>
-        Sk.importMainWithBody("<stdin>", false, code)
-    ).catch(err => outputArea.textContent += "\nERROR: " + err.toString());
-}
+    .instructions {
+      background: #252526;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
 
-// ✅ MCQ feedback logic
-function checkAnswer(qNum, correct) {
-  const chosen = document.querySelector(`input[name="q${qNum}"]:checked`);
-  const fb = document.getElementById(`feedback${qNum}`);
+    .instructions h3 {
+      margin-top: 0;
+      color: #4fc3f7;
+    }
 
-  if (!chosen) {
-    fb.textContent = "Please choose an answer.";
-    fb.style.color = "red";
-    return;
-  }
+    .challenge {
+      margin-bottom: 12px;
+      padding: 10px;
+      border-left: 4px solid #4fc3f7;
+      background: #2d2d30;
+      font-size: 14px;
+    }
 
-  if (chosen.value === correct) {
-    fb.textContent = "✅ Correct!";
-    fb.style.color = "green";
-  } else {
-    fb.textContent = "❌ Incorrect — try running the code!";
-    fb.style.color = "red";
-  }
-}
-</script>
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
+    button:hover {
+      background: #1177bb;
+    }
+
+    #output {
+      background: black;
+      padding: 10px;
+      height: 35%;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+    }
+
+    .editor {
+      height: 60%;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .hint {
+      color: #bbbbbb;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Lesson 2 Starter – Predict the Output</h1>
-<p>Make a prediction first, then run the code to test it.</p>
+<header>
+  Python Starter – Let’s warm up 🐍
+</header>
 
-<hr>
+<div class="container">
 
-<!-- ✅ QUESTION 1 -->
-<div class="question">
-  <h2>Question 1</h2>
-  <p><b>What will this program output?</b></p>
+  <!-- INSTRUCTIONS -->
+  <div class="left">
+    <div class="instructions">
+      <h3>What to do</h3>
 
-  <div class="code">lucky = 13
-print("My lucky number is", lucky)</div>
+      <div class="challenge">
+        ✅ <strong>Challenge 1:</strong> Run the code.<br>
+        What do you see?
+      </div>
 
-  <label><input type="radio" name="q1" value="a"> My lucky number is lucky</label><br>
-  <label><input type="radio" name="q1" value="b"> My lucky number is 13</label><br>
-  <label><input type="radio" name="q1" value="c"> It is not possible to know</label><br>
-  <label><input type="radio" name="q1" value="d"> There is an error</label><br>
+      <div class="challenge">
+        ✏️ <strong>Challenge 2:</strong><br>
+        Change the message so it prints your own greeting.
+        <div class="hint">Example: Hello everyone!</div>
+      </div>
 
-  <button onclick="checkAnswer(1, 'b')">Check Answer</button>
-  <p id="feedback1"></p>
+      <div class="challenge">
+        🧠 <strong>Challenge 3:</strong><br>
+        Change the name stored in the variable.
+      </div>
 
-  <div class="python-box">
-    <button onclick="runPythonTo(`lucky = 13\nprint('My lucky number is', lucky)`, 'out1')">▶ Run Code</button>
-    <div id="out1" class="output"></div>
+      <div class="challenge">
+        ⌨️ <strong>Challenge 4:</strong><br>
+        Make the program ask the user for their name instead.
+        <div class="hint">You will need <code>input()</code></div>
+      </div>
+
+      <div class="challenge">
+        ⭐ <strong>Bonus:</strong><br>
+        Add a second print line that shows a lucky number.
+      </div>
+    </div>
+
+    <button onclick="runCode()">▶ Run Python</button>
   </div>
+
+  <!-- EDITOR + OUTPUT -->
+  <div class="right">
+    <div class="editor">
+      <textarea id="code">
+# Run this program first 👇
+
+user = "Claude"
+print("Hello", user)
+      </textarea>
+    </div>
+
+    <h3>Output</h3>
+    <div id="output">Click “Run Python” to see output here.</div>
+  </div>
+
 </div>
 
-<!-- ✅ QUESTION 2 -->
-<div class="question">
-  <h2>Question 2</h2>
-  <p><b>What will this program output?</b></p>
+<!-- CodeMirror -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
-  <div class="code">print("My lucky number is", lucky)
-lucky = 13</div>
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 
-  <label><input type="radio" name="q2" value="a"> My lucky number is lucky</label><br>
-  <label><input type="radio" name="q2" value="b"> My lucky number is 13</label><br>
-  <label><input type="radio" name="q2" value="c"> It is not possible to know</label><br>
-  <label><input type="radio" name="q2" value="d"> There is an error</label><br>
+<script>
+  const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    mode: "python",
+    theme: "material-darker",
+    lineNumbers: true,
+    indentUnit: 4,
+    tabSize: 4
+  });
 
-  <button onclick="checkAnswer(2, 'd')">Check Answer</button>
-  <p id="feedback2"></p>
+  const outputDiv = document.getElementById("output");
+  let pyodideReady = false;
+  let pyodide;
 
-  <div class="python-box">
-    <button onclick="runPythonTo(`print('My lucky number is', lucky)\nlucky = 13`, 'out2')">▶ Run Code</button>
-    <div id="out2" class="output"></div>
-  </div>
-</div>
+  async function loadPyodideAndPackages() {
+    pyodide = await loadPyodide();
+    pyodideReady = true;
+  }
 
-<!-- ✅ QUESTION 3 -->
-<div class="question">
-  <h2>Question 3</h2>
-  <p><b>True or false: this program always produces the same output?</b></p>
+  loadPyodideAndPackages();
 
-  <div class="code">print("What’s your name?")
-user = input()
-print("Hello", user)</div>
+  async function runCode() {
+    outputDiv.textContent = "";
 
-  <label><input type="radio" name="q3" value="true"> True</label><br>
-  <label><input type="radio" name="q3" value="false"> False</label><br>
+    if (!pyodideReady) {
+      outputDiv.textContent = "Loading Python… try again in a moment.";
+      return;
+    }
 
-  <button onclick="checkAnswer(3, 'false')">Check Answer</button>
-  <p id="feedback3"></p>
+    try {
+      pyodide.setStdout({
+        batched: (text) => {
+          outputDiv.textContent += text;
+        }
+      });
 
-  <div class="python-box">
-    <input id="nameInput" placeholder="Type a name to simulate input()">
-    <button onclick="
-      runPythonTo(
-        `print('What’s your name?')\nuser='${document.getElementById('nameInput').value}'\nprint('Hello', user)`,
-        'out3'
-      )
-    ">▶ Run Code</button>
-    <div id="out3" class="output"></div>
-  </div>
-</div>
+      pyodide.setStderr({
+        batched: (text) => {
+          outputDiv.textContent += text;
+        }
+      });
+
+      await pyodide.runPythonAsync(editor.getValue());
+    } catch (err) {
+      outputDiv.textContent += "\nError:\n" + err;
+    }
+  }
+</script>
 
 </body>
 </html>
