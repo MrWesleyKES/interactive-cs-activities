@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <title>Python DO NOW – Year 8</title>
 
-<!-- CodeMirror -->
-<link rel="stylesheet" https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css>
-<link rel="stylesheet" https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css>
+<!-- CodeMirror CSS -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
 
 <style>
   body {
@@ -50,13 +52,8 @@
     font-weight: bold;
   }
 
-  .correct {
-    color: #7CFC90;
-  }
-
-  .wrong {
-    color: #ff6b6b;
-  }
+  .correct { color: #7CFC90; }
+  .wrong { color: #ff6b6b; }
 
   button {
     background: #0e639c;
@@ -66,7 +63,6 @@
     border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
-    margin-top: 10px;
   }
 
   button:hover {
@@ -74,20 +70,19 @@
   }
 
   .editor {
-    height: 60%;
+    height: 55%;
   }
 
   #output {
     background: black;
     padding: 10px;
-    height: 30%;
+    height: 35%;
     overflow-y: auto;
     white-space: pre-wrap;
     font-family: Consolas, monospace;
     font-size: 14px;
     border-radius: 4px;
   }
-
 </style>
 </head>
 
@@ -97,36 +92,36 @@
 
 <div class="container">
 
-<!-- TASKS -->
+<!-- TASK LIST -->
 <div class="left">
 
   <div class="task" id="task1">
     <strong>Task 1</strong><br>
-    Run the program exactly as it is.
+    Click <em>Run Python</em>.
     <div class="status" id="status1"></div>
   </div>
 
   <div class="task locked" id="task2">
     <strong>Task 2</strong><br>
-    Change the greeting so it says <em>Hello world</em>
+    Change the output so it says <em>Hello world</em>.
     <div class="status" id="status2"></div>
   </div>
 
   <div class="task locked" id="task3">
     <strong>Task 3</strong><br>
-    Change the name so the program greets <strong>you</strong>.
+    Change the name to <strong>your</strong> name.
     <div class="status" id="status3"></div>
   </div>
 
   <div class="task locked" id="task4">
     <strong>Task 4</strong><br>
-    Make the program ask for the name using <code>input()</code>.
+    Ask for the name using <code>input()</code>.
     <div class="status" id="status4"></div>
   </div>
 
   <div class="task locked" id="task5">
     ✅ <strong>All done</strong><br>
-    Sit quietly and wait for instructions.
+    Sit quietly and wait.
   </div>
 
   <button onclick="runCode()">▶ Run Python</button>
@@ -142,15 +137,17 @@ print("Hello", user)
   </div>
 
   <h3>Output</h3>
-  <div id="output">Click Run Python</div>
+  <div id="output">Click “Run Python”</div>
 </div>
 
 </div>
 
-<!-- Scripts -->
-<script https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js></script>
-<script https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js></script>
-<script https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js></script>
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 
 <script>
 const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -171,12 +168,8 @@ async function runCode() {
   outputDiv.textContent = "";
 
   try {
-    pyodide.setStdout({
-      batched: text => outputDiv.textContent += text
-    });
-    pyodide.setStderr({
-      batched: text => outputDiv.textContent += text
-    });
+    pyodide.setStdout({ batched: t => outputDiv.textContent += t });
+    pyodide.setStderr({ batched: t => outputDiv.textContent += t });
 
     await pyodide.runPythonAsync(editor.getValue());
     checkTasks();
@@ -185,36 +178,29 @@ async function runCode() {
   }
 }
 
-function unlock(taskNum) {
-  document.getElementById("task" + taskNum).classList.remove("locked");
+function unlock(n) {
+  document.getElementById("task" + n).classList.remove("locked");
 }
 
-function mark(taskNum, correct) {
-  const status = document.getElementById("status" + taskNum);
-  if (correct) {
-    status.textContent = "✅ Complete";
-    status.className = "status correct";
-    unlock(taskNum + 1);
+function mark(n, ok) {
+  const s = document.getElementById("status" + n);
+  if (ok) {
+    s.textContent = "✅ Complete";
+    s.className = "status correct";
+    unlock(n + 1);
   } else {
-    status.textContent = "❌ Try again";
-    status.className = "status wrong";
+    s.textContent = "❌ Try again";
+    s.className = "status wrong";
   }
 }
 
 function checkTasks() {
   const code = editor.getValue();
-  const output = outputDiv.textContent.toLowerCase();
+  const out = outputDiv.textContent.toLowerCase();
 
-  // Task 1: anything printed
-  mark(1, output.trim().length > 0);
-
-  // Task 2: hello world text
-  mark(2, output.includes("hello world"));
-
-  // Task 3: name changed from Claude
-  mark(3, !output.includes("claude"));
-
-  // Task 4: input used
+  mark(1, out.trim().length > 0);
+  mark(2, out.includes("hello world"));
+  mark(3, !out.includes("claude"));
   mark(4, code.includes("input"));
 }
 </script>
