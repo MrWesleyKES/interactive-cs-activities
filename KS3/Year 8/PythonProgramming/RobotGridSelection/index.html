@@ -69,14 +69,17 @@ const start = { ...robot };
 // Colours only appear at forks
 const maze = [
   ["#", "#", "#", "#", "#", "#", "#"],
-  ["#", "red", "P", "P", "P", "blue", "#"],
+  ["#", "red", "P", "P", "P", "red", "#"],
   ["#", "P", "#", "#", "#", "P", "#"],
-  ["P", "blue", "P", "P", "P", "red", "green"],
+  ["P", "blue", "P", "P", "P", "blue", "green"],
   ["#", "#", "#", "#", "#", "#", "#"],
 ];
 
 const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
-
+function robotIcon() {
+  return ["↑", "→", "↓", "←"][robot.dir];
+}
+  
 function draw() {
   const g = document.getElementById("grid");
   g.innerHTML = "";
@@ -91,7 +94,11 @@ function draw() {
       if (tile === "blue") cell.classList.add("blue");
       if (tile === "green") cell.classList.add("green");
 
-      if (robot.x === x && robot.y === y) cell.textContent = "🤖";
+      
+if (robot.x === x && robot.y === y) {
+  cell.innerHTML = "🤖<div style='font-size:14px'>" + ["↑","→","↓","←"][robot.dir] + "</div>";
+}
+
 
       g.appendChild(cell);
     }
