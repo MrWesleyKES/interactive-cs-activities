@@ -2,160 +2,89 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Robot Algorithm – Selection</title>
-
+<title>Selection Rule Challenge</title>
 <style>
-  body { font-family: Arial; max-width: 520px; margin: auto; }
+  body { font-family: Arial; max-width: 560px; margin: auto; }
   #grid {
     display: grid;
     grid-template-columns: repeat(5, 60px);
     gap: 5px;
-    margin: 20px 0;
+    margin-top: 15px;
   }
   .cell {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-    background: #eee;
+    width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    background: #eee; font-size: 26px;
   }
   .red { background: #ef9a9a; }
   .blue { background: #90caf9; }
   .goal { background: #8bc34a; }
-  .robot { animation: pop 0.2s ease; }
-
-  @keyframes pop {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
 </style>
 </head>
-
 <body>
 
-<h2>Robot Crossroads – Selection Challenge</h2>
+<h2>Robot Selection – Design the Rule</h2>
 
-<ul>
-  <li>One instruction per line</li>
-  <li>Allowed commands:
-    <b>forward</b>, <b>left</b>, <b>right</b>, <b>check</b>
-  </li>
-  <li><b>check</b> = make a decision based on tile colour</li>
-</ul>
+<p><b>Program the robot’s decision:</b></p>
 
-<p>
-🔴 RED → turn RIGHT<br>
-🔵 BLUE → turn LEFT
-</p>
-
-<textarea id="commands" rows="7" style="width:100%;" placeholder="
-forward
-forward
-check
-forward"></textarea>
+IF tile is:
+<select id="condition">
+  <option value="red">RED</option>
+  <option value="blue">BLUE</option>
+</select>
 
 <br><br>
 
-<button id="runBtn">Run Program</button>
-<button id="resetBtn">Reset</button>
+THEN turn:
+<select id="trueAction">
+  <option value="left">LEFT</option>
+  <option value="right">RIGHT</option>
+</select>
+
+<br><br>
+
+ELSE turn:
+<select id="falseAction">
+  <option value="left">LEFT</option>
+  <option value="right">RIGHT</option>
+</select>
+
+<hr>
+
+<p><b>Robot program (same for everyone):</b></p>
+
+<pre>
+forward
+forward
+decide
+forward
+decide
+forward
+</pre>
+
+<button onclick="run()">Run</button>
+<button onclick="reset()">Reset</button>
 
 <div id="grid"></div>
-<p id="status"><b></b></p>
+<p id="status"></p>
 
 <script>
-let robotStart = { x: 2, y: 4, dir: 0 }; // 0=up, 1=right, 2=down, 3=left
-let robot = { ...robotStart };
-let programUsed = false;
+let robot = { x: 0, y: 2, dir: 1 };
+const start = { ...robot };
 
-const gridColours = [
-  ["", "", "goal", "", ""],
-  ["", "red", "", "blue", ""],
+const grid = [
+  ["", "", "red", "", ""],
   ["", "", "", "", ""],
+  ["", "", "", "blue", "goal"],
   ["", "", "", "", ""],
   ["", "", "", "", ""]
 ];
 
-const dirs = [
-  { x: 0, y: -1 }, // up
-  { x: 1, y: 0 },  // right
-  { x: 0, y: 1 },  // down
-  { x: -1, y: 0 }  // left
-];
+const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
 
-function drawGrid() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-
-  for (let y = 0; y < 5; y++) {
-    for (let x = 0; x < 5; x++) {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-
-      if (gridColours[y][x]) cell.classList.add(gridColours[y][x]);
-      if (robot.x === x && robot.y === y) {
-        cell.textContent = "🤖";
-        cell.classList.add("robot");
-      }
-
-      grid.appendChild(cell);
-    }
-  }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function run(commands) {
-  for (let cmd of commands) {
-    if (cmd === "forward") {
-      robot.x += dirs[robot.dir].x;
-      robot.y += dirs[robot.dir].y;
-    }
-    else if (cmd === "left") {
-      robot.dir = (robot.dir + 3) % 4;
-    }
-    else if (cmd === "right") {
-      robot.dir = (robot.dir + 1) % 4;
-    }
-    else if (cmd === "check") {
-      const colour = gridColours[robot.y]?.[robot.x];
-      if (colour === "red") robot.dir = (robot.dir + 1) % 4;
-      else if (colour === "blue") robot.dir = (robot.dir + 3) % 4;
-    }
-
-    drawGrid();
-    await sleep(350);
-  }
-
-  if (gridColours[robot.y]?.[robot.x] === "goal") {
-    document.getElementById("status").textContent = "✅ Goal reached!";
-  } else {
-    document.getElementById("status").textContent = "❌ Program finished.";
-  }
-}
-
-document.getElementById("runBtn").onclick = async () => {
-  if (programUsed) return;
-  programUsed = true;
-
-  const cmds = document.getElementById("commands").value
-    .trim().split("\n").map(c => c.trim().toLowerCase());
-
-  await run(cmds);
-};
-
-document.getElementById("resetBtn").onclick = () => {
-  robot = { ...robotStart };
-  programUsed = false;
-  document.getElementById("status").textContent = "";
-  drawGrid();
-};
-
-drawGrid();
-</script>
-
-</body>
-</html>
+function draw() {
+  const g = document.getElementById("grid");
+  g.innerHTML = "";
+  for (let y=0;y<5;y++) for (let x=0;x<5;x++) {
+    const c = document.createElement("div");
+    c.className = "cell";
