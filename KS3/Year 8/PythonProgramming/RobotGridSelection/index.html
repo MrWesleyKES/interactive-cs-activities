@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Selection Rule Challenge</title>
+
 <style>
   body { font-family: Arial; max-width: 560px; margin: auto; }
   #grid {
@@ -10,11 +11,17 @@
     grid-template-columns: repeat(5, 60px);
     gap: 5px;
     margin-top: 15px;
+    border: 2px solid #ccc;   /* ✅ makes grid visible even if empty */
+    padding: 5px;
   }
   .cell {
-    width: 60px; height: 60px;
-    display: flex; align-items: center; justify-content: center;
-    background: #eee; font-size: 26px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    font-size: 26px;
   }
   .red { background: #ef9a9a; }
   .blue { background: #90caf9; }
@@ -69,9 +76,10 @@ forward
 <p id="status"></p>
 
 <script>
-let robot = { x: 0, y: 2, dir: 1 };
+let robot = { x: 0, y: 2, dir: 1 }; // start, facing right
 const start = { ...robot };
 
+// grid[y][x]
 const grid = [
   ["", "", "red", "", ""],
   ["", "", "", "", ""],
@@ -80,11 +88,73 @@ const grid = [
   ["", "", "", "", ""]
 ];
 
-const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
+const dirs = [
+  [0,-1], // up
+  [1,0],  // right
+  [0,1],  // down
+  [-1,0]  // left
+];
 
 function draw() {
   const g = document.getElementById("grid");
   g.innerHTML = "";
-  for (let y=0;y<5;y++) for (let x=0;x<5;x++) {
-    const c = document.createElement("div");
-    c.className = "cell";
+
+  for (let y = 0; y < 5; y++) {
+    for (let x = 0; x < 5; x++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+
+      if (grid[y][x]) cell.classList.add(grid[y][x]);
+      if (robot.x === x && robot.y === y) cell.textContent = "🤖";
+
+      g.appendChild(cell);
+    }
+  }
+}
+
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+async function run() {
+  const cond = document.getElementById("condition").value;
+  const tAct = document.getElementById("trueAction").value;
+  const fAct = document.getElementById("falseAction").value;
+
+  const program = ["forward","forward","decide","forward","decide","forward"];
+
+  for (let step of program) {
+    if (step === "forward") {
+      robot.x += dirs[robot.dir][0];
+      robot.y += dirs[robot.dir][1];
+    }
+
+    if (step === "decide") {
+      const tile = grid[robot.y]?.[robot.x];
+      const turn = (tile === cond) ? tAct : fAct;
+      robot.dir = (robot.dir + (turn === "right" ? 1 : 3)) % 4;
+    }
+
+    draw();
+    await sleep(400);
+  }
+
+  const status = document.getElementById("status");
+  status.textContent =
+    grid[robot.y]?.[robot.x] === "goal"
+      ? "✅ Success"
+      : "❌ Failed – rethink your rule";
+}
+
+function reset() {
+  robot = { ...start };
+  document.getElementById("status").textContent = "";
+  draw();
+}
+
+/* ✅ THIS was missing before */
+draw();
+</script>
+
+</body>
+</html>
